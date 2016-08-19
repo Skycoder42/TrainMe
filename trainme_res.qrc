@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="+windows/qtquickcontrols2.conf">Resources/Universal/qtquickcontrols2.conf</file>
+        <file alias="+android/qtquickcontrols2.conf">Resources/Material/qtquickcontrols2.conf</file>
+        <file alias="train_struct.sqlite">Resources/train_struct.sqlite</file>
+    </qresource>
+    <qresource prefix="/qml">
+        <file alias="main.qml">Resources/main.qml</file>
+        <file alias="TrainListView.qml">Resources/TrainListView.qml</file>
+        <file alias="TrainItemDelegate.qml">Resources/TrainItemDelegate.qml</file>
+        <file alias="+universal/ErrorDialog.qml">Resources/Universal/ErrorDialog.qml</file>
+        <file alias="+material/ErrorDialog.qml">Resources/Material/ErrorDialog.qml</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="+universal/menu.png">Resources/Universal/icons/ic_menu_black_24dp.png</file>
+        <file alias="+material/+hdpi/menu.png">Resources/Material/icons/drawable-hdpi/ic_menu_white_24dp.png</file>
+        <file alias="+material/+mdpi/menu.png">Resources/Material/icons/drawable-mdpi/ic_menu_white_24dp.png</file>
+        <file alias="+material/+xhdpi/menu.png">Resources/Material/icons/drawable-xhdpi/ic_menu_white_24dp.png</file>
+        <file alias="+material/+xxhdpi/menu.png">Resources/Material/icons/drawable-xxhdpi/ic_menu_white_24dp.png</file>
+        <file alias="+material/+xxxhdpi/menu.png">Resources/Material/icons/drawable-xxxhdpi/ic_menu_white_24dp.png</file>
+    </qresource>
+</RCC>
