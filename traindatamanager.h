@@ -17,7 +17,8 @@ public:
 		Skip = 1,
 		Sick = 2,
 		Gain = 3,
-		Fail = 4
+		Fail = 4,
+		Free = 5
 	};
 
 	explicit TrainDataManager(QObject *parent = nullptr, const char *initSlot = nullptr);

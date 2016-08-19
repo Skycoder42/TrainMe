@@ -54,6 +54,7 @@ bool TrainModel::setData(const QModelIndex &index, const QVariant &value, int ro
 
 	if(this->rootList[index.row()]->setDone(value.toBool())) {
 		emit dataChanged(index, index, {CheckedRole});
+		emit allDoneChanged();
 		return true;
 	} else
 		return false;
@@ -77,11 +78,21 @@ QHash<int, QByteArray> TrainModel::roleNames() const
 	return hash;
 }
 
+bool TrainModel::allDone() const
+{
+	foreach (auto item, this->rootList) {
+		if(!item->isDone())
+			return false;
+	}
+	return true;
+}
+
 void TrainModel::resetData(TrainTask::TaskType type, const QList<QSharedPointer<TrainTask> > &tasks)
 {
 	if(type == this->type) {
 		this->beginResetModel();
 		this->rootList = tasks;
 		this->endResetModel();
+		emit allDoneChanged();
 	}
 }

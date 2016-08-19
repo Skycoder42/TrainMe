@@ -30,13 +30,15 @@ ApplicationWindow {
 			anchors.fill: parent
 
 			ToolButton {
-				enabled: false
+				id: toolbar
+				enabled: !app.loading
 				contentItem: Image {
 					fillMode: Image.PreserveAspectFit
 					horizontalAlignment: Image.AlignHCenter
 					verticalAlignment: Image.AlignVCenter
 					source: "qrc:/icons/menu.png"
 				}
+				onClicked: drawer.open()
 			}
 
 			Label {
@@ -51,77 +53,63 @@ ApplicationWindow {
 		}
 	}
 
-	BusyIndicator {
-		anchors.centerIn: parent
-		property int mSize: Math.max(implicitWidth, Math.min(parent.width, parent.height) * 0.2)
-		width: mSize
-		height: mSize
-		visible: app.loading
-	}
+	Drawer {
+		id: drawer
+		x: 0
+		y: 100
+		width: Math.min(root.width, root.height) *0.66
+		height: root.height
 
-	Flickable {
-		id: flickable
-		anchors.fill: parent
-		visible: !app.loading
+		ListView {
+			id: drawerListView
+			currentIndex: -1
+			anchors.fill: parent
 
-		contentHeight: mainContent.height
+			function setPage(index) {
+				drawerListView.currentIndex = index;
+				var item = drawerListView.model.get(index);
+				stackView.replace(item.source);
+			}
 
-		ScrollBar.vertical: ScrollBar {}
-
-		Pane {
-			id: mainContent
-			width: flickable.width
-
-			GridLayout {
-				id: layout
-
-				anchors.left: parent.left
-				anchors.right: parent.right
-
-				columnSpacing: 14
-				rowSpacing: 14
-				columns: root.isSmall ? 1 : 2
-
-				GroupBox {
-					id: ttt
-
-					Layout.fillWidth: true
-					Layout.preferredHeight: implicitHeight
-					Layout.fillHeight: true
-					implicitWidth: 200
-
-					title: qsTr("Strengh-Training")
-
-					TrainListView {
-						id: strengthList
-						anchors.fill: parent
-						model: strengthModel
+			delegate: ItemDelegate {
+				width: parent.width
+				text: model.title
+				highlighted: ListView.isCurrentItem
+				onClicked: {
+					if (drawerListView.currentIndex !== index) {
+						drawerListView.currentIndex = index;
+						titleLabel.text = model.title;
+						stackView.replace(model.source);
 					}
-				}
-
-				GroupBox {
-					Layout.fillWidth: true
-					Layout.preferredHeight: implicitHeight
-					Layout.fillHeight: true
-					implicitWidth: 200
-
-					title: qsTr("Agility-Training")
-
-					TrainListView {
-						id: agilityList
-						anchors.fill: parent
-						model: agilityModel
-					}
-				}
-
-				GroupBox {
-					Layout.fillWidth: true
-					implicitHeight: root.height
-					Layout.columnSpan: root.isSmall ? 1 : 2
-
-					title: qsTr("Test")
+					drawer.close();
 				}
 			}
+
+			model: ListModel {
+				ListElement { title: qsTr("Training!"); source: "qrc:/qml/TrainPage.qml" }
+			}
+
+			ScrollIndicator.vertical: ScrollIndicator { }
+		}
+	}
+
+	StackView {
+		id: stackView
+		anchors.fill: parent
+
+		initialItem: BusyIndicator {
+			anchors.centerIn: parent
+			property int mSize: Math.max(implicitWidth, Math.min(root.width, root.height) * 0.2)
+			width: mSize
+			height: mSize
+		}
+	}
+
+	Connections {
+		target: app
+		onLoadingChanged: {
+			if(!app.loading)
+				drawerListView.setPage(0);
 		}
 	}
 

@@ -7,9 +7,12 @@
     <qresource prefix="/qml">
         <file alias="main.qml">Resources/main.qml</file>
         <file alias="TrainListView.qml">Resources/TrainListView.qml</file>
-        <file alias="TrainItemDelegate.qml">Resources/TrainItemDelegate.qml</file>
-        <file alias="+universal/ErrorDialog.qml">Resources/Universal/ErrorDialog.qml</file>
-        <file alias="+material/ErrorDialog.qml">Resources/Material/ErrorDialog.qml</file>
+		<file alias="TrainItemDelegate.qml">Resources/TrainItemDelegate.qml</file>
+		<file alias="+universal/ErrorDialog.qml">Resources/Universal/ErrorDialog.qml</file>
+		<file alias="+universal/QuestionDialog.qml">Resources/Universal/QuestionDialog.qml</file>
+		<file alias="+material/ErrorDialog.qml">Resources/Material/ErrorDialog.qml</file>
+		<file alias="+material/QuestionDialog.qml">Resources/Material/QuestionDialog.qml</file>
+        <file alias="TrainPage.qml">Resources/TrainPage.qml</file>
     </qresource>
     <qresource prefix="/icons">
         <file alias="+universal/menu.png">Resources/Universal/icons/ic_menu_black_24dp.png</file>

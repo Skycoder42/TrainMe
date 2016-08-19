@@ -11,6 +11,7 @@ class TrainModel : public QAbstractListModel
 	Q_OBJECT
 
 	Q_PROPERTY(int rowCount READ rowCount NOTIFY rowCountChanged)
+	Q_PROPERTY(bool allDone READ allDone NOTIFY allDoneChanged)
 
 public:
 	enum Roles {
@@ -28,16 +29,20 @@ public:
 	Qt::ItemFlags flags(const QModelIndex& index) const override;
 	QHash<int, QByteArray> roleNames() const override;
 
+	bool allDone() const;
+
 public slots:
 	void resetData(TrainTask::TaskType type, const QList<QSharedPointer<TrainTask>> &tasks);
 
 signals:
-	void rowCountChanged();
+	void rowCountChanged();	
+	void allDoneChanged();
 
 private:
 	TrainTask::TaskType type;
 	QList<QSharedPointer<TrainTask>> rootList;
 	int m_rowCount;
+	bool m_allDone;
 };
 
 #endif // TRAINMODEL_H
