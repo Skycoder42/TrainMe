@@ -3,7 +3,7 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Controls.Material 2.0
 import QtQuick.Controls.Universal 2.0
-import "./MessageBox"
+import "../qml/MessageBox"
 
 ApplicationWindow {
 	id:root
@@ -87,7 +87,7 @@ ApplicationWindow {
 			}
 
 			model: ListModel {
-				ListElement { title: qsTr("Training!"); source: "qrc:/qml/TrainPage.qml" }
+				ListElement { title: qsTr("Training!"); source: "qrc:/qml/controls/TrainPage.qml" }
 			}
 
 			ScrollIndicator.vertical: ScrollIndicator { }
