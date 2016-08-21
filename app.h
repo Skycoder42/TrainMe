@@ -12,7 +12,7 @@ class App : public QGuiApplication
 	Q_OBJECT
 
 	Q_PROPERTY(bool loading READ isLoading NOTIFY loadingChanged)
-	Q_PROPERTY(TrainDataManager trainManager READ trainManager CONSTANT)
+	Q_PROPERTY(TrainDataManager *trainManager READ trainManager CONSTANT)
 
 public:
 	explicit App(int argc, char *argv[]);

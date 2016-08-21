@@ -65,14 +65,13 @@ ControlPage {
 					Layout.preferredWidth: implicitWidth * 1.2
 					anchors.horizontalCenter: parent.horizontalCenter
 
+					enabled: trainControl.trainingAllowed
 					text: trainControl.allDone ? qsTr("Training Done!") : qsTr("Training Failed!")
 					highlighted: trainControl.allDone
 
 					onClicked: {
-						if(trainControl.allDone) {
-							savingProgress.open();
+						if(trainControl.allDone)
 							trainControl.completeTraining();
-						}
 						else
 							failQuestion.open();
 					}
@@ -89,22 +88,8 @@ ControlPage {
 		positiveButtonText: qsTr("I failed!")
 
 		onQuestionAnswered: {
-			if(accepted) {
-				savingProgress.open();
+			if(accepted)
 				trainControl.completeTraining();
-			}
-		}
-	}
-
-	ProgressBox {
-		id: savingProgress
-
-		title: qsTr("Saving Result")
-		message: qsTr("Please wait, while your training result is beeing saved…")
-
-		Connections {
-			target: trainControl
-			onSavingComplete : savingProgress.close()
 		}
 	}
 }

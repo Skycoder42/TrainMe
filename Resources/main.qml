@@ -114,6 +114,30 @@ ApplicationWindow {
 		}
 	}
 
+	ProgressBox {
+		id: savingProgress
+
+		title: qsTr("Operating")
+		message: qsTr("Please wait, while the app loads/saves the data…")
+
+		property int activeCounter: 0
+
+		Connections {
+			target: app.trainManager
+			onOperationStarted: {
+				if(savingProgress.activeCounter == 0)
+					savingProgress.open();
+				savingProgress.activeCounter++;
+			}
+
+			onOperationCompleted: {
+				savingProgress.activeCounter--;
+				if(savingProgress.activeCounter == 0)
+					savingProgress.close();
+			}
+		}
+	}
+
 	ErrorBox {
 		id:errorDialog
 

@@ -19,7 +19,11 @@ public:
 	};
 	Q_ENUM(TaskType)
 
-	explicit TrainTask(const QString &name, TaskType type, int baseCount, int increment);
+	explicit TrainTask(const QString &name,
+					   TaskType type,
+					   int baseCount,
+					   double factor = 1.0,
+					   int increment = 0);
 
 	QString name() const;
 	int trainCount() const;
@@ -37,6 +41,7 @@ private:
 	TaskType type;
 	int baseCount;
 	int increment;
+	double factor;
 	bool done;
 };
 
