@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QSqlDatabase>
 #include <QList>
+#include <QDateTime>
 #include <QSharedPointer>
 #include <QReadWriteLock>
 #include "traintask.h"
@@ -27,6 +28,8 @@ public:
 public slots:
 	void loadStrengthTasks();
 	void loadAgilityTasks();
+
+	void completeTasks(const QDateTime &date, TaskResult result);
 
 signals:
 	void managerReady(QString error);

@@ -32,5 +32,8 @@ void TrainControl::initialize()
 
 void TrainControl::completeTraining()
 {
-
+	if(this->allDone())
+		App::instance()->trainManager()->completeTasks(QDateTime::currentDateTime(), TrainDataManager::Done);
+	else
+		App::instance()->trainManager()->completeTasks(QDateTime::currentDateTime(), TrainDataManager::Fail);
 }

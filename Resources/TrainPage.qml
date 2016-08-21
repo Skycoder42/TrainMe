@@ -69,8 +69,10 @@ ControlPage {
 					highlighted: trainControl.allDone
 
 					onClicked: {
-						if(trainControl.allDone)
+						if(trainControl.allDone) {
+							savingProgress.open();
 							trainControl.completeTraining();
+						}
 						else
 							failQuestion.open();
 					}
@@ -87,8 +89,22 @@ ControlPage {
 		positiveButtonText: qsTr("I failed!")
 
 		onQuestionAnswered: {
-			if(accepted)
+			if(accepted) {
+				savingProgress.open();
 				trainControl.completeTraining();
+			}
+		}
+	}
+
+	ProgressBox {
+		id: savingProgress
+
+		title: qsTr("Saving Result")
+		message: qsTr("Please wait, while your training result is beeing saved…")
+
+		Connections {
+			target: trainControl
+			onSavingComplete : savingProgress.close()
 		}
 	}
 }

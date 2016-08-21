@@ -90,3 +90,8 @@ void TrainDataManager::loadAgilityTasks()
 			emit managerError(query.lastError().text(), true);
 	});
 }
+
+void TrainDataManager::completeTasks(const QDateTime &date, TrainDataManager::TaskResult result)
+{
+
+}

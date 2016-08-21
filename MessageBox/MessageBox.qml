@@ -7,6 +7,7 @@ Popup {
 
 	property alias title: titleLabel.text
 	property alias message: contentLabel.text
+	property alias messageContent: content.sourceComponent
 	property alias positiveButtonText: buttonBox.positiveButtonText
 	property alias negativeButtonText: buttonBox.negativeButtonText
 	property alias neutralButtonText: buttonBox.neutralButtonText
@@ -84,13 +85,26 @@ Popup {
 			maximumLineCount: 1
 		}
 
-		Label {
-			id: contentLabel
+		RowLayout {
+			id: contentRow
 
 			Layout.minimumWidth: p.minWidth
 			Layout.maximumWidth: p.maxWidth
 
-			wrapMode: Text.Wrap
+			Loader {
+				id: content
+
+				Layout.preferredWidth: content.item ? content.item.implicitWidth + 14 : 0
+				Layout.maximumWidth: p.maxWidth
+			}
+
+			Label {
+				id: contentLabel
+
+				wrapMode: Text.Wrap
+				Layout.maximumWidth: p.maxWidth
+				Layout.fillWidth: true
+			}
 		}
 
 		ButtonBox {
