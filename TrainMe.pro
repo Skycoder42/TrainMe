@@ -2,15 +2,6 @@ QT += qml quick quickcontrols2 sql concurrent
 
 CONFIG += c++11
 
-SOURCES += \
-    trainmodel.cpp \
-    traindatamanager.cpp \
-    traintask.cpp \
-    app.cpp
-
-RESOURCES += trainme_res.qrc \
-	trainme_res_fallbacks.qrc
-
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
 
@@ -18,10 +9,22 @@ QML_IMPORT_PATH =
 include(deployment.pri)
 
 HEADERS += \
-    trainmodel.h \
-    traindatamanager.h \
-    traintask.h \
-    app.h
+	trainmodel.h \
+	traindatamanager.h \
+	traintask.h \
+	app.h \
+	controls/traincontrol.h
+
+SOURCES += \
+	trainmodel.cpp \
+	traindatamanager.cpp \
+	traintask.cpp \
+    app.cpp \
+	controls/traincontrol.cpp
+
+RESOURCES += trainme_res.qrc \
+	trainme_res_fallbacks.qrc \
+    messagebox.qrc
 
 DISTFILES += \
-    LICENSE
+	LICENSE

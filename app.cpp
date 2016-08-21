@@ -13,9 +13,8 @@
 App::App(int argc, char *argv[]) :
 	QGuiApplication(argc, argv),
 	manager(new TrainDataManager(this, SLOT(managerReady(QString)))),
-	strengthModel(new TrainModel(TrainTask::StrengthTask, this)),
-	agilityModel(new TrainModel(TrainTask::AgilityTask, this)),
 	engine(new QQmlApplicationEngine(this)),
+	trainControl(nullptr),
 	isValid(false),
 	loading(true)
 {
@@ -24,17 +23,22 @@ App::App(int argc, char *argv[]) :
 	connect(this->manager, &TrainDataManager::managerError,
 			this, &App::managerError,
 			Qt::QueuedConnection);
-	connect(this->manager, &TrainDataManager::tasksLoaded,
-			this->strengthModel, &TrainModel::resetData,
-			Qt::QueuedConnection);
-	connect(this->manager, &TrainDataManager::tasksLoaded,
-			this->agilityModel, &TrainModel::resetData,
-			Qt::QueuedConnection);
 
+	this->createControls();
 	if(!this->loadEngine())
 		return;
 
 	this->isValid = true;
+}
+
+App *App::instance()
+{
+	return static_cast<App*>(QCoreApplication::instance());
+}
+
+TrainDataManager *App::trainManager() const
+{
+	return this->manager;
 }
 
 bool App::startupOk()
@@ -52,10 +56,7 @@ void App::managerReady(QString errorString)
 	this->loading = false;
 	emit loadingChanged(false);
 
-	if(errorString.isEmpty()) {
-		this->manager->loadStrengthTasks();
-		this->manager->loadAgilityTasks();
-	} else
+	if(!errorString.isEmpty())
 		this->managerError(errorString, true);
 }
 
@@ -92,13 +93,19 @@ void App::setupEngine()
 	//TODO DPI fails on android -> WHY?
 }
 
+void App::createControls()
+{
+	this->trainControl = new TrainControl(this);
+}
+
 bool App::loadEngine()
 {
 	//register c++ models
 	auto context = this->engine->rootContext();
 	context->setContextProperty("app", this);
-	context->setContextProperty("strengthModel", this->strengthModel);
-	context->setContextProperty("agilityModel", this->agilityModel);
+
+	//controls
+	context->setContextProperty("trainControl", this->trainControl);
 
 	//load main qml
 	this->engine->load(QUrl(QStringLiteral("qrc:/qml/main.qml")));

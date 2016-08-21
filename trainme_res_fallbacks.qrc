@@ -5,7 +5,5 @@
     <qresource prefix="/icons">
         <file alias="menu.png">Resources/_fallbacks/menu.png</file>
     </qresource>
-    <qresource prefix="/qml">
-        <file alias="ErrorDialog.qml">Resources/_fallbacks/ErrorDialog.qml</file>
-    </qresource>
+    <qresource prefix="/qml"/>
 </RCC>

@@ -1,9 +1,11 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
+import "./MessageBox"
 
-Page {
+ControlPage {
 	id:trainPage
+	control: trainControl
 
 	Flickable {
 		id: flickable
@@ -38,7 +40,7 @@ Page {
 					TrainListView {
 						id: strengthList
 						anchors.fill: parent
-						model: strengthModel
+						model: trainControl.strengthModel
 					}
 				}
 
@@ -53,7 +55,7 @@ Page {
 					TrainListView {
 						id: agilityList
 						anchors.fill: parent
-						model: agilityModel
+						model: trainControl.agilityModel
 					}
 				}
 
@@ -62,12 +64,30 @@ Page {
 					Layout.preferredWidth: implicitWidth * 1.2
 					anchors.horizontalCenter: parent.horizontalCenter
 
-					readonly property bool isAllDone: strengthModel.allDone && agilityModel.allDone
+					text: trainControl.allDone ? qsTr("Training Done!") : qsTr("Training Failed!")
+					highlighted: trainControl.allDone
 
-					text: isAllDone ? qsTr("Training Done!") : qsTr("Training Failed!")
-					highlighted: isAllDone
+					onClicked: {
+						if(trainControl.allDone)
+							trainControl.completeTraining();
+						else
+							failQuestion.open();
+					}
 				}
 			}
+		}
+	}
+
+	QuestionBox {
+		id: failQuestion
+
+		title: qsTr("Training failed?")
+		message: qsTr("Did you really fail the training?!?")
+		positiveButtonText: qsTr("I failed!")
+
+		onQuestionAnswered: {
+			if(accepted)
+				trainControl.completeTraining();
 		}
 	}
 }

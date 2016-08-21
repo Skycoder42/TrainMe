@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/qml/MessageBox">
+        <file alias="MessageBox.qml">MessageBox/MessageBox.qml</file>
+        <file alias="+material/ButtonBox.qml">MessageBox/MaterialButtonBox.qml</file>
+        <file alias="ErrorBox.qml">MessageBox/ErrorBox.qml</file>
+        <file alias="ButtonBox.qml">MessageBox/ButtonBox.qml</file>
+        <file alias="qmldir">MessageBox/qmldir</file>
+        <file alias="QuestionBox.qml">MessageBox/QuestionBox.qml</file>
+    </qresource>
+</RCC>

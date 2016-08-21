@@ -5,15 +5,20 @@
 #include <QQmlApplicationEngine>
 #include "traindatamanager.h"
 #include "trainmodel.h"
+#include "controls/traincontrol.h"
 
 class App : public QGuiApplication
 {
 	Q_OBJECT
 
 	Q_PROPERTY(bool loading READ isLoading NOTIFY loadingChanged)
+	Q_PROPERTY(TrainDataManager trainManager READ trainManager CONSTANT)
 
 public:
 	explicit App(int argc, char *argv[]);
+
+	static App* instance();
+	TrainDataManager *trainManager() const;
 
 	bool startupOk();
 	bool isLoading() const;
@@ -29,14 +34,15 @@ public slots:
 
 private:
 	TrainDataManager *manager;
-	TrainModel *strengthModel;
-	TrainModel *agilityModel;
 	QQmlApplicationEngine *engine;
+
+	TrainControl *trainControl;
 
 	bool isValid;
 	bool loading;
 
 	void setupEngine();
+	void createControls();
 	bool loadEngine();
 };
 
