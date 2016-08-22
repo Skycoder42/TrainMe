@@ -27,12 +27,14 @@ public:
 
 	typedef QPair<QDate, TrainDataManager::TaskResult> ResultInfo;
 
-	explicit TrainDataManager(QObject *parent = nullptr, const char *initSlot = nullptr);
+	explicit TrainDataManager(QObject *parent = nullptr);
 	~TrainDataManager();
 
 	Q_INVOKABLE static QString trResult(int taskResult);
 
 public slots:
+	void initManager();
+
 	void loadTrainingAllowed();
 	void loadStrengthTasks();
 	void loadAgilityTasks();
@@ -42,7 +44,7 @@ public slots:
 	void completeTasks(const QDate &date, TaskResult result);
 
 signals:
-	void managerReady(QString error);
+	void managerReady(int startIndex);
 	void managerError(QString error, bool isFatal);
 
 	void traingAllowedLoaded(bool allowed);
@@ -59,6 +61,8 @@ private:
 
 	void recalcScores(const QDate &date);
 	void addPenalty();
+
+	bool testHasMissingDates();
 };
 
 Q_DECLARE_METATYPE(QList<TrainDataManager::ResultInfo>)

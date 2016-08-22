@@ -24,6 +24,7 @@ ApplicationWindow {
 	Universal.foreground: "#212121"
 
 	header: ToolBar {
+		id: toolbar
 		Material.foreground: "#FFFFFF"
 
 		RowLayout {
@@ -31,8 +32,8 @@ ApplicationWindow {
 			anchors.fill: parent
 
 			ToolButton {
-				id: toolbar
-				enabled: !app.loading
+				id: drawerButton
+				enabled: false
 				contentItem: Image {
 					fillMode: Image.PreserveAspectFit
 					horizontalAlignment: Image.AlignHCenter
@@ -44,12 +45,44 @@ ApplicationWindow {
 
 			Label {
 				id: titleLabel
-				text: qsTr("Train Me!")
 				font.pointSize: 20
+				text: qsTr("Train Me")
 				elide: Label.ElideRight
 				horizontalAlignment: Qt.AlignLeft
 				verticalAlignment: Qt.AlignVCenter
 				Layout.fillWidth: true
+
+				function updateText(text) {
+					newText = text;
+					changeLabelAnimation.start();
+				}
+
+				property string newText;
+
+				SequentialAnimation {
+					id: changeLabelAnimation
+					running: false
+					NumberAnimation {
+						target: titleLabel
+						property: "opacity"
+						to: 0.0
+						duration: 200
+						easing.type:  Easing.InQuad
+					}
+					PropertyAnimation {
+						target: titleLabel
+						property: "text"
+						to: titleLabel.newText
+						duration: 0
+					}
+					NumberAnimation {
+						target: titleLabel
+						property: "opacity"
+						to: 1.0
+						duration: 200
+						easing.type: Easing.OutQuad
+					}
+				}
 			}
 		}
 	}
@@ -66,10 +99,12 @@ ApplicationWindow {
 			currentIndex: -1
 			anchors.fill: parent
 
-			function setPage(index) {
+			function setPage(index, model) {
+				if(typeof model == "undefined")
+					model = drawerListView.model.get(index);
 				drawerListView.currentIndex = index;
-				var item = drawerListView.model.get(index);
-				stackView.replace(item.source);
+				titleLabel.updateText(model.title);
+				stackView.replace(model.source);
 			}
 
 			delegate: ItemDelegate {
@@ -77,11 +112,8 @@ ApplicationWindow {
 				text: model.title
 				highlighted: ListView.isCurrentItem
 				onClicked: {
-					if (drawerListView.currentIndex !== index) {
-						drawerListView.currentIndex = index;
-						titleLabel.text = model.title;
-						stackView.replace(model.source);
-					}
+					if (drawerListView.currentIndex !== index)
+						drawerListView.setPage(index, model);
 					drawer.close();
 				}
 			}
@@ -89,6 +121,11 @@ ApplicationWindow {
 			model: ListModel {
 				ListElement { title: qsTr("Training!"); source: "qrc:/qml/controls/TrainPage.qml" }
 				ListElement { title: qsTr("Manage Results"); source: "qrc:/qml/controls/ResultPage.qml" }
+				ListElement { title: qsTr("Configure Weekplan"); source: "qrc:/qml/controls/ControlPage.qml" }
+				ListElement { title: qsTr("Configure Tasks"); source: "qrc:/qml/controls/ControlPage.qml" }
+				ListElement { title: qsTr("Configure Reminders"); source: "qrc:/qml/controls/ControlPage.qml" }
+				ListElement { title: qsTr("Settings"); source: "qrc:/qml/controls/ControlPage.qml" }
+				ListElement { title: qsTr("Motivate Me!"); source: "qrc:/qml/controls/ControlPage.qml" }
 			}
 
 			ScrollIndicator.vertical: ScrollIndicator { }
@@ -109,9 +146,9 @@ ApplicationWindow {
 
 	Connections {
 		target: app
-		onLoadingChanged: {
-			if(!app.loading)
-				drawerListView.setPage(0);
+		onStartupCompleted: {
+			drawerListView.setPage(startIndex);
+			drawerButton.enabled = true;
 		}
 	}
 

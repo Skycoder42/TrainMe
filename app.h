@@ -13,7 +13,6 @@ class App : public QGuiApplication
 {
 	Q_OBJECT
 
-	Q_PROPERTY(bool loading READ isLoading NOTIFY loadingChanged)
 	Q_PROPERTY(TrainDataManager *trainManager READ trainManager CONSTANT)
 
 public:
@@ -23,15 +22,12 @@ public:
 	TrainDataManager *trainManager() const;
 
 	bool startupOk();
-	bool isLoading() const;
 
 signals:
+	void startupCompleted(int startIndex);
 	void errorMessage(const QString &title, const QString &message, bool isFatal);
 
-	void loadingChanged(bool loading);
-
 public slots:
-	void managerReady(QString errorString);
 	void managerError(QString errorString, bool isFatal);
 
 private:
@@ -42,7 +38,6 @@ private:
 	ResultControl *resultControl;
 
 	bool isValid;
-	bool loading;
 
 	void registerTypes();
 	void setupEngine();

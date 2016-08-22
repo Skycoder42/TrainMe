@@ -6,36 +6,12 @@
 
 #include <QDebug>
 
-TrainDataManager::TrainDataManager(QObject *parent, const char *initSlot) :
+TrainDataManager::TrainDataManager(QObject *parent) :
 	QObject(parent),
 	database(QSqlDatabase::addDatabase(QStringLiteral("QSQLITE"))),
 	dbThread(new QThreadPool(this))
 {
 	this->dbThread->setMaxThreadCount(1);
-
-	if(initSlot) {
-		connect(this, SIGNAL(managerReady(QString)),
-				parent, initSlot,
-				Qt::QueuedConnection);
-	}
-
-	QtConcurrent::run(this->dbThread, [=](){
-		const QDir dir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
-		dir.mkpath(QStringLiteral("."));
-		const auto dbName = dir.absoluteFilePath(QStringLiteral("train.db"));
-#ifndef QT_NO_DEBUG
-		qDebug() << "db replaced:" << QFile::remove(dbName);
-#endif
-		if(QFile::copy(QStringLiteral(":/train_struct.sqlite"), dbName))
-			QFile::setPermissions(dbName, QFileDevice::ReadUser | QFileDevice::WriteUser);
-
-		this->database.setDatabaseName(dbName);
-		if(this->database.isValid() &&
-		   this->database.open())
-			emit managerReady(QString());
-		else
-			emit managerReady(tr("Unable to load database from \"%1\"").arg(dbName));
-	});
 }
 
 TrainDataManager::~TrainDataManager()
@@ -60,10 +36,36 @@ QString TrainDataManager::trResult(int taskResult)
 	case TrainDataManager::Free:
 		return tr("Free Day");
 	case TrainDataManager::Unknown:
-		return tr("<font color=\"#FF0000\">Not Set</font>");
+		return tr("<font color=\"#FF0000\">Missing</font>");
 	default:
 		Q_UNREACHABLE();
 	}
+}
+
+void TrainDataManager::initManager()
+{
+	QtConcurrent::run(this->dbThread, [=](){
+		const QDir dir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+		dir.mkpath(QStringLiteral("."));
+		const auto dbName = dir.absoluteFilePath(QStringLiteral("train.db"));
+#ifndef QT_NO_DEBUG
+		qDebug() << "db replaced:" << QFile::remove(dbName);
+#endif
+		if(QFile::copy(QStringLiteral(":/train_struct.sqlite"), dbName))
+			QFile::setPermissions(dbName, QFileDevice::ReadUser | QFileDevice::WriteUser);
+
+		this->database.setDatabaseName(dbName);
+		if(this->database.isValid() &&
+		   this->database.open()) {
+			auto initIndex = 0;
+
+			if(this->testHasMissingDates())
+				initIndex = 1;
+
+			emit managerReady(initIndex);
+		} else
+			emit managerError(tr("Unable to load database from \"%1\"").arg(dbName), true);
+	});
 }
 
 void TrainDataManager::loadTrainingAllowed()
@@ -250,4 +252,25 @@ void TrainDataManager::addPenalty()
 	query.prepare(QStringLiteral("UPDATE Meta SET PenaltyCount = PenaltyCount + 1"));
 	if(!query.exec())
 		emit managerError(query.lastError().text(), false);
+}
+
+bool TrainDataManager::testHasMissingDates()
+{
+	QSqlQuery query(this->database);
+	query.prepare(QStringLiteral("SELECT Date FROM TaskCalendar "
+								 "ORDER BY Date ASC"));
+	if(query.exec()) {
+		if(query.first()) {
+			QDate nextDate = query.record().value(QStringLiteral("Date")).toDate();
+			while(query.next()) {
+				nextDate = nextDate.addDays(1);
+				auto date = query.record().value(QStringLiteral("Date")).toDate();
+				if(date != nextDate)
+					return true;
+			}
+		}
+	} else
+		emit managerError(query.lastError().text(), true);
+
+	return false;
 }

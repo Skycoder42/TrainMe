@@ -12,16 +12,18 @@
 
 App::App(int argc, char *argv[]) :
 	QGuiApplication(argc, argv),
-	manager(new TrainDataManager(this, SLOT(managerReady(QString)))),
+	manager(new TrainDataManager(this)),
 	engine(new QQmlApplicationEngine(this)),
 	trainControl(nullptr),
 	resultControl(nullptr),
-	isValid(false),
-	loading(true)
+	isValid(false)
 {
 	this->registerTypes();
 	this->setupEngine();
 
+	connect(this->manager, &TrainDataManager::managerReady,
+			this, &App::startupCompleted,
+			Qt::QueuedConnection);
 	connect(this->manager, &TrainDataManager::managerError,
 			this, &App::managerError,
 			Qt::QueuedConnection);
@@ -46,20 +48,6 @@ TrainDataManager *App::trainManager() const
 bool App::startupOk()
 {
 	return this->isValid;
-}
-
-bool App::isLoading() const
-{
-	return this->loading;
-}
-
-void App::managerReady(QString errorString)
-{
-	this->loading = false;
-	emit loadingChanged(false);
-
-	if(!errorString.isEmpty())
-		this->managerError(errorString, true);
 }
 
 void App::managerError(QString errorString, bool isFatal)
@@ -125,8 +113,9 @@ int main(int argc, char *argv[])
 {
 	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 	App app(argc, argv);
-	if(app.startupOk())
+	if(app.startupOk()) {
+		QMetaObject::invokeMethod(app.trainManager(), "initManager", Qt::QueuedConnection);
 		return app.exec();
-	else
+	} else
 		return EXIT_FAILURE;
 }
