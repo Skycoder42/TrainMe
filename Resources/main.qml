@@ -88,6 +88,7 @@ ApplicationWindow {
 
 			model: ListModel {
 				ListElement { title: qsTr("Training!"); source: "qrc:/qml/controls/TrainPage.qml" }
+				ListElement { title: qsTr("Manage Results"); source: "qrc:/qml/controls/ResultPage.qml" }
 			}
 
 			ScrollIndicator.vertical: ScrollIndicator { }

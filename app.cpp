@@ -15,9 +15,11 @@ App::App(int argc, char *argv[]) :
 	manager(new TrainDataManager(this, SLOT(managerReady(QString)))),
 	engine(new QQmlApplicationEngine(this)),
 	trainControl(nullptr),
+	resultControl(nullptr),
 	isValid(false),
 	loading(true)
 {
+	this->registerTypes();
 	this->setupEngine();
 
 	connect(this->manager, &TrainDataManager::managerError,
@@ -65,6 +67,11 @@ void App::managerError(QString errorString, bool isFatal)
 	emit errorMessage(isFatal ? tr("Fatal Database Error!") : tr("Database Error"), errorString, isFatal);
 }
 
+void App::registerTypes()
+{
+	qRegisterMetaType<QList<TrainDataManager::ResultInfo>>();
+}
+
 void App::setupEngine()
 {
 	//setup coloring mode
@@ -96,6 +103,7 @@ void App::setupEngine()
 void App::createControls()
 {
 	this->trainControl = new TrainControl(this);
+	this->resultControl = new ResultControl(this);
 }
 
 bool App::loadEngine()
@@ -106,6 +114,7 @@ bool App::loadEngine()
 
 	//controls
 	context->setContextProperty("trainControl", this->trainControl);
+	context->setContextProperty("resultControl", this->resultControl);
 
 	//load main qml
 	this->engine->load(QUrl(QStringLiteral("qrc:/qml/main.qml")));

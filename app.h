@@ -5,7 +5,9 @@
 #include <QQmlApplicationEngine>
 #include "traindatamanager.h"
 #include "trainmodel.h"
+
 #include "controls/traincontrol.h"
+#include "controls/resultcontrol.h"
 
 class App : public QGuiApplication
 {
@@ -37,10 +39,12 @@ private:
 	QQmlApplicationEngine *engine;
 
 	TrainControl *trainControl;
+	ResultControl *resultControl;
 
 	bool isValid;
 	bool loading;
 
+	void registerTypes();
 	void setupEngine();
 	void createControls();
 	bool loadEngine();

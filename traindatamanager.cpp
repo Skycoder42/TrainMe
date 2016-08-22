@@ -19,7 +19,7 @@ TrainDataManager::TrainDataManager(QObject *parent, const char *initSlot) :
 				Qt::QueuedConnection);
 	}
 
-	QtConcurrent::run(this->dbThread, [this](){
+	QtConcurrent::run(this->dbThread, [=](){
 		const QDir dir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
 		dir.mkpath(QStringLiteral("."));
 		const auto dbName = dir.absoluteFilePath(QStringLiteral("train.db"));
@@ -44,15 +44,37 @@ TrainDataManager::~TrainDataManager()
 	this->database = QSqlDatabase();
 }
 
+QString TrainDataManager::trResult(int taskResult)
+{
+	switch (taskResult) {
+	case TrainDataManager::Done:
+		return tr("Done");
+	case TrainDataManager::Skip:
+		return tr("Skipped");
+	case TrainDataManager::Sick:
+		return tr("Sick");
+	case TrainDataManager::Gain:
+		return tr("Other Training");
+	case TrainDataManager::Fail:
+		return tr("Failed");
+	case TrainDataManager::Free:
+		return tr("Free Day");
+	case TrainDataManager::Unknown:
+		return tr("<font color=\"#FF0000\">Not Set</font>");
+	default:
+		Q_UNREACHABLE();
+	}
+}
+
 void TrainDataManager::loadTrainingAllowed()
 {
-	QtConcurrent::run(this->dbThread, [this](){
+	QtConcurrent::run(this->dbThread, [=](){
 		emit operationStarted();
 
 		QSqlQuery query(this->database);
 		query.prepare(QStringLiteral("SELECT * FROM TaskCalendar "
 									 "WHERE Date = ?"));
-		query.bindValue(0, QDate::currentDate().toString(Qt::ISODate));
+		query.bindValue(0, QDate::currentDate());
 		if(query.exec())
 			emit traingAllowedLoaded(!query.first());
 		else
@@ -64,7 +86,7 @@ void TrainDataManager::loadTrainingAllowed()
 
 void TrainDataManager::loadStrengthTasks()
 {
-	QtConcurrent::run(this->dbThread, [this](){
+	QtConcurrent::run(this->dbThread, [=](){
 		emit operationStarted();
 
 		QSqlQuery query(this->database);
@@ -89,7 +111,7 @@ void TrainDataManager::loadStrengthTasks()
 
 void TrainDataManager::loadAgilityTasks()
 {
-	QtConcurrent::run(this->dbThread, [this](){
+	QtConcurrent::run(this->dbThread, [=](){
 		emit operationStarted();
 
 		QSqlQuery query(this->database);
@@ -110,16 +132,50 @@ void TrainDataManager::loadAgilityTasks()
 	});
 }
 
+void TrainDataManager::loadTaskResults(bool fillDates)
+{
+	QtConcurrent::run(this->dbThread, [=](){
+		emit operationStarted();
+
+		QSqlQuery query(this->database);
+		query.prepare(QStringLiteral("SELECT * FROM TaskCalendar "
+									 "ORDER BY Date ASC"));
+		if(query.exec()) {
+			QList<ResultInfo> resList;
+			while(query.next()) {
+				resList.append({
+								   query.record().value(QStringLiteral("Date")).toDate(),
+								   (TaskResult)query.record().value(QStringLiteral("Result")).toInt()
+							   });
+			}
+
+			if(fillDates && !resList.isEmpty()) {
+				QDate nextDate = resList.first().first;
+				for(int i = 1; i < resList.size(); i++) {
+					nextDate = nextDate.addDays(1);
+					if(resList[i].first != nextDate)
+						resList.insert(i, {nextDate, Unknown});
+				}
+			}
+
+			emit taskResultsLoaded(resList);
+		} else
+			emit managerError(query.lastError().text(), true);
+
+		emit operationCompleted();
+	});
+}
+
 void TrainDataManager::completeTasks(const QDate &date, TrainDataManager::TaskResult result)
 {
-	QtConcurrent::run(this->dbThread, [this, date, result]() {
+	QtConcurrent::run(this->dbThread, [=]() {
 		emit operationStarted();
 
 		QSqlQuery query(this->database);
 		query.prepare(QStringLiteral("INSERT INTO TaskCalendar "
 									 "(Date, Result) "
 									 "VALUES(?, ?)"));
-		query.bindValue(0, date.toString(Qt::ISODate));
+		query.bindValue(0, date);
 		query.bindValue(1, (int)result);
 
 		if(!query.exec())
@@ -152,7 +208,7 @@ void TrainDataManager::recalcScores(const QDate &date)
 	QSqlQuery dayInfoQuery(this->database);
 	dayInfoQuery.prepare(QStringLiteral("SELECT * FROM TrainMap "
 										"WHERE Weekday = ?"));
-	dayInfoQuery.bindValue(0, date.dayOfWeek());
+	dayInfoQuery.bindValue(0, date.addDays(1).dayOfWeek());
 	if(!dayInfoQuery.exec())
 		emit managerError(dayInfoQuery.lastError().text(), false);
 	else if(dayInfoQuery.first()) {
@@ -172,6 +228,20 @@ void TrainDataManager::recalcScores(const QDate &date)
 				emit managerError(addTaskQuery.lastError().text(), false);
 		}
 	}
+
+	//update all to target score
+	QSqlQuery loadScoreQuery(this->database);
+	loadScoreQuery.prepare(QStringLiteral("SELECT Score FROM Meta"));
+	if(loadScoreQuery.exec() && loadScoreQuery.first()) {
+		auto score = loadScoreQuery.record().value(QStringLiteral("Score")).toInt();
+		QSqlQuery updateTasksQuery(this->database);
+		updateTasksQuery.prepare(QStringLiteral("UPDATE StrengthTable SET Increment = Increment + 1 "
+												"WHERE Increment < ?"));
+		updateTasksQuery.bindValue(0, score);
+		if(!updateTasksQuery.exec())
+			emit managerError(updateTasksQuery.lastError().text(), false);
+	} else
+		emit managerError(loadScoreQuery.lastError().text(), false);
 }
 
 void TrainDataManager::addPenalty()

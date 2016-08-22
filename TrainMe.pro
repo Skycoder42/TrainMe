@@ -13,14 +13,16 @@ HEADERS += \
 	traindatamanager.h \
 	traintask.h \
 	app.h \
-	controls/traincontrol.h
+	controls/traincontrol.h \
+    controls/resultcontrol.h
 
 SOURCES += \
 	trainmodel.cpp \
 	traindatamanager.cpp \
 	traintask.cpp \
     app.cpp \
-	controls/traincontrol.cpp
+	controls/traincontrol.cpp \
+    controls/resultcontrol.cpp
 
 RESOURCES += trainme_res.qrc \
 	trainme_res_fallbacks.qrc \

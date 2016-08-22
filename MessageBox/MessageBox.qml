@@ -8,6 +8,7 @@ Popup {
 	property alias title: titleLabel.text
 	property alias message: contentLabel.text
 	property alias messageContent: content.sourceComponent
+	property alias messageContentItem: content.item
 	property alias positiveButtonText: buttonBox.positiveButtonText
 	property alias negativeButtonText: buttonBox.negativeButtonText
 	property alias neutralButtonText: buttonBox.neutralButtonText
@@ -68,6 +69,7 @@ Popup {
 		property int maxWidth: Math.min(messageBox.parent.width, messageBox.parent.height) * 0.9
 		property int minWidth: messageBox.parent.width / 2
 		property bool closedByAction : false
+		property bool hasText: contentLabel.text ? contentLabel.text.length > 0 : false
 	}
 
 	contentItem: ColumnLayout {
@@ -96,10 +98,12 @@ Popup {
 
 				Layout.preferredWidth: content.item ? content.item.implicitWidth + 14 : 0
 				Layout.maximumWidth: p.maxWidth
+				Layout.fillWidth: !p.hasText
 			}
 
 			Label {
-				id: contentLabel
+				id: contentLabel				
+				visible: p.hasText
 
 				wrapMode: Text.Wrap
 				Layout.maximumWidth: p.maxWidth

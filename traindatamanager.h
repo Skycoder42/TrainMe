@@ -19,16 +19,25 @@ public:
 		Sick = 2,
 		Gain = 3,
 		Fail = 4,
-		Free = 5
+		Free = 5,
+
+		Unknown = -1
 	};
+	Q_ENUM(TaskResult)
+
+	typedef QPair<QDate, TrainDataManager::TaskResult> ResultInfo;
 
 	explicit TrainDataManager(QObject *parent = nullptr, const char *initSlot = nullptr);
 	~TrainDataManager();
+
+	Q_INVOKABLE static QString trResult(int taskResult);
 
 public slots:
 	void loadTrainingAllowed();
 	void loadStrengthTasks();
 	void loadAgilityTasks();
+
+	void loadTaskResults(bool fillDates);
 
 	void completeTasks(const QDate &date, TaskResult result);
 
@@ -38,6 +47,8 @@ signals:
 
 	void traingAllowedLoaded(bool allowed);
 	void tasksLoaded(TrainTask::TaskType type, const QList<QSharedPointer<TrainTask>> &tasks);
+
+	void taskResultsLoaded(const QList<TrainDataManager::ResultInfo> &resultList);
 
 	void operationStarted();
 	void operationCompleted();
@@ -49,5 +60,7 @@ private:
 	void recalcScores(const QDate &date);
 	void addPenalty();
 };
+
+Q_DECLARE_METATYPE(QList<TrainDataManager::ResultInfo>)
 
 #endif // TRAINDATAMANAGER_H

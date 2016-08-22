@@ -7,7 +7,7 @@
     <qresource prefix="/qml">
         <file alias="main.qml">Resources/main.qml</file>
         <file alias="TrainListView.qml">Resources/TrainListView.qml</file>
-		<file alias="TrainItemDelegate.qml">Resources/TrainItemDelegate.qml</file>
+        <file alias="TrainItemDelegate.qml">Resources/TrainItemDelegate.qml</file>
     </qresource>
     <qresource prefix="/icons">
         <file alias="+universal/menu.png">Resources/Universal/icons/ic_menu_black_24dp.png</file>
@@ -17,8 +17,9 @@
         <file alias="+material/+xxhdpi/menu.png">Resources/Material/icons/drawable-xxhdpi/ic_menu_white_24dp.png</file>
         <file alias="+material/+xxxhdpi/menu.png">Resources/Material/icons/drawable-xxxhdpi/ic_menu_white_24dp.png</file>
     </qresource>
-	<qresource prefix="/qml/controls">
-		<file alias="ControlPage.qml">Resources/ControlPage.qml</file>
-		<file alias="TrainPage.qml">Resources/TrainPage.qml</file>
-	</qresource>
+    <qresource prefix="/qml/controls">
+        <file alias="ControlPage.qml">Resources/ControlPage.qml</file>
+        <file alias="TrainPage.qml">Resources/TrainPage.qml</file>
+        <file alias="ResultPage.qml">Resources/ResultPage.qml</file>
+    </qresource>
 </RCC>
