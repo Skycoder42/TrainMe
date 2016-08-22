@@ -26,15 +26,15 @@ ControlPage {
 				anchors.left: parent.left
 				anchors.right: parent.right
 
-				columnSpacing: 14
-				rowSpacing: 14
+				columnSpacing: 14 * app.dp
+				rowSpacing: 14 * app.dp
 				columns: root.isSmall ? 1 : 2
 
 				GroupBox {
 					Layout.fillWidth: true
 					Layout.preferredHeight: implicitHeight
 					Layout.fillHeight: true
-					implicitWidth: 200
+					implicitWidth: 200 * app.dp
 
 					title: qsTr("Strengh-Training")
 
@@ -49,7 +49,7 @@ ControlPage {
 					Layout.fillWidth: true
 					Layout.preferredHeight: implicitHeight
 					Layout.fillHeight: true
-					implicitWidth: 200
+					implicitWidth: 200 * app.dp
 
 					title: qsTr("Agility-Training")
 
@@ -84,7 +84,7 @@ ControlPage {
 		id: failQuestion
 
 		title: qsTr("Training failed?")
-		message: qsTr("Did you really fail the training?!?")
+		message: qsTr("Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?")
 		positiveButtonText: qsTr("I failed!")
 
 		onQuestionAnswered: {

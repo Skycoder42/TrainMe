@@ -66,21 +66,20 @@ Popup {
 	QtObject {
 		id: p
 
-		property int maxWidth: Math.min(messageBox.parent.width, messageBox.parent.height) * 0.9
-		property int minWidth: messageBox.parent.width / 2
+		property int boxWidth: Math.min(250 * app.dp, messageBox.parent.width - (42 * app.dp))
 		property bool closedByAction : false
 		property bool hasText: contentLabel.text ? contentLabel.text.length > 0 : false
 	}
 
 	contentItem: ColumnLayout {
 		id: settingsColumn
-		spacing: 20
+		spacing: 14 * app.dp
 
 		Label {
 			id: titleLabel
 
-			Layout.minimumWidth: p.minWidth
-			Layout.maximumWidth: p.maxWidth
+			Layout.minimumWidth: p.boxWidth
+			Layout.maximumWidth: p.boxWidth
 
 			font.bold: true
 			elide: Text.ElideRight
@@ -90,14 +89,15 @@ Popup {
 		RowLayout {
 			id: contentRow
 
-			Layout.minimumWidth: p.minWidth
-			Layout.maximumWidth: p.maxWidth
+			spacing: 14 * app.dp
+			Layout.minimumWidth: p.boxWidth
+			Layout.maximumWidth: p.boxWidth
 
 			Loader {
 				id: content
 
-				Layout.preferredWidth: content.item ? content.item.implicitWidth + 14 : 0
-				Layout.maximumWidth: p.maxWidth
+				Layout.preferredWidth: content.item ? content.item.implicitWidth : 0
+				Layout.maximumWidth: p.boxWidth
 				Layout.fillWidth: !p.hasText
 			}
 
@@ -106,13 +106,16 @@ Popup {
 				visible: p.hasText
 
 				wrapMode: Text.Wrap
-				Layout.maximumWidth: p.maxWidth
+				Layout.maximumWidth: p.boxWidth
 				Layout.fillWidth: true
 			}
 		}
 
 		ButtonBox {
 			id: buttonBox
+
+			Layout.minimumWidth: p.boxWidth
+			Layout.maximumWidth: p.boxWidth
 
 			onPositiveClicked: {
 				p.closedByAction = true;

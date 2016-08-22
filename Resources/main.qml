@@ -8,27 +8,29 @@ import "../qml/MessageBox"
 ApplicationWindow {
 	id:root
 	visible: true
-	width: 640
-	height: 480
+	width: 700 * app.dp
+	height: 500 * app.dp
 	title: qsTr("Train Me")
 
 	property bool isSmall: root.height > root.width
 
 	Material.theme: Material.Light
-	Material.primary: Material.Red
-	Material.accent: Material.Cyan
+	Material.primary: Material.color(Material.Red, Material.Shade500)
+	Material.accent: Material.color(Material.Cyan, Material.Shade500)
 	Material.foreground: "#212121"
 
 	Universal.theme: Universal.Light
-	Universal.accent: hasMainColor ? mainColor : Universal.Red//TODO via settings
+	Universal.accent: hasMainColor ? mainColor : Universal.color(Universal.Red)//TODO via settings
 	Universal.foreground: "#212121"
 
 	header: ToolBar {
 		id: toolbar
 		Material.foreground: "#FFFFFF"
 
+		Component.onCompleted: console.log(toolbar.height)
+
 		RowLayout {
-			spacing: 20
+			spacing: 14 * app.dp
 			anchors.fill: parent
 
 			ToolButton {
@@ -89,9 +91,7 @@ ApplicationWindow {
 
 	Drawer {
 		id: drawer
-		x: 0
-		y: 100
-		width: Math.min(root.width, root.height) *0.66
+		width: Math.min(300 * app.dp, root.width)
 		height: root.height
 
 		ListView {

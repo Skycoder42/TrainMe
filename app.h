@@ -13,6 +13,7 @@ class App : public QGuiApplication
 {
 	Q_OBJECT
 
+	Q_PROPERTY(double dp MEMBER devicePixels CONSTANT)
 	Q_PROPERTY(TrainDataManager *trainManager READ trainManager CONSTANT)
 
 public:
@@ -23,6 +24,8 @@ public:
 
 	bool startupOk();
 
+	Q_INVOKABLE bool testStyle(const QString &styleName) const;
+
 signals:
 	void startupCompleted(int startIndex);
 	void errorMessage(const QString &title, const QString &message, bool isFatal);
@@ -30,7 +33,9 @@ signals:
 public slots:
 	void managerError(QString errorString, bool isFatal);
 
-private:
+private:	
+	double devicePixels;
+
 	TrainDataManager *manager;
 	QQmlApplicationEngine *engine;
 

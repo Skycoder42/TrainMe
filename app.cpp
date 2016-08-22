@@ -3,6 +3,7 @@
 #include <QFileSelector>
 #include <QQmlFileSelector>
 #include <QQmlContext>
+#include <QQuickStyle>
 #ifdef Q_OS_WIN
 #include <QSettings>
 #include <QColor>
@@ -50,6 +51,11 @@ bool App::startupOk()
 	return this->isValid;
 }
 
+bool App::testStyle(const QString &styleName) const
+{
+	return QQuickStyle::name() == styleName;
+}
+
 void App::managerError(QString errorString, bool isFatal)
 {
 	emit errorMessage(isFatal ? tr("Fatal Database Error!") : tr("Database Error"), errorString, isFatal);
@@ -75,6 +81,7 @@ void App::setupEngine()
 	//load dpi selector
 	QQmlFileSelector *selector = QQmlFileSelector::get(this->engine);
 	auto dpi = QGuiApplication::primaryScreen()->logicalDotsPerInch();
+	this->devicePixels = dpi / 96.0;
 	if(dpi > 480)
 		selector->setExtraSelectors({"xxxhdpi"});
 	else if(dpi > 320)

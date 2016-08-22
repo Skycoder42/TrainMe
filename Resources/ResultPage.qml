@@ -80,9 +80,11 @@ ControlPage {
 					for(var i = 0; i < 6; i++)
 						resultModel.append({"key": app.trainManager.trResult(i), "value": i});
 
-					popup.y = Qt.binding(function() {
-						return -1 * comboBox.currentIndex * referenceDelegate.implicitHeight
-					});
+					if(app.testStyle("Universal")) {
+						popup.y = Qt.binding(function() {
+							return -1 * comboBox.currentIndex * referenceDelegate.implicitHeight
+						});
+					}
 				}
 
 				//reference
