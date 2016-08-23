@@ -120,11 +120,11 @@ ApplicationWindow {
 			model: ListModel {
 				ListElement { title: qsTr("Training!"); source: "qrc:/qml/controls/TrainPage.qml" }
 				ListElement { title: qsTr("Manage Results"); source: "qrc:/qml/controls/ResultPage.qml" }
-				ListElement { title: qsTr("Configure Weekplan"); source: "qrc:/qml/controls/ControlPage.qml" }
+                ListElement { title: qsTr("Configure Weekplan"); source: "qrc:/qml/controls/ConfigWeekPage.qml" }
 				ListElement { title: qsTr("Configure Tasks"); source: "qrc:/qml/controls/ControlPage.qml" }
 				ListElement { title: qsTr("Configure Reminders"); source: "qrc:/qml/controls/ControlPage.qml" }
 				ListElement { title: qsTr("Settings"); source: "qrc:/qml/controls/ControlPage.qml" }
-				ListElement { title: qsTr("Motivate Me!"); source: "qrc:/qml/controls/ControlPage.qml" }
+                ListElement { title: qsTr("Motivate Me!"); source: "qrc:/qml/controls/MotivateControl.qml" }
 			}
 
 			ScrollIndicator.vertical: ScrollIndicator { }
