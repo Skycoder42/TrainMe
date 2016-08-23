@@ -26,8 +26,7 @@ ApplicationWindow {
 	header: ToolBar {
 		id: toolbar
 		Material.foreground: "#FFFFFF"
-
-		Component.onCompleted: console.log(toolbar.height)
+		height: 48 * app.dp
 
 		RowLayout {
 			spacing: 14 * app.dp

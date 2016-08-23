@@ -81,6 +81,7 @@ void App::setupEngine()
 	//load dpi selector
 	QQmlFileSelector *selector = QQmlFileSelector::get(this->engine);
 	auto dpi = QGuiApplication::primaryScreen()->logicalDotsPerInch();
+	dpi = 96;
 	this->devicePixels = dpi / 96.0;
 	if(dpi > 480)
 		selector->setExtraSelectors({"xxxhdpi"});
