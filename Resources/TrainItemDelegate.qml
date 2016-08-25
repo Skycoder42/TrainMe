@@ -1,6 +1,8 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
+import QtQuick.Controls.Material 2.0
+import QtQuick.Controls.Universal 2.0
 
 CheckDelegate {
 	id:delegate
@@ -10,8 +12,6 @@ CheckDelegate {
 	property alias itemChecked: delegate.checked
 
 	hoverEnabled: true
-	down: hovered && !pressed
-	highlighted: pressed
 	contentItem: RowLayout {
 		Label {
 			Layout.fillHeight: true
@@ -30,5 +30,14 @@ CheckDelegate {
 			Layout.maximumWidth: implicitWidth
 			implicitWidth: delegate.indicator.width + 7
 		}
+	}
+
+	ItemDelegate {
+		id: test
+		z: -100
+		anchors.fill: parent
+		down: delegate.hovered
+		focusPolicy: Qt.NoFocus
+		enabled: false
 	}
 }
