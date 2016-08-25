@@ -3,13 +3,14 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 import QtQuick.Controls.Material 2.0
 import QtQuick.Controls.Universal 2.0
+import "controls"
 import "../qml/MessageBox"
 
 ApplicationWindow {
 	id:root
 	visible: true
-	width: 700 * app.dp
-	height: 500 * app.dp
+	width: 700
+	height: 500
 	title: qsTr("Train Me")
 
 	property bool isSmall: root.height > root.width
@@ -26,27 +27,24 @@ ApplicationWindow {
 	header: ToolBar {
 		id: toolbar
 		Material.foreground: "#FFFFFF"
-		height: 48 * app.dp
+		height: 56
 
 		RowLayout {
-			spacing: 14 * app.dp
+			spacing: 0
 			anchors.fill: parent
 
-			ToolButton {
+			AppBarButton {
 				id: drawerButton
 				enabled: false
-				contentItem: Image {
-					fillMode: Image.PreserveAspectFit
-					horizontalAlignment: Image.AlignHCenter
-					verticalAlignment: Image.AlignVCenter
-					source: "qrc:/icons/menu.png"
-				}
+				imageSource: "qrc:/icons/menu.png"
+				text: qsTr("Open Menu")
 				onClicked: drawer.open()
 			}
 
 			Label {
 				id: titleLabel
 				font.pointSize: 20
+				font.bold: app.testStyle("Material")
 				text: qsTr("Train Me")
 				elide: Label.ElideRight
 				horizontalAlignment: Qt.AlignLeft
@@ -90,7 +88,7 @@ ApplicationWindow {
 
 	Drawer {
 		id: drawer
-		width: Math.min(300 * app.dp, root.width)
+		width: Math.min(300, root.width)
 		height: root.height
 
 		ListView {
@@ -118,13 +116,13 @@ ApplicationWindow {
 			}
 
 			model: ListModel {
-				ListElement { title: qsTr("Training!"); source: "qrc:/qml/controls/TrainPage.qml" }
-				ListElement { title: qsTr("Manage Results"); source: "qrc:/qml/controls/ResultPage.qml" }
-                ListElement { title: qsTr("Configure Weekplan"); source: "qrc:/qml/controls/ConfigWeekPage.qml" }
-				ListElement { title: qsTr("Configure Tasks"); source: "qrc:/qml/controls/ControlPage.qml" }
-				ListElement { title: qsTr("Configure Reminders"); source: "qrc:/qml/controls/ControlPage.qml" }
-				ListElement { title: qsTr("Settings"); source: "qrc:/qml/controls/ControlPage.qml" }
-                ListElement { title: qsTr("Motivate Me!"); source: "qrc:/qml/controls/MotivateControl.qml" }
+				ListElement { title: qsTr("Training!"); source: "qrc:/qml/pages/TrainPage.qml" }
+				ListElement { title: qsTr("Manage Results"); source: "qrc:/qml/pages/ResultPage.qml" }
+				ListElement { title: qsTr("Configure Weekplan"); source: "qrc:/qml/pages/ConfigWeekPage.qml" }
+				ListElement { title: qsTr("Configure Tasks"); source: "qrc:/qml/pages/ControlPage.qml" }
+				ListElement { title: qsTr("Configure Reminders"); source: "qrc:/qml/pages/ControlPage.qml" }
+				ListElement { title: qsTr("Settings"); source: "qrc:/qml/pages/ControlPage.qml" }
+				ListElement { title: qsTr("Motivate Me!"); source: "qrc:/qml/pages/MotivateControl.qml" }
 			}
 
 			ScrollIndicator.vertical: ScrollIndicator { }

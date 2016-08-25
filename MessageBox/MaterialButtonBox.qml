@@ -58,7 +58,7 @@ RowLayout {
 		text: p.showPositiveButton ? positiveButtonText : ""
 		visible: p.showPositiveButton
 
-		Material.foreground: Material.primary
+		Material.foreground: Material.accent
 		Material.background: "transparent"
 		Material.elevation: 0
 

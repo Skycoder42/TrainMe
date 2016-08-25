@@ -1,7 +1,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
-import ".."
+import "../controls"
 import "../MessageBox"
 
 ControlPage {
@@ -26,15 +26,15 @@ ControlPage {
 				anchors.left: parent.left
 				anchors.right: parent.right
 
-				columnSpacing: 14 * app.dp
-				rowSpacing: 14 * app.dp
+				columnSpacing: 14
+				rowSpacing: 14
 				columns: root.isSmall ? 1 : 2
 
 				GroupBox {
 					Layout.fillWidth: true
 					Layout.preferredHeight: implicitHeight
 					Layout.fillHeight: true
-					implicitWidth: 200 * app.dp
+					implicitWidth: 200
 
 					title: qsTr("Strengh-Training")
 
@@ -49,7 +49,7 @@ ControlPage {
 					Layout.fillWidth: true
 					Layout.preferredHeight: implicitHeight
 					Layout.fillHeight: true
-					implicitWidth: 200 * app.dp
+					implicitWidth: 200
 
 					title: qsTr("Agility-Training")
 

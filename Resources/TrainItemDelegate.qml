@@ -9,6 +9,9 @@ CheckDelegate {
 	property int itemReps : 0
 	property alias itemChecked: delegate.checked
 
+	hoverEnabled: true
+	down: hovered && !pressed
+	highlighted: pressed
 	contentItem: RowLayout {
 		Label {
 			Layout.fillHeight: true

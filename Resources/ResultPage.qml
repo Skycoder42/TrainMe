@@ -1,7 +1,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
-import ".."
+import "../controls"
 import "../MessageBox"
 
 ControlPage {
@@ -20,7 +20,12 @@ ControlPage {
 		delegate: ItemDelegate {
 			width: parent.width
 			text: modelData
-			highlighted: editBox.currentIndex == index
+
+			property bool isClicked: pressed && resultControl.isEditable(index)
+
+			hoverEnabled: true
+			down: hovered && !isClicked
+			highlighted: editBox.currentIndex == index || isClicked
 
 			onClicked: {
 				if(resultControl.isEditable(index))

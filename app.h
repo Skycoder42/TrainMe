@@ -13,7 +13,6 @@ class App : public QGuiApplication
 {
 	Q_OBJECT
 
-	Q_PROPERTY(double dp MEMBER devicePixels CONSTANT)
 	Q_PROPERTY(TrainDataManager *trainManager READ trainManager CONSTANT)
 
 public:
@@ -33,9 +32,7 @@ signals:
 public slots:
 	void managerError(QString errorString, bool isFatal);
 
-private:	
-	double devicePixels;
-
+private:
 	TrainDataManager *manager;
 	QQmlApplicationEngine *engine;
 

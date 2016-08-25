@@ -5,5 +5,7 @@
     <qresource prefix="/icons">
         <file alias="menu.png">Resources/_fallbacks/menu.png</file>
     </qresource>
-    <qresource prefix="/qml"/>
+    <qresource prefix="/qml/controls">
+        <file alias="AppBarButton.qml">Resources/_fallbacks/AppBarButton.qml</file>
+    </qresource>
 </RCC>

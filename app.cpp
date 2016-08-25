@@ -80,20 +80,27 @@ void App::setupEngine()
 
 	//load dpi selector
 	QQmlFileSelector *selector = QQmlFileSelector::get(this->engine);
-	auto dpi = QGuiApplication::primaryScreen()->logicalDotsPerInch();
-	dpi = 96;
-	this->devicePixels = dpi / 96.0;
-	if(dpi > 480)
+#ifdef Q_OS_ANDROID
+	auto dpi = 3.0;
+#elif defined(Q_OS_WIN)
+	auto dpiBase = QGuiApplication::primaryScreen()->logicalDotsPerInch();
+	auto dpi = dpiBase / 96.0;
+#else
+#error "Other platforms are currently not supported"
+#endif
+	if(dpi >= 4.0)
 		selector->setExtraSelectors({"xxxhdpi"});
-	else if(dpi > 320)
+	else if(dpi >= 3.0)
 		selector->setExtraSelectors({"xxhdpi"});
-	else if(dpi > 240)
+	else if(dpi >= 2.0)
 		selector->setExtraSelectors({"xhdpi"});
-	else if(dpi > 160)
+	else if(dpi >= 1.5)
 		selector->setExtraSelectors({"hdpi"});
-	else
+	else if(dpi >= 1.0)
 		selector->setExtraSelectors({"mdpi"});
-	//TODO DPI fails on android -> WHY?
+	else
+		selector->setExtraSelectors({"ldpi"});
+	qDebug() << selector->selector()->allSelectors();
 }
 
 void App::createControls()

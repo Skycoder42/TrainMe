@@ -6,9 +6,6 @@
     </qresource>
     <qresource prefix="/qml">
         <file alias="main.qml">Resources/main.qml</file>
-        <file alias="TrainListView.qml">Resources/TrainListView.qml</file>
-        <file alias="TrainItemDelegate.qml">Resources/TrainItemDelegate.qml</file>
-        <file alias="WeekConfigDelegate.qml">Resources/WeekConfigDelegate.qml</file>
     </qresource>
     <qresource prefix="/icons">
         <file alias="+universal/menu.png">Resources/Universal/icons/ic_menu_black_24dp.png</file>
@@ -18,11 +15,18 @@
         <file alias="+material/+xxhdpi/menu.png">Resources/Material/icons/drawable-xxhdpi/ic_menu_white_24dp.png</file>
         <file alias="+material/+xxxhdpi/menu.png">Resources/Material/icons/drawable-xxxhdpi/ic_menu_white_24dp.png</file>
     </qresource>
-    <qresource prefix="/qml/controls">
+    <qresource prefix="/qml/pages">
         <file alias="ControlPage.qml">Resources/ControlPage.qml</file>
         <file alias="TrainPage.qml">Resources/TrainPage.qml</file>
         <file alias="ResultPage.qml">Resources/ResultPage.qml</file>
         <file alias="MotivateControl.qml">Resources/MotivateControl.qml</file>
         <file alias="ConfigWeekPage.qml">Resources/ConfigWeekPage.qml</file>
+    </qresource>
+    <qresource prefix="/qml/controls">
+        <file alias="TrainListView.qml">Resources/TrainListView.qml</file>
+        <file alias="TrainItemDelegate.qml">Resources/TrainItemDelegate.qml</file>
+        <file alias="WeekConfigDelegate.qml">Resources/WeekConfigDelegate.qml</file>
+        <file alias="+material/AppBarButton.qml">Resources/Material/AppBarButton.qml</file>
+        <file alias="+universal/AppBarButton.qml">Resources/Universal/AppBarButton.qml</file>
     </qresource>
 </RCC>

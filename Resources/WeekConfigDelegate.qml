@@ -9,6 +9,8 @@ ItemDelegate {
     property alias itemIncrement : incrementBox.value
     property alias itemAddTask: addTaskBox.checked
 
+	hoverEnabled: true
+	down: hovered
     contentItem: RowLayout {
         spacing: 14
 

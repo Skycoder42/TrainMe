@@ -66,14 +66,14 @@ Popup {
 	QtObject {
 		id: p
 
-		property int boxWidth: Math.min(250 * app.dp, messageBox.parent.width - (42 * app.dp))
+		property int boxWidth: Math.min(250, messageBox.parent.width - 42)
 		property bool closedByAction : false
 		property bool hasText: contentLabel.text ? contentLabel.text.length > 0 : false
 	}
 
 	contentItem: ColumnLayout {
 		id: settingsColumn
-		spacing: 14 * app.dp
+		spacing: 14
 
 		Label {
 			id: titleLabel
@@ -89,7 +89,7 @@ Popup {
 		RowLayout {
 			id: contentRow
 
-			spacing: 14 * app.dp
+			spacing: 14
 			Layout.minimumWidth: p.boxWidth
 			Layout.maximumWidth: p.boxWidth
 
