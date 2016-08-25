@@ -6,6 +6,7 @@
     </qresource>
     <qresource prefix="/qml">
         <file alias="main.qml">Resources/main.qml</file>
+        <file alias="StyleAccess.qml">Resources/StyleAccess.qml</file>
     </qresource>
     <qresource prefix="/icons">
         <file alias="+universal/menu.png">Resources/Universal/icons/ic_menu_black_24dp.png</file>

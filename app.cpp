@@ -128,9 +128,8 @@ int main(int argc, char *argv[])
 {
 	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 	App app(argc, argv);
-	if(app.startupOk()) {
-		QMetaObject::invokeMethod(app.trainManager(), "initManager", Qt::QueuedConnection);
+	if(app.startupOk())
 		return app.exec();
-	} else
+	else
 		return EXIT_FAILURE;
 }

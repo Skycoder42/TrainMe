@@ -62,7 +62,7 @@ void TrainDataManager::initManager()
 			if(this->testHasMissingDates())
 				initIndex = 1;
 
-			emit managerReady(initIndex);
+			emit managerReady(2);//DEBUG
 		} else
 			emit managerError(tr("Unable to load database from \"%1\"").arg(dbName), true);
 	});

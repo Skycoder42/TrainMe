@@ -18,14 +18,16 @@ ItemDelegate {
             id: nameLabel
             Layout.alignment: Qt.AlignVCenter
             Layout.fillWidth: true
-            Layout.preferredWidth: 0
+			Layout.preferredWidth: 100
+			Layout.minimumWidth: nameLabel.implicitWidth
         }
 
         Item {
             id: spinWrapper
             Layout.fillHeight: true
             Layout.fillWidth: true
-            Layout.preferredWidth: 0
+			Layout.preferredWidth: 100
+			Layout.minimumWidth: incrementBox.implicitWidth
             implicitHeight: incrementBox.implicitHeight
 
             SpinBox {
@@ -40,7 +42,8 @@ ItemDelegate {
             id: checkWrapper
             Layout.fillHeight: true
             Layout.fillWidth: true
-            Layout.preferredWidth: 0
+			Layout.preferredWidth: 100
+			Layout.minimumWidth: addTaskBox.implicitWidth
             implicitHeight: addTaskBox.implicitHeight
 
             CheckBox {

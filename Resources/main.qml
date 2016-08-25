@@ -148,6 +148,11 @@ ApplicationWindow {
 			drawerButton.enabled = true;
 		}
 	}
+	Component.onCompleted: app.trainManager.initManager()
+
+	StyleAccess {
+		id: globalStyleAccess
+	}
 
 	ProgressBox {
 		id: savingProgress
