@@ -306,6 +306,7 @@ void TrainDataManager::completeTasks(const QDate &date, TrainDataManager::TaskRe
 
 void TrainDataManager::recalcScores(const QDate &date)
 {
+	//update score and task count based on day
 	QSqlQuery dayInfoQuery(this->database);
 	dayInfoQuery.prepare(QStringLiteral("SELECT * FROM TrainMap "
 										"WHERE Weekday = ?"));
@@ -343,6 +344,12 @@ void TrainDataManager::recalcScores(const QDate &date)
 			emit managerError(updateTasksQuery.lastError().text(), false);
 	} else
 		emit managerError(loadScoreQuery.lastError().text(), false);
+
+	//remove penalties
+	QSqlQuery penaltyResetQuery(this->database);
+	penaltyResetQuery.prepare(QStringLiteral("UPDATE Meta SET PenaltyCount = 0"));
+	if(!penaltyResetQuery.exec())
+		emit managerError(penaltyResetQuery.lastError().text(), false);
 }
 
 void TrainDataManager::addPenalty()
