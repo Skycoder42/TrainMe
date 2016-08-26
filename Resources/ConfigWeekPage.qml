@@ -121,6 +121,7 @@ ControlPage {
 						stepSize: 5
 						editable: true
 						Layout.fillWidth: true
+						value: configWeekControl.penaltyFactor * 100
 
 						validator: DoubleValidator {
 							bottom: 0.01
@@ -134,6 +135,12 @@ ControlPage {
 						valueFromText: function(text, locale) {
 							return Number.fromLocaleString(locale, text) * 100;
 						}
+
+						Binding {
+							target: configWeekControl
+							property: "penaltyFactor"
+							value: penaltyBox.value / 100.0
+						}
 					}
 
 					Label {
@@ -141,10 +148,18 @@ ControlPage {
 					}
 
 					SpinBox {
+						id: maxFreeBox
 						from: 0
 						to: 365
 						editable: true
 						Layout.fillWidth: true
+						value: configWeekControl.maxFreeDays
+
+						Binding {
+							target: configWeekControl
+							property: "maxFreeDays"
+							value: maxFreeBox.value
+						}
 					}
 				}
 			}

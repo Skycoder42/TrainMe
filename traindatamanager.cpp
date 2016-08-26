@@ -173,20 +173,29 @@ void TrainDataManager::loadWeekConfig()
 	QtConcurrent::run(this->dbThread, [=](){
 		emit operationStarted();
 
-		QSqlQuery query(this->database);
-		query.prepare(QStringLiteral("SELECT * FROM TrainMap"));
-		if(query.exec()) {
+		QSqlQuery loadTrainMapQuery(this->database);
+		loadTrainMapQuery.prepare(QStringLiteral("SELECT * FROM TrainMap"));
+		if(loadTrainMapQuery.exec()) {
 			Weekonfig config;
-			while(query.next()) {
-				config.insert((Qt::DayOfWeek)query.record().value(QStringLiteral("Weekday")).toInt(),
+			while(loadTrainMapQuery.next()) {
+				config.insert((Qt::DayOfWeek)loadTrainMapQuery.record().value(QStringLiteral("Weekday")).toInt(),
 							  {
-								  query.record().value(QStringLiteral("Increase")).toInt(),
-								  query.record().value(QStringLiteral("AddTask")).toBool()
+								  loadTrainMapQuery.record().value(QStringLiteral("Increase")).toInt(),
+								  loadTrainMapQuery.record().value(QStringLiteral("AddTask")).toBool()
 							  });
 			}
 			emit weekConfigLoaded(config);
 		} else
-			emit managerError(query.lastError().text(), true);
+			emit managerError(loadTrainMapQuery.lastError().text(), true);
+
+		QSqlQuery loadExtraQuery(this->database);
+		loadExtraQuery.prepare(QStringLiteral("SELECT PenaltyFactor, MaxFreeDays "
+											  "FROM Meta"));
+		if(loadExtraQuery.exec() && loadExtraQuery.first()) {
+			emit configExtrasLoaded(loadExtraQuery.record().value(QStringLiteral("PenaltyFactor")).toDouble(),
+									loadExtraQuery.record().value(QStringLiteral("MaxFreeDays")).toInt());
+		} else
+			emit managerError(loadExtraQuery.lastError().text(), true);
 
 		emit operationCompleted();
 	});
@@ -221,6 +230,36 @@ void TrainDataManager::updateWeekConfigAddTask(Qt::DayOfWeek dayOfWeek, bool add
 									 "WHERE Weekday = ?"));
 		query.bindValue(0, addTask);
 		query.bindValue(1, dayOfWeek);
+		if(!query.exec())
+			emit managerError(query.lastError().text(), true);
+
+		emit operationCompleted();
+	});
+}
+
+void TrainDataManager::updatePenaltyFactor(double penaltyFactor)
+{
+	QtConcurrent::run(this->dbThread, [=](){
+		emit operationStarted();
+
+		QSqlQuery query(this->database);
+		query.prepare(QStringLiteral("UPDATE Meta SET PenaltyFactor = ?"));
+		query.bindValue(0, penaltyFactor);
+		if(!query.exec())
+			emit managerError(query.lastError().text(), true);
+
+		emit operationCompleted();
+	});
+}
+
+void TrainDataManager::updateMaxFreeDays(int maxFreeDays)
+{
+	QtConcurrent::run(this->dbThread, [=](){
+		emit operationStarted();
+
+		QSqlQuery query(this->database);
+		query.prepare(QStringLiteral("UPDATE Meta SET MaxFreeDays = ?"));
+		query.bindValue(0, maxFreeDays);
 		if(!query.exec())
 			emit managerError(query.lastError().text(), true);
 
