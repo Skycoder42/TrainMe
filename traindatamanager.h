@@ -26,6 +26,8 @@ public:
 	Q_ENUM(TaskResult)
 
 	typedef QPair<QDate, TrainDataManager::TaskResult> ResultInfo;
+	typedef QPair<int, bool> DayConfig;
+	typedef QHash<Qt::DayOfWeek, TrainDataManager::DayConfig> Weekonfig;
 
 	explicit TrainDataManager(QObject *parent = nullptr);
 	~TrainDataManager();
@@ -41,6 +43,10 @@ public slots:
 
 	void loadTaskResults(bool fillDates);
 
+	void loadWeekConfig();
+	void updateWeekConfigIncrement(Qt::DayOfWeek dayOfWeek, int increment);
+	void updateWeekConfigAddTask(Qt::DayOfWeek dayOfWeek, bool addTask);
+
 	void completeTasks(const QDate &date, TaskResult result);
 
 signals:
@@ -51,6 +57,8 @@ signals:
 	void tasksLoaded(TrainTask::TaskType type, const QList<QSharedPointer<TrainTask>> &tasks);
 
 	void taskResultsLoaded(const QList<TrainDataManager::ResultInfo> &resultList);
+
+	void weekConfigLoaded(const TrainDataManager::Weekonfig &weekConfig);
 
 	void operationStarted();
 	void operationCompleted();
@@ -66,5 +74,6 @@ private:
 };
 
 Q_DECLARE_METATYPE(QList<TrainDataManager::ResultInfo>)
+Q_DECLARE_METATYPE(TrainDataManager::Weekonfig)
 
 #endif // TRAINDATAMANAGER_H

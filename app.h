@@ -8,6 +8,7 @@
 
 #include "controls/traincontrol.h"
 #include "controls/resultcontrol.h"
+#include "controls/configweekcontrol.h"
 
 class App : public QGuiApplication
 {
@@ -38,6 +39,7 @@ private:
 
 	TrainControl *trainControl;
 	ResultControl *resultControl;
+	ConfigWeekControl *configWeekControl;
 
 	bool isValid;
 

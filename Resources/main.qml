@@ -122,7 +122,7 @@ ApplicationWindow {
 				ListElement { title: qsTr("Configure Tasks"); source: "qrc:/qml/pages/ControlPage.qml" }
 				ListElement { title: qsTr("Configure Reminders"); source: "qrc:/qml/pages/ControlPage.qml" }
 				ListElement { title: qsTr("Settings"); source: "qrc:/qml/pages/ControlPage.qml" }
-				ListElement { title: qsTr("Motivate Me!"); source: "qrc:/qml/pages/MotivateControl.qml" }
+				ListElement { title: qsTr("Motivate Me!"); source: "qrc:/qml/pages/MotivatePage.qml" }
 			}
 
 			ScrollIndicator.vertical: ScrollIndicator { }
@@ -162,18 +162,29 @@ ApplicationWindow {
 
 		property int activeCounter: 0
 
+		Timer {
+			id: showUpTimer
+			interval: 250
+			running: false
+			repeat: false
+
+			onTriggered: savingProgress.open()
+		}
+
 		Connections {
 			target: app.trainManager
 			onOperationStarted: {
 				if(savingProgress.activeCounter == 0)
-					savingProgress.open();
+					showUpTimer.start();
 				savingProgress.activeCounter++;
 			}
 
 			onOperationCompleted: {
 				savingProgress.activeCounter--;
-				if(savingProgress.activeCounter == 0)
+				if(savingProgress.activeCounter == 0) {
+					showUpTimer.stop();
 					savingProgress.close();
+				}
 			}
 		}
 	}

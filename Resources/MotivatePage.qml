@@ -1,7 +1,16 @@
 import QtQuick 2.7
+import QtQuick.Controls 2.0
 
 ControlPage {
 	id: motivatePage
+
+	ProgressBar {
+		anchors.left: parent.left
+		anchors.right: parent.right
+		anchors.top: parent.top
+
+		value: sammy.progress
+	}
 
 	Image {
 		id: sammy

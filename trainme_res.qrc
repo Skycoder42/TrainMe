@@ -20,7 +20,7 @@
         <file alias="ControlPage.qml">Resources/ControlPage.qml</file>
         <file alias="TrainPage.qml">Resources/TrainPage.qml</file>
         <file alias="ResultPage.qml">Resources/ResultPage.qml</file>
-        <file alias="MotivateControl.qml">Resources/MotivateControl.qml</file>
+        <file alias="MotivatePage.qml">Resources/MotivatePage.qml</file>
         <file alias="ConfigWeekPage.qml">Resources/ConfigWeekPage.qml</file>
     </qresource>
     <qresource prefix="/qml/controls">

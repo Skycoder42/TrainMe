@@ -176,52 +176,25 @@ void TrainDataManager::loadWeekConfig()
 		QSqlQuery query(this->database);
 		query.prepare(QStringLiteral("SELECT * FROM TrainMap"));
 		if(query.exec()) {
-			Weekonfig config;
+			QHash<Qt::DayOfWeek, DayConfig> resList;
 			while(query.next()) {
-				config.insert((Qt::DayOfWeek)query.record().value(QStringLiteral("Weekday")).toInt(),
-							  {
-								  query.record().value(QStringLiteral("Increase")).toInt(),
-								  query.record().value(QStringLiteral("AddTask")).toBool()
-							  });
+				resList.append({
+								   query.record().value(QStringLiteral("Date")).toDate(),
+								   (TaskResult)query.record().value(QStringLiteral("Result")).toInt()
+							   });
 			}
-			emit weekConfigLoaded(config);
+
+			if(fillDates && !resList.isEmpty()) {
+				QDate nextDate = resList.first().first;
+				for(int i = 1; i < resList.size(); i++) {
+					nextDate = nextDate.addDays(1);
+					if(resList[i].first != nextDate)
+						resList.insert(i, {nextDate, Unknown});
+				}
+			}
+
+			emit taskResultsLoaded(resList);
 		} else
-			emit managerError(query.lastError().text(), true);
-
-		emit operationCompleted();
-	});
-}
-
-void TrainDataManager::updateWeekConfigIncrement(Qt::DayOfWeek dayOfWeek, int increment)
-{
-	QtConcurrent::run(this->dbThread, [=](){
-		emit operationStarted();
-
-		QSqlQuery query(this->database);
-		query.prepare(QStringLiteral("UPDATE TrainMap "
-									 "SET Increase = ? "
-									 "WHERE Weekday = ?"));
-		query.bindValue(0, increment);
-		query.bindValue(1, dayOfWeek);
-		if(!query.exec())
-			emit managerError(query.lastError().text(), true);
-
-		emit operationCompleted();
-	});
-}
-
-void TrainDataManager::updateWeekConfigAddTask(Qt::DayOfWeek dayOfWeek, bool addTask)
-{
-	QtConcurrent::run(this->dbThread, [=](){
-		emit operationStarted();
-
-		QSqlQuery query(this->database);
-		query.prepare(QStringLiteral("UPDATE TrainMap "
-									 "SET AddTask = ? "
-									 "WHERE Weekday = ?"));
-		query.bindValue(0, addTask);
-		query.bindValue(1, dayOfWeek);
-		if(!query.exec())
 			emit managerError(query.lastError().text(), true);
 
 		emit operationCompleted();
