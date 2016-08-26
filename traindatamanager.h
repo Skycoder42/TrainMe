@@ -72,6 +72,7 @@ private:
 
 	void recalcScores(const QDate &date);
 	void addPenalty();
+	void resetPenalty();
 
 	bool testHasMissingDates();
 };

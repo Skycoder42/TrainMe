@@ -86,7 +86,7 @@ void TrainDataManager::loadTrainingAllowed()
 	});
 }
 
-void TrainDataManager::loadStrengthTasks()
+void TrainDataManager::loadStrengthTasks()//TODO take penalty into account
 {
 	QtConcurrent::run(this->dbThread, [=](){
 		emit operationStarted();
@@ -111,7 +111,7 @@ void TrainDataManager::loadStrengthTasks()
 	});
 }
 
-void TrainDataManager::loadAgilityTasks()
+void TrainDataManager::loadAgilityTasks()//TODO take penalty into account
 {
 	QtConcurrent::run(this->dbThread, [=](){
 		emit operationStarted();
@@ -285,15 +285,19 @@ void TrainDataManager::completeTasks(const QDate &date, TrainDataManager::TaskRe
 			switch(result) {
 			case Done:
 				this->recalcScores(date);
+				this->resetPenalty();
 				break;
 			case Skip:
 				this->addPenalty();
 				break;
 			case Sick:
+				this->resetPenalty();
+				break;
 			case Gain:
+				break;
 			case Fail:
 				break;
-			case Free://TODO limit free day count!
+			case Free://TODO penalty if no more free days -> pen += freeDays - maxFreeDays
 				break;
 			default:
 				Q_UNREACHABLE();
@@ -344,18 +348,20 @@ void TrainDataManager::recalcScores(const QDate &date)
 			emit managerError(updateTasksQuery.lastError().text(), false);
 	} else
 		emit managerError(loadScoreQuery.lastError().text(), false);
-
-	//remove penalties
-	QSqlQuery penaltyResetQuery(this->database);
-	penaltyResetQuery.prepare(QStringLiteral("UPDATE Meta SET PenaltyCount = 0"));
-	if(!penaltyResetQuery.exec())
-		emit managerError(penaltyResetQuery.lastError().text(), false);
 }
 
 void TrainDataManager::addPenalty()
 {
 	QSqlQuery query(this->database);
 	query.prepare(QStringLiteral("UPDATE Meta SET PenaltyCount = PenaltyCount + 1"));
+	if(!query.exec())
+		emit managerError(query.lastError().text(), false);
+}
+
+void TrainDataManager::resetPenalty()
+{
+	QSqlQuery query(this->database);
+	query.prepare(QStringLiteral("UPDATE Meta SET PenaltyCount = 0"));
 	if(!query.exec())
 		emit managerError(query.lastError().text(), false);
 }
