@@ -47,6 +47,7 @@ public slots:
 	void updateWeekConfigAddTask(Qt::DayOfWeek dayOfWeek, bool addTask);
 	void updatePenaltyFactor(double penaltyFactor);
 	void updateMaxFreeDays(int maxFreeDays);
+	void updateAgilityPenalties(bool agilityPenalties);
 
 	void completeTasks(const QDate &date, TaskResult result);
 
@@ -60,7 +61,7 @@ signals:
 	void taskResultsLoaded(const QList<TrainDataManager::ResultInfo> &resultList);
 
 	void weekConfigLoaded(const TrainDataManager::Weekonfig &weekConfig);
-	void configExtrasLoaded(double penaltyFactor, int maxFreeDays);
+	void configExtrasLoaded(double penaltyFactor, int maxFreeDays, bool agilityPenalties);
 
 	void operationStarted();
 	void operationCompleted();

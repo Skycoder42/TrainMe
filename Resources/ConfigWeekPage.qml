@@ -152,6 +152,13 @@ ControlPage {
                         id: agilityPenaltyBox
                         Layout.fillWidth: true
                         text: qsTr("Agility Penalties")
+						checked: configWeekControl.agilityPenalties
+
+						Binding {
+							target: configWeekControl
+							property: "agilityPenalties"
+							value: agilityPenaltyBox.checked
+						}
                     }
 
 					Label {

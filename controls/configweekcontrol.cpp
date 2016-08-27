@@ -5,7 +5,8 @@ ConfigWeekControl::ConfigWeekControl(QObject *parent) :
 	QObject(parent),
 	configModel(new WeekConfigModel(this)),
 	penaltyFactor(0.0),
-	maxFreeDays(0)
+	maxFreeDays(0),
+	agilityPenalties(false)
 {
 	connect(App::instance()->trainManager(), &TrainDataManager::weekConfigLoaded,
 			this->configModel, &WeekConfigModel::resetModel,
@@ -17,6 +18,8 @@ ConfigWeekControl::ConfigWeekControl(QObject *parent) :
 			App::instance()->trainManager(), &TrainDataManager::updatePenaltyFactor);
 	connect(this, &ConfigWeekControl::maxFreeDaysChanged,
 			App::instance()->trainManager(), &TrainDataManager::updateMaxFreeDays);
+	connect(this, &ConfigWeekControl::agilityPenaltiesChanged,
+			App::instance()->trainManager(), &TrainDataManager::updateAgilityPenalties);
 }
 
 void ConfigWeekControl::initialize()
@@ -24,10 +27,12 @@ void ConfigWeekControl::initialize()
 	App::instance()->trainManager()->loadWeekConfig();
 }
 
-void ConfigWeekControl::updateExtraData(double penaltyFactor, int maxFreeDays)
+void ConfigWeekControl::updateExtraData(double penaltyFactor, int maxFreeDays, bool agilityPenalties)
 {
 	this->penaltyFactor = penaltyFactor;
 	this->maxFreeDays = maxFreeDays;
+	this->agilityPenalties = agilityPenalties;
 	emit penaltyFactorChanged(penaltyFactor);
 	emit maxFreeDaysChanged(maxFreeDays);
+	emit agilityPenaltiesChanged(agilityPenalties);
 }

@@ -198,11 +198,12 @@ void TrainDataManager::loadWeekConfig()
 			emit managerError(loadTrainMapQuery.lastError().text(), true);
 
 		QSqlQuery loadExtraQuery(this->database);
-		loadExtraQuery.prepare(QStringLiteral("SELECT PenaltyFactor, MaxFreeDays "
+		loadExtraQuery.prepare(QStringLiteral("SELECT PenaltyFactor, MaxFreeDays, AgilityPenalties "
 											  "FROM Meta"));
 		if(loadExtraQuery.exec() && loadExtraQuery.first()) {
 			emit configExtrasLoaded(loadExtraQuery.record().value(QStringLiteral("PenaltyFactor")).toDouble(),
-									loadExtraQuery.record().value(QStringLiteral("MaxFreeDays")).toInt());
+									loadExtraQuery.record().value(QStringLiteral("MaxFreeDays")).toInt(),
+									loadExtraQuery.record().value(QStringLiteral("AgilityPenalties")).toBool());
 		} else
 			emit managerError(loadExtraQuery.lastError().text(), true);
 
@@ -269,6 +270,21 @@ void TrainDataManager::updateMaxFreeDays(int maxFreeDays)
 		QSqlQuery query(this->database);
 		query.prepare(QStringLiteral("UPDATE Meta SET MaxFreeDays = ?"));
 		query.bindValue(0, maxFreeDays);
+		if(!query.exec())
+			emit managerError(query.lastError().text(), true);
+
+		emit operationCompleted();
+	});
+}
+
+void TrainDataManager::updateAgilityPenalties(bool agilityPenalties)
+{
+	QtConcurrent::run(this->dbThread, [=](){
+		emit operationStarted();
+
+		QSqlQuery query(this->database);
+		query.prepare(QStringLiteral("UPDATE Meta SET AgilityPenalties = ?"));
+		query.bindValue(0, agilityPenalties);
 		if(!query.exec())
 			emit managerError(query.lastError().text(), true);
 
