@@ -13,7 +13,7 @@ ApplicationWindow {
 	height: 500
 	title: qsTr("Train Me")
 
-	property bool isSmall: root.height > root.width
+	readonly property bool isSmall: root.height > root.width
 
 	Material.theme: Material.Light
 	Material.primary: Material.color(Material.Red, Material.Shade500)

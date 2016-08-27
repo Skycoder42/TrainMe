@@ -55,7 +55,6 @@ ControlPage {
 		id: editBox
 
 		title: qsTr("Set a result")
-		messageContent: contentComponent
 		positiveButtonText: qsTr("Save")
 		negativeButtonText: qsTr("Cancel")
 
@@ -68,41 +67,37 @@ ControlPage {
 			editBox.open();
 		}
 
-		Component {
-			id: contentComponent
-
-			ComboBox {
-				id: comboBox
-				textRole: "key"
-
-				model: ListModel {
-					id: resultModel
-				}
-
-				onCurrentIndexChanged: editBox.comboValue = model.get(comboBox.currentIndex).value
-
-				Component.onCompleted: {
-					for(var i = 0; i < 6; i++)
-						resultModel.append({"key": app.trainManager.trResult(i), "value": i});
-
-					if(app.testStyle("Universal")) {
-						popup.y = Qt.binding(function() {
-							return -1 * comboBox.currentIndex * referenceDelegate.implicitHeight
-						});
-					}
-				}
-
-				//reference
-				ItemDelegate {
-					id:referenceDelegate
-					visible: false
-					text: "placeholder"
-				}
-			}
-		}
-
 		onPositiveAction: resultControl.updateResult(editBox.currentIndex, editBox.comboValue)
 
 		onClosed: editBox.currentIndex = -1
+
+		messageContent: ComboBox {
+			id: comboBox
+			textRole: "key"
+
+			model: ListModel {
+				id: resultModel
+			}
+
+			onCurrentIndexChanged: editBox.comboValue = model.get(comboBox.currentIndex).value
+
+			Component.onCompleted: {
+				for(var i = 0; i < 6; i++)
+					resultModel.append({"key": app.trainManager.trResult(i), "value": i});
+
+				if(app.testStyle("Universal")) {
+					popup.y = Qt.binding(function() {
+						return -1 * comboBox.currentIndex * referenceDelegate.implicitHeight
+					});
+				}
+			}
+
+			//reference
+			ItemDelegate {
+				id:referenceDelegate
+				visible: false
+				text: "placeholder"
+			}
+		}
 	}
 }

@@ -12,6 +12,10 @@ TrainDataManager::TrainDataManager(QObject *parent) :
 	dbThread(new QThreadPool(this))
 {
 	this->dbThread->setMaxThreadCount(1);
+	//DEBUG
+	connect(this, &TrainDataManager::managerError, this, [](QString error) {
+		qDebug() << error;
+	});
 }
 
 TrainDataManager::~TrainDataManager()
@@ -106,7 +110,7 @@ void TrainDataManager::loadAllTasks()
 		}
 
 		QSqlQuery strengthQuery(this->database);
-		strengthQuery.prepare(QStringLiteral("SELECT * FROM StrengthTable"));
+		strengthQuery.prepare(QStringLiteral("SELECT * FROM StrengthTasks"));
 		if(strengthQuery.exec()) {
 			QList<QSharedPointer<TrainTask>> resList;
 			while(strengthQuery.next()) {
@@ -123,7 +127,7 @@ void TrainDataManager::loadAllTasks()
 			emit managerError(strengthQuery.lastError().text(), true);
 
 		QSqlQuery agilityQuery(this->database);
-		agilityQuery.prepare(QStringLiteral("SELECT * FROM AgilityTable"));
+		agilityQuery.prepare(QStringLiteral("SELECT * FROM AgilityTasks"));
 		if(agilityQuery.exec()) {
 			QList<QSharedPointer<TrainTask>> resList;
 			while(agilityQuery.next()) {
@@ -325,7 +329,7 @@ void TrainDataManager::completeTasks(const QDate &date, TrainDataManager::TaskRe
 				break;
 			case Free:
 			{
-				auto leftFreeDays = this->addFree();
+				auto leftFreeDays = this->addFree(date);
 				if(leftFreeDays >= 0)
 					emit managerError(tr("Free days left: %L1").arg(leftFreeDays), false, tr("Free Days"));
 				else {
@@ -376,7 +380,7 @@ void TrainDataManager::recalcScores(const QDate &date)
 	if(loadScoreQuery.exec() && loadScoreQuery.first()) {
 		auto score = loadScoreQuery.record().value(QStringLiteral("Score")).toInt();
 		QSqlQuery updateTasksQuery(this->database);
-		updateTasksQuery.prepare(QStringLiteral("UPDATE StrengthTable SET Increment = Increment + 1 "
+		updateTasksQuery.prepare(QStringLiteral("UPDATE StrengthTasks SET Increment = Increment + 1 "
 												"WHERE Increment < ?"));
 		updateTasksQuery.bindValue(0, score);
 		if(!updateTasksQuery.exec())
@@ -394,10 +398,15 @@ void TrainDataManager::addPenalty(int amount)
 		emit managerError(query.lastError().text(), false);
 }
 
-int TrainDataManager::addFree()//TODO reset every year
+int TrainDataManager::addFree(const QDate &date)//TODO reset every year
 {
 	QSqlQuery updateQuery(this->database);
-	updateQuery.prepare(QStringLiteral("UPDATE Meta SET FreeDays = FreeDays + 1"));
+	updateQuery.prepare(QStringLiteral("INSERT OR REPLACE INTO FreeDays (Year, FreeDays) "
+									   "VALUES(:year,  COALESCE(("
+									   "  SELECT FreeDays FROM FreeDays"
+									   "  WHERE Year = :year"
+									   "), 0) + 1);"));
+	updateQuery.bindValue(QStringLiteral(":year"), date.year());
 	if(!updateQuery.exec()) {
 		emit managerError(updateQuery.lastError().text(), false);
 		return 0;
@@ -405,7 +414,11 @@ int TrainDataManager::addFree()//TODO reset every year
 
 
 	QSqlQuery statusQuery(this->database);
-	statusQuery.prepare(QStringLiteral("SELECT (MaxFreeDays - FreeDays) AS Result FROM Meta"));
+	statusQuery.prepare(QStringLiteral("SELECT ("
+									   "  (SELECT MaxFreeDays FROM Meta) - "
+									   "  (SELECT FreeDays FROM FreeDays WHERE Year = ?)"
+									   ") AS Result"));
+	statusQuery.bindValue(0, date.year());
 	if(statusQuery.exec() && statusQuery.first())
 		return statusQuery.record().value(QStringLiteral("Result")).toInt();
 	else {

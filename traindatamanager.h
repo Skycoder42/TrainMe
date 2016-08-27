@@ -70,9 +70,11 @@ private:
 	QSqlDatabase database;
 	mutable QThreadPool *dbThread;
 
+	void raiseError(const QSqlQuery &query);
+
 	void recalcScores(const QDate &date);
 	void addPenalty(int amount = 1);
-	int addFree();
+	int addFree(const QDate &date);
 	void resetPenalty(bool reduceOnly = false);
 
 	bool testHasMissingDates();

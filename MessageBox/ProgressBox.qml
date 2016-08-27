@@ -15,14 +15,8 @@ MessageBox {
 	}
 
 	closePolicy: cancable ? Popup.CloseOnEscape : Popup.NoAutoClose
-	messageContent: contentComponent
+	messageContent: BusyIndicator {}
 	negativeButtonText: cancable ? qsTr("Cancel") : undefined
 
 	onNegativeAction: canceled();
-
-	Component {
-		id: contentComponent
-
-		BusyIndicator {}
-	}
 }
