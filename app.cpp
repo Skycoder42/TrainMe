@@ -57,9 +57,13 @@ bool App::testStyle(const QString &styleName) const
 	return QQuickStyle::name() == styleName;
 }
 
-void App::managerError(QString errorString, bool isFatal)
+void App::managerError(const QString &errorString, bool isFatal, const QString &title)
 {
-	emit errorMessage(isFatal ? tr("Fatal Database Error!") : tr("Database Error"), errorString, isFatal);
+	emit errorMessage(title.isEmpty() ?
+						  (isFatal ? tr("Fatal Database Error!") : tr("Database Error")) :
+						  title,
+					  errorString,
+					  isFatal);
 }
 
 void App::registerTypes()

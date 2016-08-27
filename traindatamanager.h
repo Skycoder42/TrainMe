@@ -53,7 +53,7 @@ public slots:
 
 signals:
 	void managerReady(int startIndex);
-	void managerError(QString error, bool isFatal);
+	void managerError(const QString &error, bool isFatal, const QString &title = QString());//TODO as exception
 
 	void traingAllowedLoaded(bool allowed);
 	void tasksLoaded(TrainTask::TaskType type, const QList<QSharedPointer<TrainTask>> &tasks);
@@ -71,8 +71,9 @@ private:
 	mutable QThreadPool *dbThread;
 
 	void recalcScores(const QDate &date);
-	void addPenalty();
-	void resetPenalty();
+	void addPenalty(int amount = 1);
+	int addFree();
+	void resetPenalty(bool reduceOnly = false);
 
 	bool testHasMissingDates();
 };

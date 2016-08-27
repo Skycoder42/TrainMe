@@ -62,7 +62,7 @@ void TrainDataManager::initManager()
 			if(this->testHasMissingDates())
 				initIndex = 1;
 
-			emit managerReady(2);//DEBUG
+			emit managerReady(initIndex);//DEBUG
 		} else
 			emit managerError(tr("Unable to load database from \"%1\"").arg(dbName), true);
 	});
@@ -296,9 +296,19 @@ void TrainDataManager::completeTasks(const QDate &date, TrainDataManager::TaskRe
 			case Gain:
 				break;
 			case Fail:
+				this->resetPenalty(true);
 				break;
-			case Free://TODO penalty if no more free days -> pen += freeDays - maxFreeDays
+			case Free:
+			{
+				auto leftFreeDays = this->addFree();
+				if(leftFreeDays >= 0)
+					emit managerError(tr("Free days left: %L1").arg(leftFreeDays), false, tr("Free Days"));
+				else {
+					this->addPenalty(-leftFreeDays);
+					emit managerError(tr("You have %L1 more free days then allowed! This will add penalty!").arg(-leftFreeDays), false, tr("Free Days"));
+				}
 				break;
+			}
 			default:
 				Q_UNREACHABLE();
 			}
@@ -350,18 +360,42 @@ void TrainDataManager::recalcScores(const QDate &date)
 		emit managerError(loadScoreQuery.lastError().text(), false);
 }
 
-void TrainDataManager::addPenalty()
+void TrainDataManager::addPenalty(int amount)
 {
 	QSqlQuery query(this->database);
-	query.prepare(QStringLiteral("UPDATE Meta SET PenaltyCount = PenaltyCount + 1"));
+	query.prepare(QStringLiteral("UPDATE Meta SET PenaltyCount = PenaltyCount + ?"));
+	query.bindValue(0, amount);
 	if(!query.exec())
 		emit managerError(query.lastError().text(), false);
 }
 
-void TrainDataManager::resetPenalty()
+int TrainDataManager::addFree()//TODO reset every year
+{
+	QSqlQuery updateQuery(this->database);
+	updateQuery.prepare(QStringLiteral("UPDATE Meta SET FreeDays = FreeDays + 1"));
+	if(!updateQuery.exec()) {
+		emit managerError(updateQuery.lastError().text(), false);
+		return 0;
+	}
+
+
+	QSqlQuery statusQuery(this->database);
+	statusQuery.prepare(QStringLiteral("SELECT (MaxFreeDays - FreeDays) AS Result FROM Meta"));
+	if(statusQuery.exec() && statusQuery.first())
+		return statusQuery.record().value(QStringLiteral("Result")).toInt();
+	else {
+		emit managerError(statusQuery.lastError().text(), false);
+		return 0;
+	}
+}
+
+void TrainDataManager::resetPenalty(bool reduceOnly)
 {
 	QSqlQuery query(this->database);
-	query.prepare(QStringLiteral("UPDATE Meta SET PenaltyCount = 0"));
+	if(reduceOnly)
+		query.prepare(QStringLiteral("UPDATE Meta SET PenaltyCount = max(PenaltyCount - 1, 0)"));
+	else
+		query.prepare(QStringLiteral("UPDATE Meta SET PenaltyCount = 0"));
 	if(!query.exec())
 		emit managerError(query.lastError().text(), false);
 }

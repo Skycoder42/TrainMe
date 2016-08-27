@@ -84,7 +84,7 @@ ControlPage {
 		id: failQuestion
 
 		title: qsTr("Training failed?")
-		message: qsTr("Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?Did you really fail the training?!?")
+		message: qsTr("Did you really fail the training?!?")
 		positiveButtonText: qsTr("I failed!")
 
 		onQuestionAnswered: {
