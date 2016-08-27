@@ -41,8 +41,6 @@ signals:
 private:
 	TrainTask::TaskType type;
 	QList<QSharedPointer<TrainTask>> rootList;
-	int m_rowCount;
-	bool m_allDone;
 };
 
 #endif // TRAINMODEL_H

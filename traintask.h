@@ -23,7 +23,8 @@ public:
 					   TaskType type,
 					   int baseCount,
 					   double factor = 1.0,
-					   int increment = 0);
+					   int increment = 0,
+					   double penalty = 0.0);
 
 	QString name() const;
 	int trainCount() const;
@@ -40,8 +41,9 @@ private:
 	QString trainName;
 	TaskType type;
 	int baseCount;
-	int increment;
 	double factor;
+	int increment;
+	double penalty;
 	bool done;
 };
 

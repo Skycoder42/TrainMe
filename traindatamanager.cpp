@@ -86,49 +86,58 @@ void TrainDataManager::loadTrainingAllowed()
 	});
 }
 
-void TrainDataManager::loadStrengthTasks()//TODO take penalty into account
+void TrainDataManager::loadAllTasks()
 {
 	QtConcurrent::run(this->dbThread, [=](){
 		emit operationStarted();
 
-		QSqlQuery query(this->database);
-		query.prepare(QStringLiteral("SELECT * FROM StrengthTable"));
-		if(query.exec()) {
+		int penalty;
+		bool forAgility;
+		QSqlQuery penaltyQuery(this->database);
+		penaltyQuery.prepare(QStringLiteral("SELECT PenaltyFactor, PenaltyCount, AgilityPenalties FROM Meta"));
+		if(penaltyQuery.exec() && penaltyQuery.first()) {
+			penalty = qRound(penaltyQuery.record().value(QStringLiteral("PenaltyFactor")).toDouble() *
+							 penaltyQuery.record().value(QStringLiteral("PenaltyCount")).toInt());
+			forAgility = penaltyQuery.record().value(QStringLiteral("AgilityPenalties")).toBool();
+		} else {
+			emit managerError(penaltyQuery.lastError().text(), true);
+			emit operationCompleted();
+			return;
+		}
+
+		QSqlQuery strengthQuery(this->database);
+		strengthQuery.prepare(QStringLiteral("SELECT * FROM StrengthTable"));
+		if(strengthQuery.exec()) {
 			QList<QSharedPointer<TrainTask>> resList;
-			while(query.next()) {
-				auto task = new TrainTask(query.record().value(QStringLiteral("Name")).toString(),
+			while(strengthQuery.next()) {
+				auto task = new TrainTask(strengthQuery.record().value(QStringLiteral("Name")).toString(),
 										  TrainTask::StrengthTask,
-										  query.record().value(QStringLiteral("BaseCount")).toInt(),
-										  query.record().value(QStringLiteral("Factor")).toDouble(),
-										  query.record().value(QStringLiteral("Increment")).toInt());
+										  strengthQuery.record().value(QStringLiteral("BaseCount")).toInt(),
+										  strengthQuery.record().value(QStringLiteral("Factor")).toDouble(),
+										  strengthQuery.record().value(QStringLiteral("Increment")).toInt(),
+										  penalty);
 				resList.append(QSharedPointer<TrainTask>(task));
 			}
 			emit tasksLoaded(TrainTask::StrengthTask, resList);
 		} else
-			emit managerError(query.lastError().text(), true);
+			emit managerError(strengthQuery.lastError().text(), true);
 
-		emit operationCompleted();
-	});
-}
-
-void TrainDataManager::loadAgilityTasks()//TODO take penalty into account
-{
-	QtConcurrent::run(this->dbThread, [=](){
-		emit operationStarted();
-
-		QSqlQuery query(this->database);
-		query.prepare(QStringLiteral("SELECT * FROM AgilityTable"));
-		if(query.exec()) {
+		QSqlQuery agilityQuery(this->database);
+		agilityQuery.prepare(QStringLiteral("SELECT * FROM AgilityTable"));
+		if(agilityQuery.exec()) {
 			QList<QSharedPointer<TrainTask>> resList;
-			while(query.next()) {
-				auto task = new TrainTask(query.record().value(QStringLiteral("Name")).toString(),
+			while(agilityQuery.next()) {
+				auto task = new TrainTask(agilityQuery.record().value(QStringLiteral("Name")).toString(),
 										  TrainTask::AgilityTask,
-										  query.record().value(QStringLiteral("Count")).toInt());
+										  agilityQuery.record().value(QStringLiteral("Count")).toInt(),
+										  1.0,
+										  0,
+										  forAgility ? penalty : 0.0);
 				resList.append(QSharedPointer<TrainTask>(task));
 			}
 			emit tasksLoaded(TrainTask::AgilityTask, resList);
 		} else
-			emit managerError(query.lastError().text(), true);
+			emit managerError(agilityQuery.lastError().text(), true);
 
 		emit operationCompleted();
 	});

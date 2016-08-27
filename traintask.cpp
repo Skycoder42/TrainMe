@@ -1,12 +1,13 @@
 #include "traintask.h"
 
-TrainTask::TrainTask(const QString &name, TaskType type, int baseCount, double factor, int increment) :
+TrainTask::TrainTask(const QString &name, TaskType type, int baseCount, double factor, int increment, double penalty) :
 	QObject(nullptr),
 	trainName(name),
 	type(type),
 	baseCount(baseCount),
-	increment(increment),
 	factor(factor),
+	increment(increment),
+	penalty(penalty),
 	done(false)
 {}
 
@@ -17,7 +18,8 @@ QString TrainTask::name() const
 
 int TrainTask::trainCount() const
 {
-	return this->baseCount + qRound(this->increment * this->factor);
+	return this->baseCount +
+			qRound(this->factor * (this->increment + this->penalty));
 }
 
 bool TrainTask::isDone() const

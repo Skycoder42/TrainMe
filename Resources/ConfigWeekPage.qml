@@ -108,7 +108,7 @@ ControlPage {
 				GridLayout {
 					rowSpacing: 14
 					columnSpacing: 14
-					columns: 2
+                    columns: root.isSmall ? 2 : 3
 
 					Label {
 						text: qsTr("Penalty Factor:")
@@ -143,6 +143,17 @@ ControlPage {
 						}
 					}
 
+                    Item {
+                        Layout.fillWidth: true
+                        visible: root.isSmall
+                    }
+
+                    CheckBox {
+                        id: agilityPenaltyBox
+                        Layout.fillWidth: true
+                        text: qsTr("Agility Penalties")
+                    }
+
 					Label {
 						text: qsTr("Free Days:")
 					}
@@ -160,7 +171,12 @@ ControlPage {
 							property: "maxFreeDays"
 							value: maxFreeBox.value
 						}
-					}
+                    }
+
+                    Item {
+                        Layout.fillWidth: true
+                        visible: !root.isSmall
+                    }
 				}
 			}
 		}

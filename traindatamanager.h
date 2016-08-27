@@ -38,8 +38,7 @@ public slots:
 	void initManager();
 
 	void loadTrainingAllowed();
-	void loadStrengthTasks();
-	void loadAgilityTasks();
+	void loadAllTasks();
 
 	void loadTaskResults(bool fillDates);
 

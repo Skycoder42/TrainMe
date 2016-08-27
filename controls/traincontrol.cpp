@@ -31,8 +31,7 @@ bool TrainControl::allDone() const
 void TrainControl::initialize()
 {
 	App::instance()->trainManager()->loadTrainingAllowed();
-	App::instance()->trainManager()->loadStrengthTasks();
-	App::instance()->trainManager()->loadAgilityTasks();
+	App::instance()->trainManager()->loadAllTasks();
 }
 
 void TrainControl::completeTraining()
