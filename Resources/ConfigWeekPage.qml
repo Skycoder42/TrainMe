@@ -7,6 +7,13 @@ ControlPage {
     id: configWeekPage
 	control: configWeekControl
 
+    moreMenu: Menu {
+        MenuItem{
+            text: qsTr("Restore Defaults")
+            onClicked: configWeekControl.restoreDefaults()
+        }
+    }
+
 	RowLayout {
 		id: rowLayout
 		anchors.left: parent.left

@@ -18,6 +18,7 @@ public:
 
 public slots:
 	void initialize();
+	void restoreDefaults();
 
 signals:
 	void penaltyFactorChanged(double penaltyFactor);

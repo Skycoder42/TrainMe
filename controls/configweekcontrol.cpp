@@ -14,6 +14,9 @@ ConfigWeekControl::ConfigWeekControl(QObject *parent) :
 	connect(App::instance()->trainManager(), &TrainDataManager::configExtrasLoaded,
 			this, &ConfigWeekControl::updateExtraData,
 			Qt::QueuedConnection);
+	connect(App::instance()->trainManager(), &TrainDataManager::resetDone,
+			this, &ConfigWeekControl::initialize,
+			Qt::QueuedConnection);//TODO BASE CLASS!!!
 	connect(this, &ConfigWeekControl::penaltyFactorChanged,
 			App::instance()->trainManager(), &TrainDataManager::updatePenaltyFactor);
 	connect(this, &ConfigWeekControl::maxFreeDaysChanged,
@@ -25,6 +28,11 @@ ConfigWeekControl::ConfigWeekControl(QObject *parent) :
 void ConfigWeekControl::initialize()
 {
 	App::instance()->trainManager()->loadWeekConfig();
+}
+
+void ConfigWeekControl::restoreDefaults()
+{
+	App::instance()->trainManager()->restoreWeekDefaults();
 }
 
 void ConfigWeekControl::updateExtraData(double penaltyFactor, int maxFreeDays, bool agilityPenalties)

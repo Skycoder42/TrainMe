@@ -2,8 +2,9 @@
     <qresource prefix="/">
         <file alias="qtquickcontrols2.conf">Resources/_fallbacks/qtquickcontrols2.conf</file>
     </qresource>
-    <qresource prefix="/icons">
-        <file alias="menu.png">Resources/_fallbacks/menu.png</file>
+	<qresource prefix="/icons">
+	<file alias="menu.png">Resources/_fallbacks/menu.png</file>
+	<file alias="more.png">Resources/_fallbacks/more.png</file>
     </qresource>
     <qresource prefix="/qml/controls">
         <file alias="AppBarButton.qml">Resources/_fallbacks/AppBarButton.qml</file>

@@ -48,12 +48,15 @@ public slots:
 	void updatePenaltyFactor(double penaltyFactor);
 	void updateMaxFreeDays(int maxFreeDays);
 	void updateAgilityPenalties(bool agilityPenalties);
+	void restoreWeekDefaults();
 
 	void completeTasks(const QDate &date, TaskResult result);
 
 signals:
 	void managerReady(int startIndex);
 	void managerError(const QString &error, bool isFatal, const QString &title = QString());//TODO as exception
+
+	void resetDone();
 
 	void traingAllowedLoaded(bool allowed);
 	void tasksLoaded(TrainTask::TaskType type, const QList<QSharedPointer<TrainTask>> &tasks);

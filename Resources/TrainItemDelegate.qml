@@ -11,7 +11,6 @@ CheckDelegate {
 	property int itemReps : 0
 	property alias itemChecked: delegate.checked
 
-	hoverEnabled: true
 	contentItem: RowLayout {
 		Label {
 			Layout.fillHeight: true
@@ -30,14 +29,5 @@ CheckDelegate {
 			Layout.maximumWidth: implicitWidth
 			implicitWidth: delegate.indicator.width + 7
 		}
-	}
-
-	ItemDelegate {
-		id: test
-		z: -100
-		anchors.fill: parent
-		down: delegate.hovered
-		focusPolicy: Qt.NoFocus
-		enabled: false
-	}
+    }
 }

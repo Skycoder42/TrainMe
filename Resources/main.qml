@@ -29,6 +29,8 @@ ApplicationWindow {
 		Material.foreground: "#FFFFFF"
 		height: 56
 
+        property alias moreMenu: moreButton.menu
+
 		RowLayout {
 			spacing: 0
 			anchors.fill: parent
@@ -36,7 +38,7 @@ ApplicationWindow {
 			AppBarButton {
 				id: drawerButton
 				enabled: false
-				imageSource: "qrc:/icons/menu.png"
+                imageSource: "qrc:/icons/menu.png"
 				text: qsTr("Open Menu")
 				onClicked: drawer.open()
 			}
@@ -83,6 +85,10 @@ ApplicationWindow {
 					}
 				}
 			}
+
+            AppBarMenuButton {
+                id: moreButton
+            }
 		}
 	}
 

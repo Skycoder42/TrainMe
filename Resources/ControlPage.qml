@@ -4,5 +4,10 @@ import QtQuick.Controls 2.0
 Page {
 	property var control
 
-	Component.onCompleted: control.initialize();
+    property Menu moreMenu: Menu {}
+
+    Component.onCompleted: {
+        root.header.moreMenu = moreMenu;
+        control.initialize();
+    }
 }

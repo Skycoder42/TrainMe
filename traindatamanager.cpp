@@ -296,6 +296,35 @@ void TrainDataManager::updateAgilityPenalties(bool agilityPenalties)
 	});
 }
 
+void TrainDataManager::restoreWeekDefaults()
+{
+	QtConcurrent::run(this->dbThread, [=](){
+		emit operationStarted();
+
+		QSqlQuery queryMap(this->database);
+		queryMap.prepare(QStringLiteral("UPDATE TrainMap "
+										"SET Increase = ((Weekday % 2 = 1) AND (NOT Weekday = 1)), "
+										"AddTask = (Weekday = 1);"));
+		if(!queryMap.exec()){
+			emit managerError(queryMap.lastError().text(), true);
+			emit operationCompleted();
+			return;
+		}
+
+		QSqlQuery queryMeta(this->database);
+		queryMeta.prepare(QStringLiteral("UPDATE Meta "
+										 "SET AgilityPenalties = 0, "
+										 "MaxFreeDays = 25, "
+										 "PenaltyFactor = 0.25;"));
+		if(queryMeta.exec())
+			emit resetDone();
+		else
+			emit managerError(queryMeta.lastError().text(), true);
+
+		emit operationCompleted();
+	});
+}
+
 void TrainDataManager::completeTasks(const QDate &date, TrainDataManager::TaskResult result)
 {
 	QtConcurrent::run(this->dbThread, [=]() {

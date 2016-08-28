@@ -23,9 +23,8 @@ ControlPage {
 			width: parent.width
 			text: modelData
 
-			hoverEnabled: true
-			highlighted: (pressed && resultControl.isEditable(index)) || editBox.currentIndex == index
-			down: (hovered || pressed) && !highlighted
+            highlighted: editBox.currentIndex == index
+            down: pressed && !highlighted && resultControl.isEditable(index)
 
 			onClicked: {
 				if(resultControl.isEditable(index))
