@@ -32,6 +32,12 @@ TrainTask::TaskType TrainTask::taskType() const
 	return this->type;
 }
 
+void TrainTask::elements(int &baseCount, double &factor)
+{
+	baseCount = this->baseCount;
+	factor = this->factor;
+}
+
 bool TrainTask::setDone(bool done)
 {
 	if (this->done == done)

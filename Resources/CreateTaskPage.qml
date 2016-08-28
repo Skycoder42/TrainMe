@@ -48,6 +48,7 @@ ControlPage {
 							id: nameField
 							Layout.fillWidth: true
 							placeholderText: qsTr("Enter the tasks display name")
+							selectByMouse: true
 						}
 
 						Label {
@@ -64,11 +65,11 @@ ControlPage {
 
 						Label {
 							visible: !createTaskControl.nextIsAgility
-							text: qsTr("Increment Value:")
+							text: qsTr("Increment Factor:")
 						}
 
 						DoubleSpinBox {
-							id: incrementBox
+							id: factorBox
 							visible: !createTaskControl.nextIsAgility
 							dFrom: 0
 							dTo: 100
@@ -86,11 +87,12 @@ ControlPage {
 
 							Button {
 								Layout.alignment: Qt.AlignRight
+								Layout.preferredWidth: implicitWidth * 1.2
 								highlighted: true
-								text: createTaskControl.nextIsAgility ? qsTr("Create Agility Task") : qsTr("Create Strength Task")
+								text: createTaskControl.nextIsAgility ? qsTr("Create <u>Agility</u> Task") : qsTr("Create <u>Strength</u> Task")
 								enabled: nameField.text.length > 0
 
-								onClicked: createTaskControl.createTask(nameField.text, baseCountBox.value, incrementBox.value / 100)
+								onClicked: createTaskControl.createTask(nameField.text, baseCountBox.value, factorBox.value / 100)
 							}
 						}
 					}

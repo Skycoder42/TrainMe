@@ -31,6 +31,8 @@ public:
 	bool isDone() const;
 	TaskType taskType() const;
 
+	void elements(int &baseCount, double &factor);
+
 public slots:
 	bool setDone(bool done);
 

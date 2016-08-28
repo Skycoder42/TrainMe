@@ -66,7 +66,7 @@ void TrainDataManager::initManager()
 			if(this->testHasMissingDates())
 				initIndex = 1;
 			else if (this->loadMissingTasks())
-				initIndex = 3;
+				initIndex = 2;
 
 			emit managerReady(initIndex);
 		} else
@@ -346,6 +346,41 @@ void TrainDataManager::loadFreeTasks()
 		bool isAgilityTask;
 		auto count = this->loadMissingTasks(&isAgilityTask);
 		emit freeTasksLoaded(count, isAgilityTask);
+
+		emit operationCompleted();
+	});
+}
+
+void TrainDataManager::addTask(const QSharedPointer<TrainTask> &task)
+{
+	QtConcurrent::run(this->dbThread, [=](){
+		emit operationStarted();
+
+		int baseCount;
+		double factor;
+		task->elements(baseCount, factor);
+		QSqlQuery query(this->database);
+		if(task->taskType() == TrainTask::StrengthTask) {
+			query.prepare(QStringLiteral("INSERT INTO StrengthTasks "
+										 "(Name, BaseCount, Factor) "
+										 "VALUES(?, ?, ?)"));
+			query.bindValue(0, task->name());
+			query.bindValue(1, baseCount);
+			query.bindValue(2, factor);
+		} else {
+			query.prepare(QStringLiteral("INSERT INTO AgilityTasks "
+										 "(Name, Count) "
+										 "VALUES(?, ?)"));
+			query.bindValue(0, task->name());
+			query.bindValue(1, baseCount);
+		}
+		if(!query.exec())
+			emit managerError(query.lastError().text(), false);
+		else {
+			bool isAgilityTask;
+			auto count = this->loadMissingTasks(&isAgilityTask);
+			emit freeTasksLoaded(count, isAgilityTask);
+		}
 
 		emit operationCompleted();
 	});

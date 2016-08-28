@@ -124,8 +124,8 @@ ApplicationWindow {
 			model: ListModel {
 				ListElement { title: qsTr("Training!"); source: "qrc:/qml/pages/TrainPage.qml" }
 				ListElement { title: qsTr("Manage Results"); source: "qrc:/qml/pages/ResultPage.qml" }
-				ListElement { title: qsTr("Configure Weekplan"); source: "qrc:/qml/pages/ConfigWeekPage.qml" }
 				ListElement { title: qsTr("Create Tasks"); source: "qrc:/qml/pages/CreateTaskPage.qml" }
+				ListElement { title: qsTr("Configure Weekplan"); source: "qrc:/qml/pages/ConfigWeekPage.qml" }
 				ListElement { title: qsTr("Configure Reminders"); source: "qrc:/qml/pages/ControlPage.qml" }
 				ListElement { title: qsTr("Settings"); source: "qrc:/qml/pages/ControlPage.qml" }
 				ListElement { title: qsTr("Motivate Me!"); source: "qrc:/qml/pages/MotivatePage.qml" }

@@ -1,5 +1,5 @@
 #include "createtaskcontrol.h"
-#include <QDebug>
+#include "traintask.h"
 
 CreateTaskControl::CreateTaskControl(QObject *parent) :
 	ViewControl(parent),
@@ -16,9 +16,14 @@ void CreateTaskControl::initialize()
 	this->manager->loadFreeTasks();
 }
 
-void CreateTaskControl::createTask(const QString &name, int baseCount, double increment)
+void CreateTaskControl::createTask(const QString &name, int baseCount, double factor)
 {
-	qDebug() << name << baseCount << increment;
+	QSharedPointer<TrainTask> task;
+	if(this->nextIsAgility)
+		task.reset(new TrainTask(name, TrainTask::AgilityTask, baseCount));
+	else
+		task.reset(new TrainTask(name, TrainTask::StrengthTask, baseCount, factor));
+	this->manager->addTask(task);
 }
 
 void CreateTaskControl::freeTasksLoaded(int freeTasks, bool isAgility)

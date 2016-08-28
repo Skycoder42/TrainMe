@@ -17,7 +17,7 @@ public:
 public slots:
 	void initialize() override;
 
-	void createTask(const QString &name, int baseCount, double increment);
+	void createTask(const QString &name, int baseCount, double factor);
 
 signals:
 	void freeTasksChanged();

@@ -55,6 +55,7 @@ public slots:
 
 	//createTask
 	void loadFreeTasks();
+	void addTask(const QSharedPointer<TrainTask> &task);
 
 	//all
 	void completeTasks(const QDate &date, TaskResult result);
