@@ -20,7 +20,7 @@ ControlPage {
 			Layout.fillWidth: true
 			Layout.alignment: Qt.AlignVCenter
 			Layout.preferredWidth: 200
-			Layout.minimumWidth: nameLabel.implicitWidth
+			//Layout.minimumWidth: nameLabel.implicitWidth
 			text: qsTr("<i>Weekday</i>")
 			leftPadding: 14
 			horizontalAlignment: Qt.AlignLeft
@@ -31,7 +31,7 @@ ControlPage {
 			Layout.fillWidth: true
 			Layout.alignment: Qt.AlignVCenter
 			Layout.preferredWidth: 200
-			Layout.minimumWidth: increaseLabel.implicitWidth
+			//Layout.minimumWidth: increaseLabel.implicitWidth
 			text: qsTr("<i>Increase</i>")
 			horizontalAlignment: Qt.AlignHCenter
 		}
@@ -41,7 +41,7 @@ ControlPage {
 			Layout.fillWidth: true
 			Layout.alignment: Qt.AlignVCenter
 			Layout.preferredWidth: 200
-			Layout.minimumWidth: addLabel.implicitWidth
+			//Layout.minimumWidth: addLabel.implicitWidth
 			text: qsTr("<i>Add Task</i>")
 			horizontalAlignment: Qt.AlignHCenter
 		}

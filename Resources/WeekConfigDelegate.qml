@@ -7,48 +7,41 @@ ItemDelegate {
 
     property alias itemName: nameLabel.text
     property alias itemIncrement : incrementBox.value
-    property alias itemAddTask: addTaskBox.checked
+	property alias itemAddTask: addTaskBox.checked
 
-    down: false
-    contentItem: RowLayout {
-        spacing: 14
+	hoverEnabled: true
+	down: hovered
+	contentItem: Item {
+		id:mainContent
+		implicitHeight: Math.max(nameLabel.implicitHeight, incrementBox.implicitHeight, addTaskBox.implicitHeight)
 
-        Label {
-            id: nameLabel
-            Layout.alignment: Qt.AlignVCenter
-            Layout.fillWidth: true
-			Layout.preferredWidth: 100
-			Layout.minimumWidth: nameLabel.implicitWidth
-        }
+		Label {
+			id: nameLabel
+			anchors.verticalCenter: parent.verticalCenter
+			anchors.left: parent.left
+			width: 80
+		}
 
-        Item {
-            id: spinWrapper
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-			Layout.preferredWidth: 100
-			Layout.minimumWidth: incrementBox.implicitWidth
-            implicitHeight: incrementBox.implicitHeight
+		Item {
+			id: centerWrapper
+			anchors.verticalCenter: parent.verticalCenter
+			anchors.left: nameLabel.right
+			anchors.right: addTaskBox.left
 
-            SpinBox {
-                id: incrementBox
-                anchors.centerIn: parent
-                editable: true
-                to: 42
-            }
-        }
+			SpinBox {
+				id: incrementBox
+				anchors.centerIn: parent
+				editable: true
+				to: 42
 
-        Item {
-            id: checkWrapper
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-			Layout.preferredWidth: 100
-			Layout.minimumWidth: addTaskBox.implicitWidth
-            implicitHeight: addTaskBox.implicitHeight
+				width: Math.min(implicitWidth, centerWrapper.width)
+			}
+		}
 
-            CheckBox {
-                id: addTaskBox
-                anchors.centerIn: parent
-            }
-        }
-    }
+		CheckBox {
+			id: addTaskBox
+			anchors.verticalCenter: parent.verticalCenter
+			anchors.right: parent.right
+		}
+	}
 }

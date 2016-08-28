@@ -66,7 +66,7 @@ void TrainDataManager::initManager()
 			if(this->testHasMissingDates())
 				initIndex = 1;
 
-			emit managerReady(initIndex);//DEBUG
+			emit managerReady(2);//DEBUG
 		} else
 			emit managerError(tr("Unable to load database from \"%1\"").arg(dbName), true);
 	});
@@ -427,7 +427,7 @@ void TrainDataManager::addPenalty(int amount)
 		emit managerError(query.lastError().text(), false);
 }
 
-int TrainDataManager::addFree(const QDate &date)//TODO reset every year
+int TrainDataManager::addFree(const QDate &date)
 {
 	QSqlQuery updateQuery(this->database);
 	updateQuery.prepare(QStringLiteral("INSERT OR REPLACE INTO FreeDays (Year, FreeDays) "
