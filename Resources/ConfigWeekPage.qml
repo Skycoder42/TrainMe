@@ -112,32 +112,19 @@ ControlPage {
 						text: qsTr("Penalty Factor:")
 					}
 
-					SpinBox {
+					DoubleSpinBox {
 						id: penaltyBox
-						from: 1
-						to: 1000
-						stepSize: 5
+						dFrom: 0.01
+						dTo: 10
+						dStepSize: 0.05
+						dValue: configWeekControl.penaltyFactor
 						editable: true
 						Layout.fillWidth: true
-						value: configWeekControl.penaltyFactor * 100
-
-						validator: DoubleValidator {
-							bottom: 0.01
-							top: 10.0
-						}
-
-						textFromValue: function(value, locale) {
-							return Number(value / 100).toLocaleString(locale, 'f', 2);
-						}
-
-						valueFromText: function(text, locale) {
-							return Number.fromLocaleString(locale, text) * 100;
-						}
 
 						Binding {
 							target: configWeekControl
 							property: "penaltyFactor"
-							value: penaltyBox.value / 100.0
+							value: penaltyBox.dValue
 						}
 					}
 

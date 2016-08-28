@@ -37,5 +37,6 @@
         <file alias="+material/AppBarButton.qml">Resources/Material/AppBarButton.qml</file>
         <file alias="+universal/AppBarButton.qml">Resources/Universal/AppBarButton.qml</file>
         <file alias="AppBarMenuButton.qml">Resources/AppBarMenuButton.qml</file>
+        <file alias="DoubleSpinBox.qml">Resources/DoubleSpinBox.qml</file>
     </qresource>
 </RCC>

@@ -1,6 +1,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
+import "../controls"
 
 ControlPage {
 	id: createTaskPage
@@ -66,28 +67,15 @@ ControlPage {
 							text: qsTr("Increment Value:")
 						}
 
-						SpinBox {
+						DoubleSpinBox {
 							id: incrementBox
 							visible: !createTaskControl.nextIsAgility
-							from: 0
-							to: 10000
-							stepSize: 100
+							dFrom: 0
+							dTo: 100
+							dStepSize: 1
+							dValue: 1
 							editable: true
 							Layout.fillWidth: true
-							value: 100
-
-							validator: DoubleValidator {
-								bottom: 0.0
-								top: 100.0
-							}
-
-							textFromValue: function(value, locale) {
-								return Number(value / 100).toLocaleString(locale, 'f', 2);
-							}
-
-							valueFromText: function(text, locale) {
-								return Number.fromLocaleString(locale, text) * 100;
-							}
 						}
 
 						RowLayout {
