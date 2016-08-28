@@ -18,6 +18,7 @@ App::App(int argc, char *argv[]) :
 	trainControl(nullptr),
 	resultControl(nullptr),
 	configWeekControl(nullptr),
+	createTaskControl(nullptr),
 	isValid(false)
 {
 	this->registerTypes();
@@ -113,6 +114,7 @@ void App::createControls()
 	this->trainControl = new TrainControl(this);
 	this->resultControl = new ResultControl(this);
 	this->configWeekControl = new ConfigWeekControl(this);
+	this->createTaskControl = new CreateTaskControl(this);
 }
 
 bool App::loadEngine()
@@ -125,6 +127,7 @@ bool App::loadEngine()
 	context->setContextProperty("trainControl", this->trainControl);
 	context->setContextProperty("resultControl", this->resultControl);
 	context->setContextProperty("configWeekControl", this->configWeekControl);
+	context->setContextProperty("createTaskControl", this->createTaskControl);
 
 	//load main qml
 	this->engine->load(QUrl(QStringLiteral("qrc:/qml/main.qml")));

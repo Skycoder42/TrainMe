@@ -9,6 +9,7 @@
 #include "controls/traincontrol.h"
 #include "controls/resultcontrol.h"
 #include "controls/configweekcontrol.h"
+#include "controls/createtaskcontrol.h"
 
 class App : public QGuiApplication
 {
@@ -40,6 +41,7 @@ private:
 	TrainControl *trainControl;
 	ResultControl *resultControl;
 	ConfigWeekControl *configWeekControl;
+	CreateTaskControl *createTaskControl;
 
 	bool isValid;
 

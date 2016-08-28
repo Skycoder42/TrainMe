@@ -9,18 +9,18 @@
         <file alias="StyleAccess.qml">Resources/StyleAccess.qml</file>
     </qresource>
     <qresource prefix="/icons">
-		<file alias="+universal/menu.png">Resources/Universal/icons/ic_menu_black_24dp.png</file>
-		<file alias="+material/+hdpi/menu.png">Resources/Material/icons/drawable-hdpi/ic_menu_white_24dp.png</file>
-		<file alias="+material/+mdpi/menu.png">Resources/Material/icons/drawable-mdpi/ic_menu_white_24dp.png</file>
-		<file alias="+material/+xhdpi/menu.png">Resources/Material/icons/drawable-xhdpi/ic_menu_white_24dp.png</file>
-		<file alias="+material/+xxhdpi/menu.png">Resources/Material/icons/drawable-xxhdpi/ic_menu_white_24dp.png</file>
-		<file alias="+material/+xxxhdpi/menu.png">Resources/Material/icons/drawable-xxxhdpi/ic_menu_white_24dp.png</file>
-		<file alias="+universal/more.png">Resources/Universal/icons/ic_more_horiz_black_24dp.png</file>
-		<file alias="+material/+hdpi/more.png">Resources/Material/icons/drawable-hdpi/ic_more_vert_white_24dp.png</file>
-		<file alias="+material/+mdpi/more.png">Resources/Material/icons/drawable-mdpi/ic_more_vert_white_24dp.png</file>
-		<file alias="+material/+xhdpi/more.png">Resources/Material/icons/drawable-xhdpi/ic_more_vert_white_24dp.png</file>
-		<file alias="+material/+xxhdpi/more.png">Resources/Material/icons/drawable-xxhdpi/ic_more_vert_white_24dp.png</file>
-		<file alias="+material/+xxxhdpi/more.png">Resources/Material/icons/drawable-xxxhdpi/ic_more_vert_white_24dp.png</file>
+        <file alias="+universal/menu.png">Resources/Universal/icons/ic_menu_black_24dp.png</file>
+        <file alias="+material/+hdpi/menu.png">Resources/Material/icons/drawable-hdpi/ic_menu_white_24dp.png</file>
+        <file alias="+material/+mdpi/menu.png">Resources/Material/icons/drawable-mdpi/ic_menu_white_24dp.png</file>
+        <file alias="+material/+xhdpi/menu.png">Resources/Material/icons/drawable-xhdpi/ic_menu_white_24dp.png</file>
+        <file alias="+material/+xxhdpi/menu.png">Resources/Material/icons/drawable-xxhdpi/ic_menu_white_24dp.png</file>
+        <file alias="+material/+xxxhdpi/menu.png">Resources/Material/icons/drawable-xxxhdpi/ic_menu_white_24dp.png</file>
+        <file alias="+universal/more.png">Resources/Universal/icons/ic_more_horiz_black_24dp.png</file>
+        <file alias="+material/+hdpi/more.png">Resources/Material/icons/drawable-hdpi/ic_more_vert_white_24dp.png</file>
+        <file alias="+material/+mdpi/more.png">Resources/Material/icons/drawable-mdpi/ic_more_vert_white_24dp.png</file>
+        <file alias="+material/+xhdpi/more.png">Resources/Material/icons/drawable-xhdpi/ic_more_vert_white_24dp.png</file>
+        <file alias="+material/+xxhdpi/more.png">Resources/Material/icons/drawable-xxhdpi/ic_more_vert_white_24dp.png</file>
+        <file alias="+material/+xxxhdpi/more.png">Resources/Material/icons/drawable-xxxhdpi/ic_more_vert_white_24dp.png</file>
     </qresource>
     <qresource prefix="/qml/pages">
         <file alias="ControlPage.qml">Resources/ControlPage.qml</file>
@@ -28,6 +28,7 @@
         <file alias="ResultPage.qml">Resources/ResultPage.qml</file>
         <file alias="MotivatePage.qml">Resources/MotivatePage.qml</file>
         <file alias="ConfigWeekPage.qml">Resources/ConfigWeekPage.qml</file>
+        <file alias="CreateTaskPage.qml">Resources/CreateTaskPage.qml</file>
     </qresource>
     <qresource prefix="/qml/controls">
         <file alias="TrainListView.qml">Resources/TrainListView.qml</file>

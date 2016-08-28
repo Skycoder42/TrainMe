@@ -83,20 +83,9 @@ void TrainDataManager::loadTrainingAllowed()
 		query.prepare(QStringLiteral("SELECT * FROM TaskCalendar "
 									 "WHERE Date = ?"));
 		query.bindValue(0, QDate::currentDate());
-		if(query.exec()) {
-			if(query.first()) {
-				emit traingAllowedLoaded(false);
-				emit managerError(tr("You have already trained today! Rest and save your energy for tomorrow!"),
-								  false,
-								  tr("Training not allowed"));
-			} else if(this->testHasMissingTasks()) {
-				emit traingAllowedLoaded(false);
-				emit managerError(tr("You must add new task before you can start training!"),
-								  false,
-								  tr("Training not allowed"));
-			} else
-				emit traingAllowedLoaded(true);
-		} else
+		if(query.exec())
+			emit traingAllowedLoaded(!query.first());
+		else
 			emit managerError(query.lastError().text(), true);
 
 		emit operationCompleted();
@@ -338,19 +327,6 @@ void TrainDataManager::restoreWeekDefaults()
 	});
 }
 
-void TrainDataManager::loadFreeTasks()
-{
-	QtConcurrent::run(this->dbThread, [=](){
-		emit operationStarted();
-
-		bool isAgilityTask;
-		auto count = this->loadMissingTasks(&isAgilityTask);
-		emit freeTasksLoaded(count, isAgilityTask);
-
-		emit operationCompleted();
-	});
-}
-
 void TrainDataManager::completeTasks(const QDate &date, TrainDataManager::TaskResult result)
 {
 	QtConcurrent::run(this->dbThread, [=]() {
@@ -528,7 +504,7 @@ int TrainDataManager::loadMissingTasks(bool *isAgilityTask)
 	if(isAgilityTask)
 		*isAgilityTask = strCount > aglCount;
 
-	return qMax(taskCount - (strCount + aglCount), 0);
+	return qMax(taskCount - realCount, 0);
 }
 
 bool TrainDataManager::testHasMissingTasks()

@@ -37,11 +37,14 @@ public:
 public slots:
 	void initManager();
 
+	//trainControl
 	void loadTrainingAllowed();
 	void loadAllTasks();
 
+	//resultControl
 	void loadTaskResults(bool fillDates);
 
+	//weekConfigControl
 	void loadWeekConfig();
 	void updateWeekConfigIncrement(Qt::DayOfWeek dayOfWeek, int increment);
 	void updateWeekConfigAddTask(Qt::DayOfWeek dayOfWeek, bool addTask);
@@ -50,24 +53,35 @@ public slots:
 	void updateAgilityPenalties(bool agilityPenalties);
 	void restoreWeekDefaults();
 
+	//createTask
+	void loadFreeTasks();
+
+	//all
 	void completeTasks(const QDate &date, TaskResult result);
 
 signals:
+	//special
 	void managerReady(int startIndex);
 	void managerError(const QString &error, bool isFatal, const QString &title = QString());//TODO as exception
+	void operationStarted();
+	void operationCompleted();
 
-	void resetDone();
-
+	//trainControl
 	void traingAllowedLoaded(bool allowed);
 	void tasksLoaded(TrainTask::TaskType type, const QList<QSharedPointer<TrainTask>> &tasks);
 
+	//resultControl
 	void taskResultsLoaded(const QList<TrainDataManager::ResultInfo> &resultList);
 
+	//weekConfigControl
 	void weekConfigLoaded(const TrainDataManager::Weekonfig &weekConfig);
 	void configExtrasLoaded(double penaltyFactor, int maxFreeDays, bool agilityPenalties);
 
-	void operationStarted();
-	void operationCompleted();
+	//createTask
+	void freeTasksLoaded(int freeTasks, bool isAgility);
+
+	//all
+	void resetDone();
 
 private:
 	QSqlDatabase database;
@@ -80,6 +94,8 @@ private:
 	int addFree(const QDate &date);
 	void resetPenalty(bool reduceOnly = false);
 
+	int loadMissingTasks(bool *isAgilityTask = nullptr);
+	bool testHasMissingTasks();
 	bool testHasMissingDates();
 };
 
