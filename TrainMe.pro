@@ -16,7 +16,8 @@ HEADERS += \
 	controls/traincontrol.h \
     controls/resultcontrol.h \
 	controls/configweekcontrol.h \
-    weekconfigmodel.h
+    weekconfigmodel.h \
+    viewcontrol.h
 
 SOURCES += \
 	trainmodel.cpp \
@@ -26,7 +27,8 @@ SOURCES += \
 	controls/traincontrol.cpp \
     controls/resultcontrol.cpp \
 	controls/configweekcontrol.cpp \
-    weekconfigmodel.cpp
+    weekconfigmodel.cpp \
+    viewcontrol.cpp
 
 RESOURCES += trainme_res.qrc \
 	trainme_res_fallbacks.qrc \

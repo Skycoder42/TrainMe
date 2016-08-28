@@ -5,14 +5,7 @@ import "../controls"
 
 ControlPage {
     id: configWeekPage
-	control: configWeekControl
-
-    moreMenu: Menu {
-        MenuItem{
-            text: qsTr("Restore Defaults")
-            onClicked: configWeekControl.restoreDefaults()
-        }
-    }
+    control: configWeekControl
 
 	RowLayout {
 		id: rowLayout

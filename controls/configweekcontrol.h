@@ -2,9 +2,10 @@
 #define CONFIGWEEKCONTROL_H
 
 #include <QObject>
+#include "viewcontrol.h"
 #include "weekconfigmodel.h"
 
-class ConfigWeekControl : public QObject
+class ConfigWeekControl : public ViewControl
 {
 	Q_OBJECT
 
@@ -14,16 +15,18 @@ class ConfigWeekControl : public QObject
 	Q_PROPERTY(bool agilityPenalties MEMBER agilityPenalties NOTIFY agilityPenaltiesChanged)
 
 public:
-	explicit ConfigWeekControl(QObject *parent = 0);
+	explicit ConfigWeekControl(QObject *parent = nullptr);
 
 public slots:
-	void initialize();
-	void restoreDefaults();
+	void initialize() override;
 
 signals:
 	void penaltyFactorChanged(double penaltyFactor);
 	void maxFreeDaysChanged(int maxFreeDays);
 	void agilityPenaltiesChanged(bool agilityPenalties);
+
+protected:
+	void actionTriggered(int id) override;
 
 private slots:
 	void updateExtraData(double penaltyFactor,

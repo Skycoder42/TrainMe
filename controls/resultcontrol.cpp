@@ -1,11 +1,10 @@
 #include "resultcontrol.h"
-#include "app.h"
 
 ResultControl::ResultControl(QObject *parent) :
-	QObject(parent),
+	ViewControl(parent),
 	taskResultList()
 {
-	connect(App::instance()->trainManager(), &TrainDataManager::taskResultsLoaded,
+	connect(this->manager, &TrainDataManager::taskResultsLoaded,
 			this, &ResultControl::taskResultsLoaded,
 			Qt::QueuedConnection);
 }
@@ -37,14 +36,14 @@ int ResultControl::firstDirtyIndex() const
 
 void ResultControl::initialize()
 {
-	App::instance()->trainManager()->loadTaskResults(true);
+	this->manager->loadTaskResults(true);
 }
 
 void ResultControl::updateResult(int index, int result)
 {
 	auto &taskInfo = this->taskResultList[index];
 	taskInfo.second = (TrainDataManager::TaskResult)result;
-	App::instance()->trainManager()->completeTasks(taskInfo.first, taskInfo.second);
+	this->manager->completeTasks(taskInfo.first, taskInfo.second);
 	emit resultListChanged();
 }
 

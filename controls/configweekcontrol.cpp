@@ -1,38 +1,39 @@
 #include "configweekcontrol.h"
-#include "app.h"
 
 ConfigWeekControl::ConfigWeekControl(QObject *parent) :
-	QObject(parent),
+	ViewControl(parent),
 	configModel(new WeekConfigModel(this)),
 	penaltyFactor(0.0),
 	maxFreeDays(0),
 	agilityPenalties(false)
 {
-	connect(App::instance()->trainManager(), &TrainDataManager::weekConfigLoaded,
+	connect(this->manager, &TrainDataManager::weekConfigLoaded,
 			this->configModel, &WeekConfigModel::resetModel,
 			Qt::QueuedConnection);
-	connect(App::instance()->trainManager(), &TrainDataManager::configExtrasLoaded,
+	connect(this->manager, &TrainDataManager::configExtrasLoaded,
 			this, &ConfigWeekControl::updateExtraData,
 			Qt::QueuedConnection);
-	connect(App::instance()->trainManager(), &TrainDataManager::resetDone,
-			this, &ConfigWeekControl::initialize,
-			Qt::QueuedConnection);//TODO BASE CLASS!!!
 	connect(this, &ConfigWeekControl::penaltyFactorChanged,
-			App::instance()->trainManager(), &TrainDataManager::updatePenaltyFactor);
+			this->manager, &TrainDataManager::updatePenaltyFactor);
 	connect(this, &ConfigWeekControl::maxFreeDaysChanged,
-			App::instance()->trainManager(), &TrainDataManager::updateMaxFreeDays);
+			this->manager, &TrainDataManager::updateMaxFreeDays);
 	connect(this, &ConfigWeekControl::agilityPenaltiesChanged,
-			App::instance()->trainManager(), &TrainDataManager::updateAgilityPenalties);
+			this->manager, &TrainDataManager::updateAgilityPenalties);
+
+	this->addAction(0, tr("Restore Defaults"));
 }
 
 void ConfigWeekControl::initialize()
 {
-	App::instance()->trainManager()->loadWeekConfig();
+	this->manager->loadWeekConfig();
 }
 
-void ConfigWeekControl::restoreDefaults()
+void ConfigWeekControl::actionTriggered(int id)
 {
-	App::instance()->trainManager()->restoreWeekDefaults();
+	switch(id) {
+	case 0:
+		this->manager->restoreWeekDefaults();
+	}
 }
 
 void ConfigWeekControl::updateExtraData(double penaltyFactor, int maxFreeDays, bool agilityPenalties)

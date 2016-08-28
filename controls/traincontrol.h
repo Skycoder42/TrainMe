@@ -2,9 +2,10 @@
 #define TRAINCONTROL_H
 
 #include <QObject>
+#include "viewcontrol.h"
 #include "trainmodel.h"
 
-class TrainControl : public QObject
+class TrainControl : public ViewControl
 {
 	Q_OBJECT
 
@@ -19,7 +20,7 @@ public:
 	bool allDone() const;
 
 public slots:
-	void initialize();
+	void initialize() override;
 
 	void completeTraining();
 

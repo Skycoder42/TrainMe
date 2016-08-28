@@ -1,19 +1,18 @@
 #include "traincontrol.h"
-#include "app.h"
 
 TrainControl::TrainControl(QObject *parent) :
-	QObject(parent),
+	ViewControl(parent),
 	strengthModel(new TrainModel(TrainTask::StrengthTask, this)),
 	agilityModel(new TrainModel(TrainTask::AgilityTask, this)),
 	trainingAllowed(false)
 {
-	connect(App::instance()->trainManager(), &TrainDataManager::tasksLoaded,
+	connect(this->manager, &TrainDataManager::tasksLoaded,
 			this->strengthModel, &TrainModel::resetData,
 			Qt::QueuedConnection);
-	connect(App::instance()->trainManager(), &TrainDataManager::tasksLoaded,
+	connect(this->manager, &TrainDataManager::tasksLoaded,
 			this->agilityModel, &TrainModel::resetData,
 			Qt::QueuedConnection);
-	connect(App::instance()->trainManager(), &TrainDataManager::traingAllowedLoaded,
+	connect(this->manager, &TrainDataManager::traingAllowedLoaded,
 			this, &TrainControl::updateAllowed,
 			Qt::QueuedConnection);
 	connect(this->strengthModel, &TrainModel::allDoneChanged,
@@ -30,16 +29,16 @@ bool TrainControl::allDone() const
 
 void TrainControl::initialize()
 {
-	App::instance()->trainManager()->loadTrainingAllowed();
-	App::instance()->trainManager()->loadAllTasks();
+	this->manager->loadTrainingAllowed();
+	this->manager->loadAllTasks();
 }
 
 void TrainControl::completeTraining()
 {
 	if(this->allDone())
-		App::instance()->trainManager()->completeTasks(QDate::currentDate(), TrainDataManager::Done);
+		this->manager->completeTasks(QDate::currentDate(), TrainDataManager::Done);
 	else
-		App::instance()->trainManager()->completeTasks(QDate::currentDate(), TrainDataManager::Fail);
+		this->manager->completeTasks(QDate::currentDate(), TrainDataManager::Fail);
 	this->updateAllowed(false);
 }
 

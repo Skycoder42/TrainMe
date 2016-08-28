@@ -3,9 +3,10 @@
 
 #include <QObject>
 #include <QList>
+#include "viewcontrol.h"
 #include "traindatamanager.h"
 
-class ResultControl : public QObject
+class ResultControl : public ViewControl
 {
 	Q_OBJECT
 
@@ -20,7 +21,7 @@ public:
 	Q_INVOKABLE int firstDirtyIndex() const;
 
 public slots:
-	void initialize();
+	void initialize() override;
 
 	void updateResult(int index, int result);
 
