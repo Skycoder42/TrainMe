@@ -16,7 +16,8 @@ public:
 	QStringList menuActions() const;
 
 public slots:
-	virtual void initialize() = 0;
+	void initialize();
+	void finalize();
 
 	void triggerAction(int index);
 
@@ -26,10 +27,16 @@ signals:
 protected:
 	TrainDataManager * const manager;
 
+	virtual void doInit() = 0;
+
 	void addAction(int id, const QString &action);
 	virtual void actionTriggered(int id);
 
+private slots:
+	void completeReset();
+
 private:
+	bool isActive;
 	QStringList actions;
 	QHash<int, int> actionIds;
 };

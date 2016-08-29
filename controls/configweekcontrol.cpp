@@ -23,7 +23,7 @@ ConfigWeekControl::ConfigWeekControl(QObject *parent) :
 	this->addAction(0, tr("Restore Defaults"));
 }
 
-void ConfigWeekControl::initialize()
+void ConfigWeekControl::doInit()
 {
 	this->manager->loadWeekConfig();
 }

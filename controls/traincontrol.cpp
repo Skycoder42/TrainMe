@@ -27,12 +27,6 @@ bool TrainControl::allDone() const
 			this->agilityModel->allDone();
 }
 
-void TrainControl::initialize()
-{
-	this->manager->loadTrainingAllowed();
-	this->manager->loadAllTasks();
-}
-
 void TrainControl::completeTraining()
 {
 	if(this->allDone())
@@ -40,6 +34,12 @@ void TrainControl::completeTraining()
 	else
 		this->manager->completeTasks(QDate::currentDate(), TrainDataManager::Fail);
 	this->updateAllowed(false);
+}
+
+void TrainControl::doInit()
+{
+	this->manager->loadTrainingAllowed();
+	this->manager->loadAllTasks();
 }
 
 void TrainControl::updateAllowed(bool allowed)

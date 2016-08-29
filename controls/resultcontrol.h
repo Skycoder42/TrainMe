@@ -21,12 +21,13 @@ public:
 	Q_INVOKABLE int firstDirtyIndex() const;
 
 public slots:
-	void initialize() override;
-
 	void updateResult(int index, int result);
 
 signals:
 	void resultListChanged();
+
+protected:
+	void doInit() override;
 
 private slots:
 	void taskResultsLoaded(const QList<TrainDataManager::ResultInfo> &resultList);

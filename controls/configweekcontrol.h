@@ -17,15 +17,13 @@ class ConfigWeekControl : public ViewControl
 public:
 	explicit ConfigWeekControl(QObject *parent = nullptr);
 
-public slots:
-	void initialize() override;
-
 signals:
 	void penaltyFactorChanged(double penaltyFactor);
 	void maxFreeDaysChanged(int maxFreeDays);
 	void agilityPenaltiesChanged(bool agilityPenalties);
 
 protected:
+	void doInit() override;
 	void actionTriggered(int id) override;
 
 private slots:

@@ -34,17 +34,17 @@ int ResultControl::firstDirtyIndex() const
 	return -1;
 }
 
-void ResultControl::initialize()
-{
-	this->manager->loadTaskResults(true);
-}
-
 void ResultControl::updateResult(int index, int result)
 {
 	auto &taskInfo = this->taskResultList[index];
 	taskInfo.second = (TrainDataManager::TaskResult)result;
 	this->manager->completeTasks(taskInfo.first, taskInfo.second);
 	emit resultListChanged();
+}
+
+void ResultControl::doInit()
+{
+	this->manager->loadTaskResults(true);
 }
 
 void ResultControl::taskResultsLoaded(const QList<TrainDataManager::ResultInfo> &resultList)

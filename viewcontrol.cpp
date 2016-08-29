@@ -3,16 +3,30 @@
 
 ViewControl::ViewControl(QObject *parent) :
 	QObject(parent),
-	manager(App::instance()->trainManager())
+	manager(App::instance()->trainManager()),
+	isActive(false)
 {
 	connect(this->manager, &TrainDataManager::resetDone,
-			this, &ViewControl::initialize,
+			this, &ViewControl::completeReset,
 			Qt::QueuedConnection);
 }
 
 QStringList ViewControl::menuActions() const
 {
 	return this->actions;
+}
+
+void ViewControl::initialize()
+{
+	if(!this->isActive) {
+		this->doInit();
+		this->isActive = true;
+	}
+}
+
+void ViewControl::finalize()
+{
+	this->isActive = false;
 }
 
 void ViewControl::triggerAction(int index)
@@ -30,4 +44,10 @@ void ViewControl::addAction(int id, const QString &action)
 void ViewControl::actionTriggered(int id)
 {
 	Q_UNUSED(id);
+}
+
+void ViewControl::completeReset()
+{
+	if(this->isActive)
+		this->doInit();
 }

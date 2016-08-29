@@ -35,4 +35,6 @@ Page {
         control.menuActionsChanged.connect(p.reloadMenu);
         p.reloadMenu();
     }
+
+	Component.onDestruction: control.finalize()
 }

@@ -14,14 +14,14 @@ class CreateTaskControl : public ViewControl
 public:
 	explicit CreateTaskControl(QObject *parent = nullptr);
 
-public slots:
-	void initialize() override;
-
 	void createTask(const QString &name, int baseCount, double factor);
 
 signals:
 	void freeTasksChanged();
 	void nextIsAgilityChanged();
+
+protected:
+	void doInit() override;
 
 private slots:
 	void freeTasksLoaded(int freeTasks, bool isAgility);

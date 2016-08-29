@@ -11,11 +11,6 @@ CreateTaskControl::CreateTaskControl(QObject *parent) :
 			Qt::QueuedConnection);
 }
 
-void CreateTaskControl::initialize()
-{
-	this->manager->loadFreeTasks();
-}
-
 void CreateTaskControl::createTask(const QString &name, int baseCount, double factor)
 {
 	QSharedPointer<TrainTask> task;
@@ -24,6 +19,11 @@ void CreateTaskControl::createTask(const QString &name, int baseCount, double fa
 	else
 		task.reset(new TrainTask(name, TrainTask::StrengthTask, baseCount, factor));
 	this->manager->addTask(task);
+}
+
+void CreateTaskControl::doInit()
+{
+	this->manager->loadFreeTasks();
 }
 
 void CreateTaskControl::freeTasksLoaded(int freeTasks, bool isAgility)

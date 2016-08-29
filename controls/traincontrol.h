@@ -20,13 +20,14 @@ public:
 	bool allDone() const;
 
 public slots:
-	void initialize() override;
-
 	void completeTraining();
 
 signals:
 	void allDoneChanged();	
 	void trainingAllowedChanged(bool trainingAllowed);
+
+protected:
+	void doInit() override;
 
 private slots:
 	void updateAllowed(bool allowed);
