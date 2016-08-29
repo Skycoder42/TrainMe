@@ -21,6 +21,12 @@ App::App(int argc, char *argv[]) :
 	createTaskControl(nullptr),
 	isValid(false)
 {
+	QGuiApplication::setApplicationName(QStringLiteral(TARGET));
+	QGuiApplication::setApplicationVersion(QStringLiteral(VERSION));
+	QGuiApplication::setOrganizationName(QStringLiteral(COMPANY));
+	QGuiApplication::setOrganizationDomain(QStringLiteral("com.Skycoder42"));
+	QGuiApplication::setApplicationDisplayName(tr("Train Me!"));
+
 	this->registerTypes();
 	this->setupEngine();
 
@@ -78,7 +84,7 @@ void App::setupEngine()
 	//load dpi selector
 	QQmlFileSelector *selector = QQmlFileSelector::get(this->engine);
 #ifdef Q_OS_ANDROID
-	auto dpi = 3.0;
+	auto dpi = 3.0;//TODO load from java
 #elif defined(Q_OS_WIN)
 	auto dpiBase = QGuiApplication::primaryScreen()->logicalDotsPerInch();
 	auto dpi = dpiBase / 96.0;

@@ -11,7 +11,7 @@ ApplicationWindow {
 	visible: true
 	width: 700
 	height: 500
-	title: qsTr("Train Me")
+	title: qsTr("Train Me!")
 
 	readonly property bool isSmall: root.height > root.width
 
@@ -47,7 +47,7 @@ ApplicationWindow {
 				id: titleLabel
 				font.pointSize: 20
 				font.bold: app.testStyle("Material")
-				text: qsTr("Train Me")
+				text: qsTr("Train Me!")
 				elide: Label.ElideRight
 				horizontalAlignment: Qt.AlignLeft
 				verticalAlignment: Qt.AlignVCenter
@@ -105,9 +105,9 @@ ApplicationWindow {
 			function setPage(index, model) {
 				if(typeof model == "undefined")
 					model = drawerListView.model.get(index);
+				stackView.replace(model.source);
 				drawerListView.currentIndex = index;
 				titleLabel.updateText(model.title);
-				stackView.replace(model.source);
 			}
 
 			delegate: ItemDelegate {

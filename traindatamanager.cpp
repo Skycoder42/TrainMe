@@ -64,6 +64,7 @@ void TrainDataManager::initManager()
 			else if (this->loadMissingTasks())
 				initIndex = 2;
 
+			qDebug() << initIndex;
 			emit managerReady(initIndex);
 		} else {
 			emit managerMessage(tr("Fatal Error!"),
@@ -536,6 +537,7 @@ bool TrainDataManager::testHasMissingDates()
 				if(date != nextDate)
 					return true;
 			}
+			return false;
 		} else
 			return false;
 	} else
