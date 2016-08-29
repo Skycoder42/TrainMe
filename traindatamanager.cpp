@@ -48,9 +48,9 @@ void TrainDataManager::initManager()
 		const QDir dir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
 		dir.mkpath(QStringLiteral("."));
 		const auto dbName = dir.absoluteFilePath(QStringLiteral("train.db"));
-#ifndef QT_NO_DEBUG
-		qDebug() << "db replaced:" << QFile::remove(dbName);
-#endif
+//#ifndef QT_NO_DEBUG
+//		qDebug() << "db replaced:" << QFile::remove(dbName);
+//#endif
 		if(QFile::copy(QStringLiteral(":/train_struct.sqlite"), dbName))
 			QFile::setPermissions(dbName, QFileDevice::ReadUser | QFileDevice::WriteUser);
 

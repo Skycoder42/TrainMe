@@ -126,9 +126,10 @@ ApplicationWindow {
 				ListElement { title: qsTr("Manage Results"); source: "qrc:/qml/pages/ResultPage.qml" }
 				ListElement { title: qsTr("Create Tasks"); source: "qrc:/qml/pages/CreateTaskPage.qml" }
 				ListElement { title: qsTr("Configure Weekplan"); source: "qrc:/qml/pages/ConfigWeekPage.qml" }
-				ListElement { title: qsTr("Configure Reminders"); source: "qrc:/qml/pages/ControlPage.qml" }
-				ListElement { title: qsTr("Settings"); source: "qrc:/qml/pages/ControlPage.qml" }
-				ListElement { title: qsTr("Motivate Me!"); source: "qrc:/qml/pages/MotivatePage.qml" }
+				ListElement { title: qsTr("Configure Reminders"); }//source: "qrc:/qml/pages/ControlPage.qml" }
+				ListElement { title: qsTr("Settings"); }//source: "qrc:/qml/pages/ControlPage.qml" }
+				ListElement { title: qsTr("Motivate Me!"); }//source: "qrc:/qml/pages/MotivatePage.qml" }
+				ListElement { title: qsTr("God Mode"); }//source: "qrc:/qml/pages/ControlPage.qml" }
 			}
 
 			ScrollIndicator.vertical: ScrollIndicator { }
