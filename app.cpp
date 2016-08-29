@@ -27,8 +27,8 @@ App::App(int argc, char *argv[]) :
 	connect(this->manager, &TrainDataManager::managerReady,
 			this, &App::startupCompleted,
 			Qt::QueuedConnection);
-	connect(this->manager, &TrainDataManager::managerError,
-			this, &App::managerError,
+	connect(this->manager, &TrainDataManager::managerMessage,
+			this, &App::errorMessage,
 			Qt::QueuedConnection);
 
 	this->createControls();
@@ -56,15 +56,6 @@ bool App::startupOk()
 bool App::testStyle(const QString &styleName) const
 {
 	return QQuickStyle::name() == styleName;
-}
-
-void App::managerError(const QString &errorString, bool isFatal, const QString &title)
-{
-	emit errorMessage(title.isEmpty() ?
-						  (isFatal ? tr("Fatal Database Error!") : tr("Database Error")) :
-						  title,
-					  errorString,
-					  isFatal);
 }
 
 void App::registerTypes()

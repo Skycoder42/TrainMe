@@ -12,4 +12,13 @@ Control {
 		else
 			return "transparent"
 	}
+
+	readonly property color primaryColor: {
+		if(app.testStyle("Material"))
+			return Material.primary;
+		else if(app.testStyle("Universal"))
+			return Universal.accent;
+		else
+			return "transparent"
+	}
 }

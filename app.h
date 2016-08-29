@@ -31,9 +31,6 @@ signals:
 	void startupCompleted(int startIndex);
 	void errorMessage(const QString &title, const QString &message, bool isFatal);
 
-public slots:
-	void managerError(const QString &errorString, bool isFatal, const QString &title = QString());
-
 private:
 	TrainDataManager *manager;
 	QQmlApplicationEngine *engine;

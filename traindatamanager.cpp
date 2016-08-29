@@ -12,10 +12,6 @@ TrainDataManager::TrainDataManager(QObject *parent) :
 	dbThread(new QThreadPool(this))
 {
 	this->dbThread->setMaxThreadCount(1);
-	//DEBUG
-	connect(this, &TrainDataManager::managerError, this, [](QString error) {
-		qDebug() << error;
-	});
 }
 
 TrainDataManager::~TrainDataManager()
@@ -69,16 +65,17 @@ void TrainDataManager::initManager()
 				initIndex = 2;
 
 			emit managerReady(initIndex);
-		} else
-			emit managerError(tr("Unable to load database from \"%1\"").arg(dbName), true);
+		} else {
+			emit managerMessage(tr("Fatal Error!"),
+								tr("Unable to load database from \"%1\"").arg(dbName),
+								true);
+		}
 	});
 }
 
 void TrainDataManager::loadTrainingAllowed()
 {
-	QtConcurrent::run(this->dbThread, [=](){
-		emit operationStarted();
-
+	this->executeAsync([=](){
 		QSqlQuery query(this->database);
 		query.prepare(QStringLiteral("SELECT * FROM TaskCalendar "
 									 "WHERE Date = ?"));
@@ -86,28 +83,24 @@ void TrainDataManager::loadTrainingAllowed()
 		if(query.exec()) {
 			if(query.first()) {
 				emit traingAllowedLoaded(false);
-				emit managerError(tr("You have already trained today! Rest and save your energy for tomorrow!"),
-								  false,
-								  tr("Training not allowed"));
+				emit managerMessage(tr("Training not allowed"),
+									tr("You have already trained today! Rest and save your energy for tomorrow!"),
+									false);
 			} else if(this->testHasMissingTasks()) {
 				emit traingAllowedLoaded(false);
-				emit managerError(tr("You must add new task before you can start training!"),
-								  false,
-								  tr("Training not allowed"));
+				emit managerMessage(tr("Training not allowed"),
+									tr("You must add new task before you can start training!"),
+									false);
 			} else
 				emit traingAllowedLoaded(true);
 		} else
-			emit managerError(query.lastError().text(), true);
-
-		emit operationCompleted();
+			throw query.lastError();
 	});
 }
 
 void TrainDataManager::loadAllTasks()
 {
-	QtConcurrent::run(this->dbThread, [=](){
-		emit operationStarted();
-
+	this->executeAsync([=](){
 		int penalty;
 		bool forAgility;
 		QSqlQuery penaltyQuery(this->database);
@@ -116,11 +109,8 @@ void TrainDataManager::loadAllTasks()
 			penalty = qRound(penaltyQuery.record().value(QStringLiteral("PenaltyFactor")).toDouble() *
 							 penaltyQuery.record().value(QStringLiteral("PenaltyCount")).toInt());
 			forAgility = penaltyQuery.record().value(QStringLiteral("AgilityPenalties")).toBool();
-		} else {
-			emit managerError(penaltyQuery.lastError().text(), true);
-			emit operationCompleted();
-			return;
-		}
+		} else
+			throw penaltyQuery.lastError();
 
 		QSqlQuery strengthQuery(this->database);
 		strengthQuery.prepare(QStringLiteral("SELECT * FROM StrengthTasks"));
@@ -137,7 +127,7 @@ void TrainDataManager::loadAllTasks()
 			}
 			emit tasksLoaded(TrainTask::StrengthTask, resList);
 		} else
-			emit managerError(strengthQuery.lastError().text(), true);
+			throw strengthQuery.lastError();
 
 		QSqlQuery agilityQuery(this->database);
 		agilityQuery.prepare(QStringLiteral("SELECT * FROM AgilityTasks"));
@@ -154,17 +144,13 @@ void TrainDataManager::loadAllTasks()
 			}
 			emit tasksLoaded(TrainTask::AgilityTask, resList);
 		} else
-			emit managerError(agilityQuery.lastError().text(), true);
-
-		emit operationCompleted();
+			throw agilityQuery.lastError();
 	});
 }
 
 void TrainDataManager::loadTaskResults(bool fillDates)
 {
-	QtConcurrent::run(this->dbThread, [=](){
-		emit operationStarted();
-
+	this->executeAsync([=](){
 		QSqlQuery query(this->database);
 		query.prepare(QStringLiteral("SELECT * FROM TaskCalendar "
 									 "ORDER BY Date ASC"));
@@ -188,17 +174,13 @@ void TrainDataManager::loadTaskResults(bool fillDates)
 
 			emit taskResultsLoaded(resList);
 		} else
-			emit managerError(query.lastError().text(), true);
-
-		emit operationCompleted();
+			throw query.lastError();
 	});
 }
 
 void TrainDataManager::loadWeekConfig()
 {
-	QtConcurrent::run(this->dbThread, [=](){
-		emit operationStarted();
-
+	this->executeAsync([=](){
 		QSqlQuery loadTrainMapQuery(this->database);
 		loadTrainMapQuery.prepare(QStringLiteral("SELECT * FROM TrainMap"));
 		if(loadTrainMapQuery.exec()) {
@@ -212,7 +194,7 @@ void TrainDataManager::loadWeekConfig()
 			}
 			emit weekConfigLoaded(config);
 		} else
-			emit managerError(loadTrainMapQuery.lastError().text(), true);
+			throw loadTrainMapQuery.lastError();
 
 		QSqlQuery loadExtraQuery(this->database);
 		loadExtraQuery.prepare(QStringLiteral("SELECT PenaltyFactor, MaxFreeDays, AgilityPenalties "
@@ -222,17 +204,13 @@ void TrainDataManager::loadWeekConfig()
 									loadExtraQuery.record().value(QStringLiteral("MaxFreeDays")).toInt(),
 									loadExtraQuery.record().value(QStringLiteral("AgilityPenalties")).toBool());
 		} else
-			emit managerError(loadExtraQuery.lastError().text(), true);
-
-		emit operationCompleted();
+			throw loadExtraQuery.lastError();
 	});
 }
 
 void TrainDataManager::updateWeekConfigIncrement(Qt::DayOfWeek dayOfWeek, int increment)
 {
-	QtConcurrent::run(this->dbThread, [=](){
-		emit operationStarted();
-
+	this->executeAsync([=](){
 		QSqlQuery query(this->database);
 		query.prepare(QStringLiteral("UPDATE TrainMap "
 									 "SET Increase = ? "
@@ -240,17 +218,13 @@ void TrainDataManager::updateWeekConfigIncrement(Qt::DayOfWeek dayOfWeek, int in
 		query.bindValue(0, increment);
 		query.bindValue(1, dayOfWeek);
 		if(!query.exec())
-			emit managerError(query.lastError().text(), true);
-
-		emit operationCompleted();
+			throw query.lastError();
 	});
 }
 
 void TrainDataManager::updateWeekConfigAddTask(Qt::DayOfWeek dayOfWeek, bool addTask)
 {
-	QtConcurrent::run(this->dbThread, [=](){
-		emit operationStarted();
-
+	this->executeAsync([=](){
 		QSqlQuery query(this->database);
 		query.prepare(QStringLiteral("UPDATE TrainMap "
 									 "SET AddTask = ? "
@@ -258,71 +232,52 @@ void TrainDataManager::updateWeekConfigAddTask(Qt::DayOfWeek dayOfWeek, bool add
 		query.bindValue(0, addTask);
 		query.bindValue(1, dayOfWeek);
 		if(!query.exec())
-			emit managerError(query.lastError().text(), true);
-
-		emit operationCompleted();
+			throw query.lastError();
 	});
 }
 
 void TrainDataManager::updatePenaltyFactor(double penaltyFactor)
 {
-	QtConcurrent::run(this->dbThread, [=](){
-		emit operationStarted();
-
+	this->executeAsync([=](){
 		QSqlQuery query(this->database);
 		query.prepare(QStringLiteral("UPDATE Meta SET PenaltyFactor = ?"));
 		query.bindValue(0, penaltyFactor);
 		if(!query.exec())
-			emit managerError(query.lastError().text(), true);
-
-		emit operationCompleted();
+			throw query.lastError();
 	});
 }
 
 void TrainDataManager::updateMaxFreeDays(int maxFreeDays)
 {
-	QtConcurrent::run(this->dbThread, [=](){
-		emit operationStarted();
-
+	this->executeAsync([=](){
 		QSqlQuery query(this->database);
 		query.prepare(QStringLiteral("UPDATE Meta SET MaxFreeDays = ?"));
 		query.bindValue(0, maxFreeDays);
 		if(!query.exec())
-			emit managerError(query.lastError().text(), true);
-
-		emit operationCompleted();
+			throw query.lastError();
 	});
 }
 
 void TrainDataManager::updateAgilityPenalties(bool agilityPenalties)
 {
-	QtConcurrent::run(this->dbThread, [=](){
-		emit operationStarted();
-
+	this->executeAsync([=](){
 		QSqlQuery query(this->database);
 		query.prepare(QStringLiteral("UPDATE Meta SET AgilityPenalties = ?"));
 		query.bindValue(0, agilityPenalties);
 		if(!query.exec())
-			emit managerError(query.lastError().text(), true);
-
-		emit operationCompleted();
+			throw query.lastError();
 	});
 }
 
 void TrainDataManager::restoreWeekDefaults()
 {
-	QtConcurrent::run(this->dbThread, [=](){
-		emit operationStarted();
-
+	this->executeAsync([=](){
 		QSqlQuery queryMap(this->database);
 		queryMap.prepare(QStringLiteral("UPDATE TrainMap "
 										"SET Increase = ((Weekday % 2 = 1) AND (NOT Weekday = 1)), "
 										"AddTask = (Weekday = 1);"));
-		if(!queryMap.exec()){
-			emit managerError(queryMap.lastError().text(), true);
-			emit operationCompleted();
-			return;
-		}
+		if(!queryMap.exec())
+			throw queryMap.lastError();
 
 		QSqlQuery queryMeta(this->database);
 		queryMeta.prepare(QStringLiteral("UPDATE Meta "
@@ -332,33 +287,26 @@ void TrainDataManager::restoreWeekDefaults()
 		if(queryMeta.exec())
 			emit resetDone();
 		else
-			emit managerError(queryMeta.lastError().text(), true);
-
-		emit operationCompleted();
+			throw queryMeta.lastError();
 	});
 }
 
 void TrainDataManager::loadFreeTasks()
 {
-	QtConcurrent::run(this->dbThread, [=](){
-		emit operationStarted();
-
+	this->executeAsync([=](){
 		bool isAgilityTask;
 		auto count = this->loadMissingTasks(&isAgilityTask);
 		emit freeTasksLoaded(count, isAgilityTask);
-
-		emit operationCompleted();
 	});
 }
 
 void TrainDataManager::addTask(const QSharedPointer<TrainTask> &task)
 {
-	QtConcurrent::run(this->dbThread, [=](){
-		emit operationStarted();
-
+	this->executeAsync([=](){
 		int baseCount;
 		double factor;
 		task->elements(baseCount, factor);
+
 		QSqlQuery query(this->database);
 		if(task->taskType() == TrainTask::StrengthTask) {
 			query.prepare(QStringLiteral("INSERT INTO StrengthTasks "
@@ -374,23 +322,20 @@ void TrainDataManager::addTask(const QSharedPointer<TrainTask> &task)
 			query.bindValue(0, task->name());
 			query.bindValue(1, baseCount);
 		}
+
 		if(!query.exec())
-			emit managerError(query.lastError().text(), false);
+			throw query.lastError();
 		else {
 			bool isAgilityTask;
 			auto count = this->loadMissingTasks(&isAgilityTask);
 			emit freeTasksLoaded(count, isAgilityTask);
 		}
-
-		emit operationCompleted();
 	});
 }
 
 void TrainDataManager::completeTasks(const QDate &date, TrainDataManager::TaskResult result)
 {
-	QtConcurrent::run(this->dbThread, [=]() {
-		emit operationStarted();
-
+	this->executeAsync([=](){
 		QSqlQuery query(this->database);
 		query.prepare(QStringLiteral("INSERT INTO TaskCalendar "
 									 "(Date, Result) "
@@ -399,7 +344,7 @@ void TrainDataManager::completeTasks(const QDate &date, TrainDataManager::TaskRe
 		query.bindValue(1, (int)result);
 
 		if(!query.exec())
-			emit managerError(query.lastError().text(), false);
+			throw query.lastError();
 		else {
 			switch(result) {
 			case Done:
@@ -421,16 +366,33 @@ void TrainDataManager::completeTasks(const QDate &date, TrainDataManager::TaskRe
 			{
 				auto leftFreeDays = this->addFree(date);
 				if(leftFreeDays >= 0)
-					emit managerError(tr("Free days left: %L1").arg(leftFreeDays), false, tr("Free Days"));
+					emit managerMessage(tr("Free Days"), tr("Free days left: %L1").arg(leftFreeDays), false);
 				else {
 					this->addPenalty(-leftFreeDays);
-					emit managerError(tr("You have %L1 more free days then allowed! This will add penalty!").arg(-leftFreeDays), false, tr("Free Days"));
+					emit managerMessage(tr("Free Days"),
+										tr("You have %L1 more free days then allowed! This will add penalty!")
+										.arg(-leftFreeDays),
+										false);
 				}
 				break;
 			}
 			default:
 				Q_UNREACHABLE();
 			}
+		}
+	});
+}
+
+void TrainDataManager::executeAsync(const std::function<void ()> &fn)
+{
+	QtConcurrent::run(this->dbThread, [=](){
+		emit operationStarted();
+
+		try {
+			fn();
+		} catch(QSqlError &error) {
+			qCritical(qPrintable(error.text()));
+			emit managerMessage(tr("Database Error!"), error.text(), true);//DEBUG what here?
 		}
 
 		emit operationCompleted();
@@ -445,7 +407,7 @@ void TrainDataManager::recalcScores(const QDate &date)
 										"WHERE Weekday = ?"));
 	dayInfoQuery.bindValue(0, date.addDays(1).dayOfWeek());
 	if(!dayInfoQuery.exec())
-		emit managerError(dayInfoQuery.lastError().text(), false);
+		throw dayInfoQuery.lastError();
 	else if(dayInfoQuery.first()) {
 		auto increase = dayInfoQuery.value(QStringLiteral("Increase")).toInt();
 		if(increase > 0) {
@@ -453,14 +415,14 @@ void TrainDataManager::recalcScores(const QDate &date)
 			updateScoreQuery.prepare(QStringLiteral("UPDATE Meta SET Score = Score + ?"));
 			updateScoreQuery.bindValue(0, increase);
 			if(!updateScoreQuery.exec())
-				emit managerError(updateScoreQuery.lastError().text(), false);
+				throw updateScoreQuery.lastError();
 		}
 
 		if(dayInfoQuery.value(QStringLiteral("AddTask")).toBool()) {
 			QSqlQuery addTaskQuery(this->database);
 			addTaskQuery.prepare(QStringLiteral("UPDATE Meta SET TaskCount = TaskCount + 1"));
 			if(!addTaskQuery.exec())
-				emit managerError(addTaskQuery.lastError().text(), false);
+				throw addTaskQuery.lastError();
 		}
 	}
 
@@ -474,9 +436,9 @@ void TrainDataManager::recalcScores(const QDate &date)
 												"WHERE Increment < ?"));
 		updateTasksQuery.bindValue(0, score);
 		if(!updateTasksQuery.exec())
-			emit managerError(updateTasksQuery.lastError().text(), false);
+			throw updateTasksQuery.lastError();
 	} else
-		emit managerError(loadScoreQuery.lastError().text(), false);
+		throw loadScoreQuery.lastError();
 }
 
 void TrainDataManager::addPenalty(int amount)
@@ -485,7 +447,7 @@ void TrainDataManager::addPenalty(int amount)
 	query.prepare(QStringLiteral("UPDATE Meta SET PenaltyCount = PenaltyCount + ?"));
 	query.bindValue(0, amount);
 	if(!query.exec())
-		emit managerError(query.lastError().text(), false);
+		throw query.lastError();
 }
 
 int TrainDataManager::addFree(const QDate &date)
@@ -497,11 +459,8 @@ int TrainDataManager::addFree(const QDate &date)
 									   "  WHERE Year = :year"
 									   "), 0) + 1);"));
 	updateQuery.bindValue(QStringLiteral(":year"), date.year());
-	if(!updateQuery.exec()) {
-		emit managerError(updateQuery.lastError().text(), false);
-		return 0;
-	}
-
+	if(!updateQuery.exec())
+		throw updateQuery.lastError();
 
 	QSqlQuery statusQuery(this->database);
 	statusQuery.prepare(QStringLiteral("SELECT ("
@@ -511,10 +470,8 @@ int TrainDataManager::addFree(const QDate &date)
 	statusQuery.bindValue(0, date.year());
 	if(statusQuery.exec() && statusQuery.first())
 		return statusQuery.record().value(QStringLiteral("Result")).toInt();
-	else {
-		emit managerError(statusQuery.lastError().text(), false);
-		return 0;
-	}
+	else
+		throw statusQuery.lastError();
 }
 
 void TrainDataManager::resetPenalty(bool reduceOnly)
@@ -525,7 +482,7 @@ void TrainDataManager::resetPenalty(bool reduceOnly)
 	else
 		query.prepare(QStringLiteral("UPDATE Meta SET PenaltyCount = 0"));
 	if(!query.exec())
-		emit managerError(query.lastError().text(), false);
+		throw query.lastError();
 }
 
 int TrainDataManager::loadMissingTasks(bool *isAgilityTask)
@@ -535,30 +492,24 @@ int TrainDataManager::loadMissingTasks(bool *isAgilityTask)
 	reqCountQuery.prepare(QStringLiteral("SELECT TaskCount FROM Meta"));
 	if(reqCountQuery.exec() && reqCountQuery.first())
 		taskCount = reqCountQuery.record().value(QStringLiteral("TaskCount")).toInt();
-	else {
-		emit managerError(reqCountQuery.lastError().text(), true);
-		return false;
-	}
+	else
+		throw reqCountQuery.lastError();
 
 	int strCount;
 	QSqlQuery strCountQuery(this->database);
 	strCountQuery.prepare(QStringLiteral("SELECT COUNT(*) AS TaskCount FROM StrengthTasks"));
 	if(strCountQuery.exec() && strCountQuery.first())
 		strCount = strCountQuery.record().value(QStringLiteral("TaskCount")).toInt();
-	else {
-		emit managerError(strCountQuery.lastError().text(), true);
-		return false;
-	}
+	else
+		throw strCountQuery.lastError();
 
 	int aglCount;
 	QSqlQuery aglCountQuery(this->database);
 	aglCountQuery.prepare(QStringLiteral("SELECT COUNT(*) AS TaskCount FROM AgilityTasks"));
 	if(aglCountQuery.exec() && aglCountQuery.first())
 		aglCount = aglCountQuery.record().value(QStringLiteral("TaskCount")).toInt();
-	else {
-		emit managerError(aglCountQuery.lastError().text(), true);
-		return false;
-	}
+	else
+		throw aglCountQuery.lastError();
 
 	if(isAgilityTask)
 		*isAgilityTask = strCount > aglCount;
@@ -585,9 +536,8 @@ bool TrainDataManager::testHasMissingDates()
 				if(date != nextDate)
 					return true;
 			}
-		}
+		} else
+			return false;
 	} else
-		emit managerError(query.lastError().text(), true);
-
-	return false;
+		throw query.lastError();
 }

@@ -15,7 +15,7 @@ ControlPage {
 			spacing: 14
 
 			Label {
-				text: qsTr("Task to create: <b>%1</b>").arg(createTaskControl.freeTasks)
+				text: qsTr("Tasks to create: <b>%1</b>").arg(createTaskControl.freeTasks)
 				font.pointSize: 16
 				Layout.fillWidth: true
 			}

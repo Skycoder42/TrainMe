@@ -7,6 +7,7 @@
 #include <QDateTime>
 #include <QSharedPointer>
 #include <QThreadPool>
+#include <functional>
 #include "traintask.h"
 
 class TrainDataManager : public QObject
@@ -63,7 +64,7 @@ public slots:
 signals:
 	//special
 	void managerReady(int startIndex);
-	void managerError(const QString &error, bool isFatal, const QString &title = QString());//TODO as exception
+	void managerMessage(const QString &title, const QString &message, bool isFatalError);
 	void operationStarted();
 	void operationCompleted();
 
@@ -88,7 +89,7 @@ private:
 	QSqlDatabase database;
 	mutable QThreadPool *dbThread;
 
-	void raiseError(const QSqlQuery &query);
+	void executeAsync(const std::function<void()> &fn);
 
 	void recalcScores(const QDate &date);
 	void addPenalty(int amount = 1);

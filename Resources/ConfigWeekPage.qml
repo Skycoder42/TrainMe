@@ -51,7 +51,7 @@ ControlPage {
 		anchors.right: parent.right
 		anchors.top: rowLayout.bottom
 		height: 1
-		color: globalStyleAccess.accentColor
+		color: globalStyleAccess.primaryColor
 	}
 
     ListView {
@@ -93,7 +93,7 @@ ControlPage {
 
 			Rectangle {
 				height: 1
-				color: globalStyleAccess.accentColor
+				color: globalStyleAccess.primaryColor
 				Layout.fillWidth: true
 			}
 
