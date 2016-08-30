@@ -14,6 +14,7 @@ class CreateTaskControl : public ViewControl
 public:
 	explicit CreateTaskControl(QObject *parent = nullptr);
 
+public slots:
 	void createTask(const QString &name, int baseCount, double factor);
 
 signals:
