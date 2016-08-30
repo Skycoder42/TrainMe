@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <!-- inherit from the material theme -->
   <style name="TrainMeTheme" parent="android:Theme.Material.Light">
 	<item name="android:colorPrimary">#F44336</item>
 	<item name="android:colorPrimaryDark">#D32F2F</item>
 	<item name="android:colorAccent">#00BCD4</item>
 	<item name="android:windowBackground">@drawable/splash</item>
+	<item name="android:textColorPrimary">#FFFFFF</item>
   </style>
 </resources>
