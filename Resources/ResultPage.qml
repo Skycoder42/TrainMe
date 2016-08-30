@@ -10,6 +10,11 @@ ControlPage {
 
 	control: resultControl
 
+//	Calendar {
+//		id: cal
+//		anchors.centerIn: parent
+//	}
+
 	ListView {
 		id: trainList
 
@@ -23,8 +28,8 @@ ControlPage {
 			width: parent.width
 			text: modelData
 
-            highlighted: editBox.currentIndex == index
-            down: pressed && !highlighted && resultControl.isEditable(index)
+			highlighted: editBox.currentIndex == index
+			down: pressed && !highlighted && resultControl.isEditable(index)
 
 			onClicked: {
 				if(resultControl.isEditable(index))

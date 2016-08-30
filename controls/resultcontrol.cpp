@@ -7,6 +7,8 @@ ResultControl::ResultControl(QObject *parent) :
 	connect(this->manager, &TrainDataManager::taskResultsLoaded,
 			this, &ResultControl::taskResultsLoaded,
 			Qt::QueuedConnection);
+
+	this->addAction(0, tr("Create Result"));
 }
 
 QStringList ResultControl::resultList() const
@@ -45,6 +47,11 @@ void ResultControl::updateResult(int index, int result)
 void ResultControl::doInit()
 {
 	this->manager->loadTaskResults(true);
+}
+
+void ResultControl::actionTriggered(int id)
+{
+
 }
 
 void ResultControl::taskResultsLoaded(const QList<TrainDataManager::ResultInfo> &resultList)

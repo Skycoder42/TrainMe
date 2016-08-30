@@ -28,6 +28,7 @@ signals:
 
 protected:
 	void doInit() override;
+	void actionTriggered(int id) override;
 
 private slots:
 	void taskResultsLoaded(const QList<TrainDataManager::ResultInfo> &resultList);
