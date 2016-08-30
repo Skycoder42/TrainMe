@@ -66,6 +66,20 @@ DISTFILES += \
     android/gradle/wrapper/gradle-wrapper.properties \
     android/gradlew.bat \
     android/src/com/Skycoder42/TrainMe/MainActivity.java \
-    android/res/values/styles.xml
+    android/res/values/styles.xml \
+    android/res/drawable-hdpi/icon.png \
+    android/res/drawable-hdpi/splash.9.png \
+    android/res/drawable-ldpi/icon.png \
+    android/res/drawable-ldpi/splash.9.png \
+    android/res/drawable-mdpi/icon.png \
+    android/res/drawable-mdpi/splash.9.png \
+    android/res/drawable-xhdpi/icon.png \
+    android/res/drawable-xhdpi/splash.9.png \
+    android/res/drawable-xxhdpi/icon.png \
+    android/res/drawable-xxhdpi/splash.9.png \
+    android/res/drawable-xxxhdpi/icon.png \
+    android/res/drawable-xxxhdpi/splash.9.png \
+    muscle-flex-outline.svg \
+    up-arrow.svg
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android

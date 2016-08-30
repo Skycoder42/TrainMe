@@ -35,3 +35,9 @@ Makefile*
 
 doc_generated
 *.qm
+
+#Android
+gradle.properties
+gradle.properties~
+local.properties
+local.properties~
