@@ -44,6 +44,12 @@ void ResultControl::updateResult(int index, int result)
 	emit resultListChanged();
 }
 
+void ResultControl::createResult(const QDateTime &date, int result)
+{
+	this->manager->completeTasks(date.date(), (TrainDataManager::TaskResult)result);
+	this->doInit();
+}
+
 void ResultControl::doInit()
 {
 	this->manager->loadTaskResults(true);
@@ -51,7 +57,8 @@ void ResultControl::doInit()
 
 void ResultControl::actionTriggered(int id)
 {
-
+	if(id == 0)
+		emit createNewEntry();
 }
 
 void ResultControl::taskResultsLoaded(const QList<TrainDataManager::ResultInfo> &resultList)

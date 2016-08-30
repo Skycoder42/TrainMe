@@ -66,7 +66,7 @@ Popup {
 	QtObject {
 		id: p
 
-		property int boxWidth: Math.min(250, messageBox.parent.width - 42)
+		property int boxWidth: Math.min(300, messageBox.parent.width - 42)
 		property bool closedByAction : false
 		property bool hasText: contentLabel.text ? contentLabel.text.length > 0 : false
 	}

@@ -15,6 +15,8 @@ ApplicationWindow {
 
 	readonly property bool isSmall: root.height > root.width
 
+	//TODO android back button behavior
+
 	Material.theme: Material.Light
 	Material.primary: Material.color(Material.Red, Material.Shade500)
 	Material.accent: Material.color(Material.Cyan, Material.Shade500)

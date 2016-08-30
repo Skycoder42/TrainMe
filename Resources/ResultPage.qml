@@ -10,11 +10,6 @@ ControlPage {
 
 	control: resultControl
 
-//	Calendar {
-//		id: cal
-//		anchors.centerIn: parent
-//	}
-
 	ListView {
 		id: trainList
 
@@ -55,6 +50,11 @@ ControlPage {
 		}
 	}
 
+	Connections {
+		target: resultControl
+		onCreateNewEntry: editBox.showBoxCreate();
+	}
+
 	MessageBox {
 		id: editBox
 
@@ -64,43 +64,78 @@ ControlPage {
 
 		property int currentIndex: -1
 		property int comboValue: -1
+		property bool isNewDate: false
+		property date currentDate
 
 		function showBox(modelIndex) {
 			editBox.currentIndex = modelIndex;
 			editBox.messageContentItem.currentIndex = 1;
+			editBox.isNewDate = false;
 			editBox.open();
 		}
 
-		onPositiveAction: resultControl.updateResult(editBox.currentIndex, editBox.comboValue)
+		function showBoxCreate() {
+			editBox.currentIndex = -1;
+			editBox.messageContentItem.currentIndex = 1;
+			editBox.messageContentItem.resetDate();
+			editBox.isNewDate = true;
+			editBox.open();
+		}
+
+		onPositiveAction: {
+			if(editBox.isNewDate)
+				resultControl.createResult(editBox.currentDate, editBox.comboValue);
+			else
+				resultControl.updateResult(editBox.currentIndex, editBox.comboValue);
+		}
 
 		onClosed: editBox.currentIndex = -1
 
-		messageContent: ComboBox {
-			id: comboBox
-			textRole: "key"
+		messageContent: ColumnLayout {
+			spacing: 14
 
-			model: ListModel {
-				id: resultModel
+			property alias currentIndex: comboBox.currentIndex
+
+			function resetDate() {
+				cal.currentDate = cal.today();
 			}
 
-			onCurrentIndexChanged: editBox.comboValue = model.get(comboBox.currentIndex).value
+			Calendar {
+				id: cal
+				visible: editBox.isNewDate
+				Layout.fillWidth: true
 
-			Component.onCompleted: {
-				for(var i = 0; i < 6; i++)
-					resultModel.append({"key": app.trainManager.trResult(i), "value": i});
+				onCurrentDateChanged: editBox.currentDate = cal.currentDate
+			}
 
-				if(app.testStyle("Universal")) {
-					popup.y = Qt.binding(function() {
-						return -1 * comboBox.currentIndex * referenceDelegate.implicitHeight
-					});
+			ComboBox {
+				id: comboBox
+				textRole: "key"
+				Layout.fillWidth: true
+
+				model: ListModel {
+					id: resultModel
 				}
-			}
 
-			//reference
-			ItemDelegate {
-				id:referenceDelegate
-				visible: false
-				text: "placeholder"
+				onCurrentIndexChanged: editBox.comboValue = model.get(comboBox.currentIndex).value
+
+				Component.onCompleted: {
+					for(var i = 0; i < 6; i++)
+						resultModel.append({"key": app.trainManager.trResult(i), "value": i});
+
+					if(app.testStyle("Universal")) {
+						popup.y = Qt.binding(function() {
+							return -1 * comboBox.currentIndex * referenceDelegate.implicitHeight
+						});
+					}
+				}
+
+				//reference
+				ItemDelegate {
+					id:referenceDelegate
+					visible: false
+					text: "placeholder"
+				}
 			}
 		}
 	}

@@ -8,18 +8,18 @@ ListView {
 
 	property date firstDate: new Date(1970, 0, 1)
 	property date lastDate: new Date(9999, 11, 31)
-	property date currentDate: p.today();
+	property date currentDate: calenderList.today();
+
+	function today() {
+		var cDate = new Date();
+		cDate.setHours(0, 0, 0, 0, 0);
+		return cDate;
+	}
 
 	QtObject {
 		id: p
 
 		property bool skipNextFocus: false
-
-		function today() {
-			var cDate = new Date();
-			cDate.setHours(0, 0, 0, 0, 0);
-			return cDate;
-		}
 
 		function focusDate() {
 			if(skipNextFocus)
@@ -82,7 +82,7 @@ ListView {
 				}
 			}
 
-			onClicked: calenderList.currentDate = p.today()
+			onClicked: calenderList.currentDate = calenderList.today()
 		}
 
 		DayOfWeekRow {

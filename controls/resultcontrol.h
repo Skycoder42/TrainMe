@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QList>
+#include <QDateTime>
 #include "viewcontrol.h"
 #include "traindatamanager.h"
 
@@ -22,9 +23,11 @@ public:
 
 public slots:
 	void updateResult(int index, int result);
+	void createResult(const QDateTime &date, int result);
 
 signals:
 	void resultListChanged();
+	void createNewEntry();
 
 protected:
 	void doInit() override;
@@ -34,7 +37,7 @@ private slots:
 	void taskResultsLoaded(const QList<TrainDataManager::ResultInfo> &resultList);
 
 private:
-	QList<QPair<QDate, TrainDataManager::TaskResult>> taskResultList;
+	QList<TrainDataManager::ResultInfo> taskResultList;
 };
 
 #endif // RESULTCONTROL_H
