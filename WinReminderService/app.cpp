@@ -108,12 +108,12 @@ int App::startup()
 	//DEBUG
 	this->handleCommand({
 							QSTR(Add),
-							QTime::currentTime().addSecs(5).toString(Qt::ISODate),
+							QTime::currentTime().addSecs(3).toString(Qt::ISODate),
 							"false"
 						});
 	this->handleCommand({
 							QSTR(Add),
-							QTime::currentTime().addSecs(10).toString(Qt::ISODate),
+							QTime::currentTime().addSecs(6).toString(Qt::ISODate),
 							"true"
 						});
 

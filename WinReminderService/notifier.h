@@ -14,6 +14,9 @@ public:
 public slots:
 	void doNotify(bool intense);
 
+private slots:
+	void openTrainMe();
+
 private:
 	QSystemTrayIcon *trayIcon;
 };
