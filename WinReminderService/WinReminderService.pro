@@ -19,6 +19,8 @@ QMAKE_TARGET_COPYRIGHT = "Felix Barz"
 DEFINES += "COMPANY=\"\\\"$$QMAKE_TARGET_COMPANY\\\"\""
 DEFINES += "DISPLAY_NAME=\"\\\"$$QMAKE_TARGET_PRODUCT\\\"\""
 
+include(../QSingleInstance/QSingleInstance/qsingleinstance.pri)
+
 HEADERS += \
     app.h \
     remindermanager.h \

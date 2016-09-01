@@ -8,14 +8,12 @@
 class ReminderService
 {
 public:
-	typedef QList<QPair<QTime, bool>> ReminderList;
-
 	inline virtual ~ReminderService() {}
 
 	virtual void addReminder(const QTime &time, bool intense) = 0;
 	virtual void removeReminder(const QTime &time) = 0;
 
-	virtual ReminderList listReminders() = 0;
+	virtual void skipReminder(const QDate &skipDate) = 0;
 };
 
 #endif // REMINDERSERVICE_H
