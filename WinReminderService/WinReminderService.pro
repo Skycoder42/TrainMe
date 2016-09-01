@@ -1,6 +1,5 @@
 TEMPLATE = app
-QT += core
-QT -= gui
+QT += core gui widgets
 
 CONFIG += c++11
 
@@ -12,7 +11,7 @@ DEFINES += "VERSION=\\\"$$VERSION\\\""
 
 RC_ICONS += ./main.ico
 QMAKE_TARGET_COMPANY = "Skycoder42"
-QMAKE_TARGET_PRODUCT = "Train Me! — Windows Reminder Service"
+QMAKE_TARGET_PRODUCT = "Train Me! - Windows Reminder Service"
 QMAKE_TARGET_DESCRIPTION = $$QMAKE_TARGET_PRODUCT
 QMAKE_TARGET_COPYRIGHT = "Felix Barz"
 
@@ -24,9 +23,14 @@ include(../QSingleInstance/QSingleInstance/qsingleinstance.pri)
 HEADERS += \
     app.h \
     remindermanager.h \
-    timering.h
+    timering.h \
+    notifier.h
 
 SOURCES += \
     app.cpp \
     remindermanager.cpp \
-    timering.cpp
+    timering.cpp \
+    notifier.cpp
+
+RESOURCES += \
+    trainme_winremsvc_res.qrc

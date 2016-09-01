@@ -1,11 +1,12 @@
 #ifndef APP_H
 #define APP_H
 
-#include <QCoreApplication>
+#include <QApplication>
 #include <qsingleinstance.h>
 #include "remindermanager.h"
+#include "notifier.h"
 
-class App : public QCoreApplication
+class App : public QApplication
 {
 	Q_OBJECT
 public:
@@ -29,6 +30,7 @@ private:
 	QSingleInstance *singleInstance;
 
 	ReminderManager *manager;
+	Notifier *notifier;
 
 	int startup();
 };

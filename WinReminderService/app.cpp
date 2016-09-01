@@ -5,14 +5,17 @@
 #define QSTR(x) QString(QChar(x))
 
 App::App(int argc, char *argv[]) :
-	QCoreApplication(argc, argv),
+	QApplication(argc, argv),
 	singleInstance(new QSingleInstance(this)),
-	manager(nullptr)
+	manager(nullptr),
+	notifier(nullptr)
 {
 	QCoreApplication::setApplicationName(QStringLiteral(TARGET));
 	QCoreApplication::setApplicationVersion(QStringLiteral(VERSION));
 	QCoreApplication::setOrganizationName(QStringLiteral(COMPANY));
 	QCoreApplication::setOrganizationDomain(QStringLiteral("com.Skycoder42"));
+	QApplication::setApplicationDisplayName(tr("Train Me! - Windows Reminder Service"));
+	QApplication::setWindowIcon(QIcon(QLatin1String(":/icons/main.ico")));
 
 	this->singleInstance->setStartupFunction([this]() {
 		return this->startup();
@@ -94,15 +97,13 @@ void App::handleCommand(const QStringList &args)
 int App::startup()
 {
 	this->manager = new ReminderManager(this);
+	this->notifier = new Notifier(this);
 
 	connect(this->singleInstance, &QSingleInstance::instanceMessage,
 			this, &App::handleCommand);
 
-	connect(manager, &ReminderManager::reminderTriggered, [](bool i) {
-		qDebug() << "TRIGGERED! Intense:" << i;
-		if(i)
-			qApp->quit();
-	});
+	connect(manager, &ReminderManager::reminderTriggered,
+			this->notifier, &Notifier::doNotify);
 
 	//DEBUG
 	this->handleCommand({
