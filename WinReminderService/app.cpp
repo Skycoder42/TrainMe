@@ -16,6 +16,7 @@ App::App(int argc, char *argv[]) :
 	QCoreApplication::setOrganizationDomain(QStringLiteral("com.Skycoder42"));
 	QApplication::setApplicationDisplayName(tr("Train Me! - Windows Reminder Service"));
 	QApplication::setWindowIcon(QIcon(QLatin1String(":/icons/main.ico")));
+	QApplication::setQuitOnLastWindowClosed(false);
 
 	this->singleInstance->setStartupFunction([this]() {
 		return this->startup();

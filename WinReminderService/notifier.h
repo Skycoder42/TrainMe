@@ -1,15 +1,14 @@
 #ifndef NOTIFIER_H
 #define NOTIFIER_H
 
-#include <QObject>
+#include <QWidget>
 #include <QSystemTrayIcon>
 
-class Notifier : public QObject
+class Notifier : public QWidget
 {
 	Q_OBJECT
 public:
 	explicit Notifier(QObject *parent = nullptr);
-	~Notifier();
 
 public slots:
 	void doNotify(bool intense);
