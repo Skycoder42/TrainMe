@@ -2,5 +2,6 @@
     <qresource prefix="/icons">
         <file alias="main.ico">Resources/main.ico</file>
         <file alias="close.ico">Resources/cross.ico</file>
+        <file alias="motivate.png">Resources/moose.png</file>
     </qresource>
 </RCC>

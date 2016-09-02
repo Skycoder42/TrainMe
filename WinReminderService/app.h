@@ -13,10 +13,13 @@ public:
 	enum CommandTypes : char {
 		Add = 'A',
 		Remove = 'R',
-		Skip = 'S'
+		Skip = 'S',
+		Permanent = 'P',
+		Quit = 'Q'
 	};
 
 	explicit App(int argc, char *argv[]);
+	~App();
 
 	void testTimeRing();
 

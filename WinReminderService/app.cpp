@@ -1,5 +1,6 @@
 #include "app.h"
 #include <QCommandLineParser>
+#include <QSettings>
 #include <QDebug>
 
 #define QSTR(x) QString(QChar(x))
@@ -21,6 +22,11 @@ App::App(int argc, char *argv[]) :
 	this->singleInstance->setStartupFunction([this]() {
 		return this->startup();
 	});
+}
+
+App::~App()
+{
+	delete this->notifier;
 }
 
 int App::exec()
@@ -50,6 +56,17 @@ int App::exec()
 						 "Tell the service to not show reminders on <date>",
 						 "date"
 					 });
+	parser.addOption({
+						 {"p", "permanent"},
+						 "Tell the service to be permanently shown in the system tray, instead of only "
+						 "when notifications occure",
+						 "showPermanent",
+						 "true"
+					 });
+	parser.addOption({
+						 {"q", "quit"},
+						 "Quits the service"
+					 });
 	parser.process(*this);
 
 	QStringList commandArgs;
@@ -63,13 +80,17 @@ int App::exec()
 	} else if(parser.isSet("skip")) {
 		commandArgs.append(QSTR(Skip));
 		commandArgs.append(parser.value("skip"));
-	}
+	} else if(parser.isSet("permanent")) {
+		commandArgs.append(QSTR(Permanent));
+		commandArgs.append(parser.value("permanent"));
+	} else if(parser.isSet("quit"))
+		commandArgs.append(QSTR(Quit));
 
 	if(this->singleInstance->process(commandArgs)) {
 		if(this->singleInstance->isMaster()) {
 			this->startup();
 			if(!commandArgs.isEmpty())
-				this->handleCommand(commandArgs);
+				QMetaObject::invokeMethod(this, "handleCommand", Qt::QueuedConnection, Q_ARG(QStringList, commandArgs));
 		} else
 			return 0;
 	} else
@@ -90,18 +111,24 @@ void App::handleCommand(const QStringList &args)
 			if(time.isValid())
 				this->manager->removeReminder(time);
 		} else if(args[0] == QSTR(Skip)) {
-			qDebug() << "SKIPPED:" << args[1];
-		}
+			qDebug() << "Skip:" << args[1];
+		} else if(args[0] == QSTR(Permanent)) {
+			QSettings settings;
+			settings.setValue(QStringLiteral("permanent"), args[1] == QStringLiteral("true"));
+			this->notifier->reloadPermanent();
+		} else if(args[0] == QSTR(Quit))
+			qApp->quit();
 	}
 }
 
 int App::startup()
 {
 	this->manager = new ReminderManager(this);
-	this->notifier = new Notifier(this);
+	this->notifier = new Notifier();
 
 	connect(this->singleInstance, &QSingleInstance::instanceMessage,
-			this, &App::handleCommand);
+			this, &App::handleCommand,
+			Qt::QueuedConnection);
 
 	connect(manager, &ReminderManager::reminderTriggered,
 			this->notifier, &Notifier::doNotify);

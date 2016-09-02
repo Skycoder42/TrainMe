@@ -1,14 +1,15 @@
 #include "notifier.h"
 #include <QApplication>
 #include <QMenu>
+#include <QDir>
+#include <QProcess>
+#include <QMessageBox>
 #include "intensenotifymessage.h"
 
-Notifier::Notifier(QObject *parent) :
+Notifier::Notifier() :
 	QWidget(nullptr),
 	trayIcon(new QSystemTrayIcon(QApplication::windowIcon(), this))
 {
-	connect(parent, &QObject::destroyed, this, &Notifier::deleteLater);
-
 	this->trayIcon->setToolTip(QApplication::applicationDisplayName());
 	connect(this->trayIcon, &QSystemTrayIcon::messageClicked,
 			this, &Notifier::openTrainMe);
@@ -22,14 +23,16 @@ Notifier::Notifier(QObject *parent) :
 	menu->addAction(tr("Disable Reminders"))->setEnabled(false);
 	menu->addAction(tr("Quit"), qApp, &QApplication::quit);
 	this->trayIcon->setContextMenu(menu);
-
-	this->trayIcon->show();//TODO allow hiding
 }
 
 void Notifier::doNotify(bool intense)
 {
+	if(!this->trayIcon->isVisible())
+		this->trayIcon->show();
 	if(intense) {
 		auto m = new IntenseNotifyMessage(this);
+		connect(m, &IntenseNotifyMessage::startTrain,
+				this, &Notifier::openTrainMe);
 		m->show();
 	} else {
 		this->trayIcon->showMessage(tr("Do your Training!"),
@@ -40,5 +43,9 @@ void Notifier::doNotify(bool intense)
 
 void Notifier::openTrainMe()
 {
-	qDebug("Opening Train-Me!...");
+	QDir path = QApplication::applicationDirPath();
+	if(!QProcess::startDetached(path.absoluteFilePath(QStringLiteral("TrainMe.exe"))))
+		QMessageBox::critical(nullptr, tr("Error"), tr("Failed to start Train-Me!"));
+	else
+		this->trayIcon->hide();
 }

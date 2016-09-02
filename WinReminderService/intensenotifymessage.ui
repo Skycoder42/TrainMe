@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>368</width>
-    <height>130</height>
+    <width>502</width>
+    <height>372</height>
    </rect>
   </property>
   <property name="styleSheet">
@@ -28,7 +28,7 @@ QCommandLinkButton {
   <property name="frameShape">
    <enum>QFrame::Box</enum>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0">
    <property name="spacing">
     <number>0</number>
    </property>
@@ -83,41 +83,24 @@ QCommandLinkButton {
     </layout>
    </item>
    <item>
-    <widget class="Line" name="line">
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>&lt;Motivational Image/Text&gt;</string>
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap resource="trainme_winremsvc_res.qrc">:/icons/motivate.png</pixmap>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
-     </property>
-     <property name="margin">
-      <number>9</number>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="Line" name="line_2">
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <property name="leftMargin">
+      <number>1</number>
+     </property>
+     <property name="topMargin">
       <number>1</number>
      </property>
      <property name="rightMargin">
@@ -127,7 +110,7 @@ QCommandLinkButton {
       <number>1</number>
      </property>
      <item>
-      <widget class="QCommandLinkButton" name="commandLinkButton">
+      <widget class="QCommandLinkButton" name="startTrainButton">
        <property name="text">
         <string>I want to train!</string>
        </property>

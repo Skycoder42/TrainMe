@@ -16,6 +16,9 @@ public:
 	explicit IntenseNotifyMessage(QWidget *parent = nullptr);
 	~IntenseNotifyMessage();
 
+signals:
+	void startTrain();
+
 private slots:
 	void on_closeButton_clicked();
 

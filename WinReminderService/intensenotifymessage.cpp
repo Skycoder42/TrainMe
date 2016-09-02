@@ -17,6 +17,12 @@ IntenseNotifyMessage::IntenseNotifyMessage(QWidget *parent) :
 {
 	this->ui->setupUi(this);
 	this->setAttribute(Qt::WA_DeleteOnClose);
+	this->adjustSize();
+
+	connect(this->ui->startTrainButton, &QCommandLinkButton::clicked,
+			this, &IntenseNotifyMessage::startTrain);
+	connect(this->ui->startTrainButton, &QCommandLinkButton::clicked,
+			this, &IntenseNotifyMessage::close);
 
 	connect(this->redTimer, &QTimer::timeout,
 			this, &IntenseNotifyMessage::updateBlink);

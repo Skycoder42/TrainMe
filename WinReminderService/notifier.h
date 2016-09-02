@@ -8,10 +8,11 @@ class Notifier : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit Notifier(QObject *parent = nullptr);
+	explicit Notifier();
 
 public slots:
 	void doNotify(bool intense);
+	void reloadPermanent();
 
 private slots:
 	void openTrainMe();
