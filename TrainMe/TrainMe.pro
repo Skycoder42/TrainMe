@@ -39,7 +39,7 @@ HEADERS += \
     weekconfigmodel.h \
     viewcontrol.h \
     controls/createtaskcontrol.h \
-    reminderservice.h
+	reminderservice.h
 
 SOURCES += \
 	trainmodel.cpp \
@@ -51,7 +51,13 @@ SOURCES += \
 	controls/configweekcontrol.cpp \
     weekconfigmodel.cpp \
     viewcontrol.cpp \
-    controls/createtaskcontrol.cpp
+    controls/createtaskcontrol.cpp \
+	reminderservice.cpp
+
+win32 {
+	HEADERS += winreminderservice.h
+	SOURCES += winreminderservice.cpp
+}
 
 RESOURCES += trainme_res.qrc \
 	trainme_res_fallbacks.qrc \
