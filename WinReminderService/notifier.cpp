@@ -23,6 +23,8 @@ Notifier::Notifier() :
 	menu->addAction(tr("Disable Reminders"))->setEnabled(false);
 	menu->addAction(tr("Quit"), qApp, &QApplication::quit);
 	this->trayIcon->setContextMenu(menu);
+
+	this->trayIcon->show();
 }
 
 void Notifier::doNotify(bool intense)
@@ -39,6 +41,11 @@ void Notifier::doNotify(bool intense)
 									tr("It's time for your daily sports training! Klick me to open the Train-Me! App"),
 									QSystemTrayIcon::Warning);
 	}
+}
+
+void Notifier::reloadPermanent()
+{
+
 }
 
 void Notifier::openTrainMe()

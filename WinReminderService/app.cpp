@@ -148,54 +148,8 @@ int App::startup()
 	return 0;
 }
 
-void testRound(TimeRing &ring)
-{
-	auto firstTime = ring.next();
-	auto nextTime = firstTime;
-	do {
-		qDebug() << "TIME:" << nextTime;
-		nextTime = ring.next();
-	} while(firstTime != nextTime);
-
-	qDebug() << "";
-}
-
-void testTimeRing()
-{
-	//start simple - empty ring
-	TimeRing ring;
-	testRound(ring);
-	Q_ASSERT(!ring.removeTime(QTime()));
-
-	//one element
-	ring.insertTime(QTime(1, 0));
-	testRound(ring);
-
-	//three elements
-	ring.insertTime(QTime(14, 0));
-	ring.insertTime(QTime(3, 0));
-	testRound(ring);
-
-	//remove elements
-	Q_ASSERT(ring.removeTime(QTime(3, 0)));
-	Q_ASSERT(!ring.removeTime(QTime(3, 0)));
-	testRound(ring);
-
-	//baum elements
-	ring.insertTime(QTime(3, 0));
-	ring.insertTime(QTime(22, 0));
-	testRound(ring);
-
-	//test round
-	ring.resetCurrent(QTime(13, 0));
-	testRound(ring);
-}
-
 int main(int argc, char *argv[])
 {
 	App app(argc, argv);
-//#ifndef QT_NO_DEBUG
-//	testTimeRing();
-//#endif
 	return app.exec();
 }
