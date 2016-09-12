@@ -39,3 +39,10 @@ RESOURCES += \
 
 FORMS += \
     intensenotifymessage.ui
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../GifLoader/release/ -lGifLoader
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../GifLoader/debug/ -lGifLoader
+else:unix: LIBS += -L$$OUT_PWD/../GifLoader/ -lGifLoader
+
+INCLUDEPATH += $$PWD/../GifLoader
+DEPENDPATH += $$PWD/../GifLoader

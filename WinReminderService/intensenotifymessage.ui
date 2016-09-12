@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>502</width>
-    <height>372</height>
+    <width>505</width>
+    <height>212</height>
    </rect>
   </property>
   <property name="styleSheet">
@@ -28,7 +28,7 @@ QCommandLinkButton {
   <property name="frameShape">
    <enum>QFrame::Box</enum>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0">
    <property name="spacing">
     <number>0</number>
    </property>
@@ -83,12 +83,9 @@ QCommandLinkButton {
     </layout>
    </item>
    <item>
-    <widget class="QLabel" name="label_3">
+    <widget class="QLabel" name="motivateLabel">
      <property name="text">
-      <string/>
-     </property>
-     <property name="pixmap">
-      <pixmap resource="trainme_winremsvc_res.qrc">:/icons/motivate.png</pixmap>
+      <string>Loading…</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

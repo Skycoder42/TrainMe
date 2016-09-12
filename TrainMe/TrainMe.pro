@@ -81,3 +81,4 @@ DISTFILES += \
     android/res/drawable-xxxhdpi/splash.9.png
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+#ANDROID_EXTRA_LIBS +=

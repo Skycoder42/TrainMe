@@ -12,12 +12,18 @@ IntenseNotifyMessage::IntenseNotifyMessage(QWidget *parent) :
 				   Qt::WindowStaysOnTopHint |
 				   Qt::WindowDoesNotAcceptFocus),
 	ui(new Ui::IntenseNotifyMessage),
+	gifLoader(new GifLoader(this)),
 	redTimer(new QTimer(this)),
 	isRed(false)
 {
 	this->ui->setupUi(this);
 	this->setAttribute(Qt::WA_DeleteOnClose);
-	this->adjustSize();
+
+	this->gifLoader->setLoadAsMovie(true);
+	connect(this->gifLoader, &GifLoader::gifMovieLoaded,
+			this, &IntenseNotifyMessage::gifLoaded);
+	connect(this->gifLoader, &GifLoader::lastErrorChanged,
+			this, &IntenseNotifyMessage::gifLoadFailed);
 
 	connect(this->ui->startTrainButton, &QCommandLinkButton::clicked,
 			this, &IntenseNotifyMessage::startTrain);
@@ -28,16 +34,32 @@ IntenseNotifyMessage::IntenseNotifyMessage(QWidget *parent) :
 			this, &IntenseNotifyMessage::updateBlink);
 	this->redTimer->start(300);
 
-	auto contentGeom = QApplication::desktop()->availableGeometry();
-	auto mRect = this->geometry();
-	mRect.moveBottomRight(contentGeom.bottomRight() +
-						  QPoint(-10, -10));
-	this->move(mRect.topLeft());
+	this->gifLoader->loadGif("supernatural");//TODO via settings
+	this->reposition();
 }
 
 IntenseNotifyMessage::~IntenseNotifyMessage()
 {
 	delete this->ui;
+}
+
+void IntenseNotifyMessage::resizeEvent(QResizeEvent *event)
+{
+	QFrame::resizeEvent(event);
+	this->reposition();
+}
+
+void IntenseNotifyMessage::gifLoaded(QMovie *movie)
+{
+	movie->setParent(this);
+	movie->start();
+	this->ui->motivateLabel->setMovie(movie);
+}
+
+void IntenseNotifyMessage::gifLoadFailed(const QString &error)
+{
+	this->ui->motivateLabel->setText(error);
+	this->reposition();
 }
 
 void IntenseNotifyMessage::updateBlink()
@@ -57,6 +79,15 @@ void IntenseNotifyMessage::updateBlink()
 									   "	color: #424242;\n"
 									   "}")
 						.arg(this->isRed ? QStringLiteral("#DF0101") : QStringLiteral("#585858")));
+}
+
+void IntenseNotifyMessage::reposition()
+{
+	auto contentGeom = QApplication::desktop()->availableGeometry();
+	auto mRect = this->geometry();
+	mRect.moveBottomRight(contentGeom.bottomRight() +
+						  QPoint(-10, -10));
+	this->move(mRect.topLeft());
 }
 
 void IntenseNotifyMessage::on_closeButton_clicked()

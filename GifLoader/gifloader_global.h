@@ -1,0 +1,12 @@
+#ifndef GIFLOADER_GLOBAL_H
+#define GIFLOADER_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(GIFLOADER_LIBRARY)
+#  define GIFLOADERSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define GIFLOADERSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // GIFLOADER_GLOBAL_H

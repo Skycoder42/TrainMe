@@ -1,7 +1,11 @@
 TEMPLATE = subdirs
 
-SUBDIRS += TrainMe
+SUBDIRS += TrainMe \
+    GifLoader
 win32: SUBDIRS += WinReminderService
+
+TrainMe.depends += GifLoader
+win32: WinReminderService.depends += GifLoader
 
 DISTFILES += \
 	LICENSE \
