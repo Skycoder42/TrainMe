@@ -112,11 +112,9 @@ void App::handleCommand(const QStringList &args)
 				this->manager->removeReminder(time);
 		} else if(args[0] == QSTR(Skip)) {
 			qDebug() << "Skip:" << args[1];
-		} else if(args[0] == QSTR(Permanent)) {
-			QSettings settings;
-			settings.setValue(QStringLiteral("permanent"), args[1] == QStringLiteral("true"));
-			this->notifier->reloadPermanent();
-		} else if(args[0] == QSTR(Quit))
+		} else if(args[0] == QSTR(Permanent))
+			this->notifier->setShowPermanent(args[1] == QStringLiteral("true"));
+		else if(args[0] == QSTR(Quit))
 			qApp->quit();
 	}
 }

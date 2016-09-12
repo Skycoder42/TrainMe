@@ -4,11 +4,13 @@
 #include <QDir>
 #include <QProcess>
 #include <QMessageBox>
+#include <QSettings>
 #include "intensenotifymessage.h"
 
 Notifier::Notifier() :
 	QWidget(nullptr),
-	trayIcon(new QSystemTrayIcon(QApplication::windowIcon(), this))
+	trayIcon(new QSystemTrayIcon(QApplication::windowIcon(), this)),
+	permaShow(false)
 {
 	this->trayIcon->setToolTip(QApplication::applicationDisplayName());
 	connect(this->trayIcon, &QSystemTrayIcon::messageClicked,
@@ -24,13 +26,19 @@ Notifier::Notifier() :
 	menu->addAction(tr("Quit"), qApp, &QApplication::quit);
 	this->trayIcon->setContextMenu(menu);
 
-	this->trayIcon->show();
+	this->setShowPermanent(QSettings().value(QStringLiteral("permanent")).toBool());
+}
+
+bool Notifier::showPermanent() const
+{
+	return this->permaShow;
 }
 
 void Notifier::doNotify(bool intense)
 {
 	if(!this->trayIcon->isVisible())
 		this->trayIcon->show();
+
 	if(intense) {
 		auto m = new IntenseNotifyMessage(this);
 		connect(m, &IntenseNotifyMessage::startTrain,
@@ -43,9 +51,15 @@ void Notifier::doNotify(bool intense)
 	}
 }
 
-void Notifier::reloadPermanent()
+void Notifier::setShowPermanent(bool showPermanent)
 {
+	if (this->permaShow == showPermanent)
+		return;
 
+	this->permaShow = showPermanent;
+	QSettings().setValue(QStringLiteral("permanent"), showPermanent);
+	this->trayIcon->setVisible(showPermanent);
+	emit showPermanentChanged(showPermanent);
 }
 
 void Notifier::openTrainMe()
