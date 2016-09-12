@@ -19,6 +19,7 @@ DEFINES += "COMPANY=\"\\\"$$QMAKE_TARGET_COMPANY\\\"\""
 DEFINES += "DISPLAY_NAME=\"\\\"$$QMAKE_TARGET_PRODUCT\\\"\""
 
 include(../QSingleInstance/QSingleInstance/qsingleinstance.pri)
+include(../QtUtils/qtutils.pri)
 
 HEADERS += \
     app.h \

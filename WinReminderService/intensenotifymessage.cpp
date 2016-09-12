@@ -3,7 +3,7 @@
 #include <QDesktopWidget>
 #include <QApplication>
 #include <QWindow>
-#include <QMessageBox>//TODO dialog master
+#include <dialogmaster.h>
 
 IntenseNotifyMessage::IntenseNotifyMessage(QWidget *parent) :
 	QFrame(parent, Qt::Window |
@@ -92,11 +92,14 @@ void IntenseNotifyMessage::reposition()
 
 void IntenseNotifyMessage::on_closeButton_clicked()
 {
-	if(QMessageBox::question(nullptr,
-							 tr("Dismiss Reminder"),
-							 tr("Do you really not want to train right know???"),
-							 QMessageBox::No,
-							 QMessageBox::Cancel)
+	if(DialogMaster::question(nullptr,
+							  tr("Do you really not want to train right know???"),
+							  tr("No Training?!?"),
+							  tr("Dismiss Reminder"),
+							  QMessageBox::No |
+							  QMessageBox::Cancel,
+							  QMessageBox::No,
+							  QMessageBox::Cancel)
 		== QMessageBox::No)
 		this->close();
 }

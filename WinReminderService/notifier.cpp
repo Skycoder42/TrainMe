@@ -3,7 +3,7 @@
 #include <QMenu>
 #include <QDir>
 #include <QProcess>
-#include <QMessageBox>
+#include <dialogmaster.h>
 #include <QSettings>
 #include "intensenotifymessage.h"
 
@@ -66,7 +66,7 @@ void Notifier::openTrainMe()
 {
 	QDir path = QApplication::applicationDirPath();
 	if(!QProcess::startDetached(path.absoluteFilePath(QStringLiteral("TrainMe.exe"))))
-		QMessageBox::critical(nullptr, tr("Error"), tr("Failed to start Train-Me!"));
+		DialogMaster::critical(nullptr, tr("Failed to start Train-Me!"));
 	else
 		this->trayIcon->hide();
 }
