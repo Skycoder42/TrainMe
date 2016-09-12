@@ -6,6 +6,7 @@
 #include <QTimer>
 #include <QMap>
 #include "timering.h"
+#include "jsonstore.h"
 
 class ReminderManager : public QObject
 {
@@ -26,8 +27,10 @@ private slots:
 	void timerTriggered();
 	void startNext(const QTime &time);
 	void restart();
+	void doStore();
 
 private:
+	JsonStore store;
 	TimeRing timeRing;
 	QHash<QTime, bool> reminders;
 

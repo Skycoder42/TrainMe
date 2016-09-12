@@ -48,7 +48,6 @@ void Notifier::doNotify(bool intense)
 			auto m = new IntenseNotifyMessage(this, this->gifTag);
 			connect(m, &IntenseNotifyMessage::startTrain,
 					this, &Notifier::openTrainMe);
-			m->show();
 		} else {
 			this->trayIcon->showMessage(tr("Do your Training!"),
 										tr("It's time for your daily sports training! Klick me to open the Train-Me! App"),

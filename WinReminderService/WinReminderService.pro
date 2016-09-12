@@ -27,7 +27,8 @@ HEADERS += \
     timering.h \
     notifier.h \
     intensenotifymessage.h \
-    skipmanager.h
+    skipmanager.h \
+    jsonstore.h
 
 SOURCES += \
     app.cpp \
@@ -35,7 +36,8 @@ SOURCES += \
     timering.cpp \
     notifier.cpp \
     intensenotifymessage.cpp \
-    skipmanager.cpp
+    skipmanager.cpp \
+    jsonstore.cpp
 
 RESOURCES += \
     trainme_winremsvc_res.qrc

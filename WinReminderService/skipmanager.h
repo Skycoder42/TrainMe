@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QDate>
 #include <QSet>
+#include "jsonstore.h"
 
 class SkipManager : public QObject
 {
@@ -16,6 +17,7 @@ public:
 	bool testDateSkipped(const QDate &date = QDate::currentDate()) const;
 
 private:
+	JsonStore store;
 	QSet<QDate> skipDates;
 };
 

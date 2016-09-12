@@ -36,6 +36,7 @@ IntenseNotifyMessage::IntenseNotifyMessage(QWidget *parent, const QString &searc
 
 	this->gifLoader->loadGif(searchTerm);
 	this->reposition();
+	QTimer::singleShot(5000, Qt::VeryCoarseTimer, this, &IntenseNotifyMessage::show);
 }
 
 IntenseNotifyMessage::~IntenseNotifyMessage()
@@ -54,6 +55,7 @@ void IntenseNotifyMessage::gifLoaded(QMovie *movie)
 	movie->setParent(this);
 	movie->start();
 	this->ui->motivateLabel->setMovie(movie);
+	this->show();
 }
 
 void IntenseNotifyMessage::gifLoadFailed(const QString &error)
