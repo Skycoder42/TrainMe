@@ -3,6 +3,7 @@
 
 #include <QApplication>
 #include <qsingleinstance.h>
+#include <qpropertysettings.h>
 #include "remindermanager.h"
 #include "notifier.h"
 
@@ -15,6 +16,7 @@ public:
 		Remove = 'R',
 		Skip = 'S',
 		Permanent = 'P',
+		Giftag = 'G',
 		Quit = 'Q'
 	};
 
@@ -32,6 +34,7 @@ private slots:
 private:
 	QSingleInstance *singleInstance;
 
+	QPropertySettings *settings;
 	ReminderManager *manager;
 	Notifier *notifier;
 

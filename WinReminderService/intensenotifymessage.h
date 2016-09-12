@@ -14,7 +14,7 @@ class IntenseNotifyMessage : public QFrame
 	Q_OBJECT
 
 public:
-	explicit IntenseNotifyMessage(QWidget *parent = nullptr);
+	explicit IntenseNotifyMessage(QWidget *parent, const QString &searchTerm);
 	~IntenseNotifyMessage();
 
 signals:

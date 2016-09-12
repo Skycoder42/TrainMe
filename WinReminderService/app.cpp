@@ -1,6 +1,5 @@
 #include "app.h"
 #include <QCommandLineParser>
-#include <QSettings>
 #include <QDebug>
 
 #define QSTR(x) QString(QChar(x))
@@ -8,6 +7,7 @@
 App::App(int argc, char *argv[]) :
 	QApplication(argc, argv),
 	singleInstance(new QSingleInstance(this)),
+	settings(nullptr),
 	manager(nullptr),
 	notifier(nullptr)
 {
@@ -33,39 +33,48 @@ int App::exec()
 {
 	QCommandLineParser parser;
 	parser.setApplicationDescription(QStringLiteral("The %1 is a helper service to enable train-reminder notifications "
-									 "on windows. Do not use this service directly, as it is controlled by "
-									 "the Main Application.").arg(QCoreApplication::applicationName()));
+													"on windows. Do not use this service directly, as it is controlled by "
+													"the Main Application. If you still want to use it, please remind that "
+													"only one of the given options can be used at a time.").arg(QCoreApplication::applicationName()));
 	parser.addHelpOption();
 	parser.addVersionOption();
 	parser.addOption({
 						 {"a", "add"},
-						 "Used to add a new reminder for the given <time>",
+						 "Used to add a new reminder for the given <time>.",
 						 "time"
 					 });
 	parser.addOption({
 						 {"r", "remove"},
-						 "Used to remove an existing reminder for <time>",
+						 "Used to remove an existing reminder for <time>.",
 						 "time"
 					 });
 	parser.addOption({
 						 {"i", "intense"},
-						 "Mark the added reminder as an intense reminder"
+						 "Mark the added reminder as an intense reminder. Do not use this option as standalone option. "
+						 "Instead only combine it with the --add option! Other combinations will be ignored."
 					 });
 	parser.addOption({
 						 {"s", "skip"},
-						 "Tell the service to not show reminders on <date>",
+						 "Tell the service to not show reminders on <date>.",
 						 "date"
 					 });
 	parser.addOption({
 						 {"p", "permanent"},
 						 "Tell the service to be permanently shown in the system tray, instead of only "
-						 "when notifications occure",
+						 "when notifications occure.",
 						 "showPermanent",
 						 "true"
 					 });
 	parser.addOption({
+						 {"g", "giftag"},
+						 "Tell the service to use the given gif searchtag for intense messages. Leave the "
+						 "parameter empty to reset to \"motivation\".",
+						 "tag",
+						 "motivation"
+					 });
+	parser.addOption({
 						 {"q", "quit"},
-						 "Quits the service"
+						 "Quits the service."
 					 });
 	parser.process(*this);
 
@@ -83,6 +92,9 @@ int App::exec()
 	} else if(parser.isSet("permanent")) {
 		commandArgs.append(QSTR(Permanent));
 		commandArgs.append(parser.value("permanent"));
+	} else if(parser.isSet("giftag")) {
+		commandArgs.append(QSTR(Giftag));
+		commandArgs.append(parser.value("giftag"));
 	} else if(parser.isSet("quit"))
 		commandArgs.append(QSTR(Quit));
 
@@ -114,6 +126,8 @@ void App::handleCommand(const QStringList &args)
 			qDebug() << "Skip:" << args[1];
 		} else if(args[0] == QSTR(Permanent))
 			this->notifier->setShowPermanent(args[1] == QStringLiteral("true"));
+		else if(args[0] == QSTR(Giftag))
+			this->notifier->setGifTerm(args[1]);
 		else if(args[0] == QSTR(Quit))
 			qApp->quit();
 	}
@@ -121,8 +135,12 @@ void App::handleCommand(const QStringList &args)
 
 int App::startup()
 {
+	this->settings = new QPropertySettings(this);
 	this->manager = new ReminderManager(this);
 	this->notifier = new Notifier();
+
+	this->settings->addProperty(this->notifier, "showPermanent");
+	this->settings->addProperty(this->notifier, "gifTerm");
 
 	connect(this->singleInstance, &QSingleInstance::instanceMessage,
 			this, &App::handleCommand,

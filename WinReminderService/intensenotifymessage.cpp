@@ -5,7 +5,7 @@
 #include <QWindow>
 #include <dialogmaster.h>
 
-IntenseNotifyMessage::IntenseNotifyMessage(QWidget *parent) :
+IntenseNotifyMessage::IntenseNotifyMessage(QWidget *parent, const QString &searchTerm) :
 	QFrame(parent, Qt::Window |
 				   Qt::CustomizeWindowHint |
 				   Qt::FramelessWindowHint |
@@ -34,7 +34,7 @@ IntenseNotifyMessage::IntenseNotifyMessage(QWidget *parent) :
 			this, &IntenseNotifyMessage::updateBlink);
 	this->redTimer->start(300);
 
-	this->gifLoader->loadGif("supernatural");//TODO via settings
+	this->gifLoader->loadGif(searchTerm);//TODO via settings
 	this->reposition();
 }
 

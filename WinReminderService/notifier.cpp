@@ -4,13 +4,13 @@
 #include <QDir>
 #include <QProcess>
 #include <dialogmaster.h>
-#include <QSettings>
 #include "intensenotifymessage.h"
 
 Notifier::Notifier() :
 	QWidget(nullptr),
 	trayIcon(new QSystemTrayIcon(QApplication::windowIcon(), this)),
-	permaShow(false)
+	permaShow(false),
+	gifTag(QStringLiteral("motivation"))
 {
 	this->trayIcon->setToolTip(QApplication::applicationDisplayName());
 	connect(this->trayIcon, &QSystemTrayIcon::messageClicked,
@@ -25,13 +25,16 @@ Notifier::Notifier() :
 	menu->addAction(tr("Disable Reminders"))->setEnabled(false);
 	menu->addAction(tr("Quit"), qApp, &QApplication::quit);
 	this->trayIcon->setContextMenu(menu);
-
-	this->setShowPermanent(QSettings().value(QStringLiteral("permanent")).toBool());
 }
 
 bool Notifier::showPermanent() const
 {
 	return this->permaShow;
+}
+
+QString Notifier::gifTerm() const
+{
+	return this->gifTag;
 }
 
 void Notifier::doNotify(bool intense)
@@ -40,7 +43,7 @@ void Notifier::doNotify(bool intense)
 		this->trayIcon->show();
 
 	if(intense) {
-		auto m = new IntenseNotifyMessage(this);
+		auto m = new IntenseNotifyMessage(this, this->gifTag);
 		connect(m, &IntenseNotifyMessage::startTrain,
 				this, &Notifier::openTrainMe);
 		m->show();
@@ -57,9 +60,17 @@ void Notifier::setShowPermanent(bool showPermanent)
 		return;
 
 	this->permaShow = showPermanent;
-	QSettings().setValue(QStringLiteral("permanent"), showPermanent);
 	this->trayIcon->setVisible(showPermanent);
 	emit showPermanentChanged(showPermanent);
+}
+
+void Notifier::setGifTerm(QString gifTerm)
+{
+	if (this->gifTag == gifTerm)
+		return;
+
+	this->gifTag = gifTerm;
+	emit gifTermChanged(gifTerm);
 }
 
 void Notifier::openTrainMe()
