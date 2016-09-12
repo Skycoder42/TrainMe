@@ -1,6 +1,8 @@
 #include "app.h"
 #include <QCommandLineParser>
 #include <QDebug>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <iostream>
 
 #define QSTR(x) QString(QChar(x))
@@ -76,7 +78,7 @@ int App::exec()
 					 });
 	parser.addOption({
 						 {"l", "list"},
-						 "Writes all active reminders to the console in JSON-Format. "
+						 "Writes the services state to the console in JSON-Format. "
 						 "Can be used to get the current reminder state."
 					 });
 	parser.addOption({
@@ -177,8 +179,16 @@ int App::startup()
 
 void App::printState()
 {
-	auto state = ReminderManager::exportReminders();
-	std::cout.write(state.data(), state.size())
+	QSettings settings;
+	QJsonObject state;
+
+	state[QStringLiteral("permanent")] = settings.value(QStringLiteral("Notifier/showPermanent")).toBool();
+	state[QStringLiteral("gifTag")] = settings.value(QStringLiteral("Notifier/gifTerm")).toString();
+	state[QStringLiteral("reminders")] = ReminderManager::exportReminders();
+
+	QJsonDocument doc(state);
+	auto data = doc.toJson(QJsonDocument::Compact);
+	std::cout.write(data.data(), data.size())
 			 .flush();
 }
 

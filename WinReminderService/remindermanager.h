@@ -18,7 +18,7 @@ public:
 	void addReminder(const QTime &time, bool intense);
 	void removeReminder(const QTime &time);
 
-	static QByteArray exportReminders();
+	static QJsonValue exportReminders();
 
 signals:
 	void reminderTriggered(bool intense);

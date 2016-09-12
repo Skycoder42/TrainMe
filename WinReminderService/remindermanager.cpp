@@ -2,7 +2,6 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QTemporaryFile>
-#include <QJsonDocument>
 
 #define TIME_KEY QStringLiteral("time")
 #define INTENSE_KEY QStringLiteral("intense")
@@ -46,11 +45,10 @@ void ReminderManager::removeReminder(const QTime &time)
 	this->doStore();
 }
 
-QByteArray ReminderManager::exportReminders()
+QJsonValue ReminderManager::exportReminders()
 {
 	JsonStore store(QStringLiteral("remindcache"));
-	QJsonDocument doc(store.load().toArray());
-	return doc.toJson(QJsonDocument::Compact);
+	return store.load();
 }
 
 void ReminderManager::timerTriggered()
