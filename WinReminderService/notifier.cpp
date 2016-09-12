@@ -6,8 +6,9 @@
 #include <dialogmaster.h>
 #include "intensenotifymessage.h"
 
-Notifier::Notifier() :
+Notifier::Notifier(SkipManager *skipManager) :
 	QWidget(nullptr),
+	skipManager(skipManager),
 	trayIcon(new QSystemTrayIcon(QApplication::windowIcon(), this)),
 	permaShow(false),
 	gifTag(QStringLiteral("motivation"))
@@ -39,18 +40,20 @@ QString Notifier::gifTerm() const
 
 void Notifier::doNotify(bool intense)
 {
-	if(!this->trayIcon->isVisible())
-		this->trayIcon->show();
+	if(!this->skipManager->testDateSkipped()) {
+		if(!this->trayIcon->isVisible())
+			this->trayIcon->show();
 
-	if(intense) {
-		auto m = new IntenseNotifyMessage(this, this->gifTag);
-		connect(m, &IntenseNotifyMessage::startTrain,
-				this, &Notifier::openTrainMe);
-		m->show();
-	} else {
-		this->trayIcon->showMessage(tr("Do your Training!"),
-									tr("It's time for your daily sports training! Klick me to open the Train-Me! App"),
-									QSystemTrayIcon::Warning);
+		if(intense) {
+			auto m = new IntenseNotifyMessage(this, this->gifTag);
+			connect(m, &IntenseNotifyMessage::startTrain,
+					this, &Notifier::openTrainMe);
+			m->show();
+		} else {
+			this->trayIcon->showMessage(tr("Do your Training!"),
+										tr("It's time for your daily sports training! Klick me to open the Train-Me! App"),
+										QSystemTrayIcon::Warning);
+		}
 	}
 }
 

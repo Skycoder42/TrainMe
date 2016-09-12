@@ -6,6 +6,7 @@
 #include <qpropertysettings.h>
 #include "remindermanager.h"
 #include "notifier.h"
+#include "skipmanager.h"
 
 class App : public QApplication
 {
@@ -35,7 +36,8 @@ private:
 	QSingleInstance *singleInstance;
 
 	QPropertySettings *settings;
-	ReminderManager *manager;
+	SkipManager *skipper;
+	ReminderManager *reminder;
 	Notifier *notifier;
 
 	int startup();

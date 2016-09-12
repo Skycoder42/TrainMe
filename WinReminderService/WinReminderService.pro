@@ -26,14 +26,16 @@ HEADERS += \
     remindermanager.h \
     timering.h \
     notifier.h \
-    intensenotifymessage.h
+    intensenotifymessage.h \
+    skipmanager.h
 
 SOURCES += \
     app.cpp \
     remindermanager.cpp \
     timering.cpp \
     notifier.cpp \
-    intensenotifymessage.cpp
+    intensenotifymessage.cpp \
+    skipmanager.cpp
 
 RESOURCES += \
     trainme_winremsvc_res.qrc

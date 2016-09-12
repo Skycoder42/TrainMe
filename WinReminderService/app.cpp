@@ -8,7 +8,8 @@ App::App(int argc, char *argv[]) :
 	QApplication(argc, argv),
 	singleInstance(new QSingleInstance(this)),
 	settings(nullptr),
-	manager(nullptr),
+	skipper(nullptr),
+	reminder(nullptr),
 	notifier(nullptr)
 {
 	QCoreApplication::setApplicationName(QStringLiteral(TARGET));
@@ -104,9 +105,9 @@ int App::exec()
 			if(!commandArgs.isEmpty())
 				QMetaObject::invokeMethod(this, "handleCommand", Qt::QueuedConnection, Q_ARG(QStringList, commandArgs));
 		} else
-			return 0;
+			return EXIT_SUCCESS;
 	} else
-		return -1;
+		return EXIT_FAILURE;
 
 	return QCoreApplication::exec();
 }
@@ -117,14 +118,14 @@ void App::handleCommand(const QStringList &args)
 		if(args[0] == QSTR(Add)) {
 			auto time = QTime::fromString(args[1], Qt::ISODate);
 			if(time.isValid())
-				this->manager->addReminder(time, args[2] == QStringLiteral("true"));
+				this->reminder->addReminder(time, args[2] == QStringLiteral("true"));
 		} else if(args[0] == QSTR(Remove)) {
 			auto time = QTime::fromString(args[1], Qt::ISODate);
 			if(time.isValid())
-				this->manager->removeReminder(time);
-		} else if(args[0] == QSTR(Skip)) {
-			qDebug() << "Skip:" << args[1];
-		} else if(args[0] == QSTR(Permanent))
+				this->reminder->removeReminder(time);
+		} else if(args[0] == QSTR(Skip))
+			this->skipper->addSkipDate(QDate::fromString(args[1], Qt::ISODate));
+		else if(args[0] == QSTR(Permanent))
 			this->notifier->setShowPermanent(args[1] == QStringLiteral("true"));
 		else if(args[0] == QSTR(Giftag))
 			this->notifier->setGifTerm(args[1]);
@@ -136,8 +137,9 @@ void App::handleCommand(const QStringList &args)
 int App::startup()
 {
 	this->settings = new QPropertySettings(this);
-	this->manager = new ReminderManager(this);
-	this->notifier = new Notifier();
+	this->skipper = new SkipManager(this);
+	this->reminder = new ReminderManager(this);
+	this->notifier = new Notifier(this->skipper);
 
 	this->settings->addProperty(this->notifier, "showPermanent");
 	this->settings->addProperty(this->notifier, "gifTerm");
@@ -146,7 +148,7 @@ int App::startup()
 			this, &App::handleCommand,
 			Qt::QueuedConnection);
 
-	connect(manager, &ReminderManager::reminderTriggered,
+	connect(reminder, &ReminderManager::reminderTriggered,
 			this->notifier, &Notifier::doNotify);
 
 	//DEBUG
@@ -161,7 +163,7 @@ int App::startup()
 							"true"
 						});
 
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 int main(int argc, char *argv[])

@@ -34,7 +34,7 @@ IntenseNotifyMessage::IntenseNotifyMessage(QWidget *parent, const QString &searc
 			this, &IntenseNotifyMessage::updateBlink);
 	this->redTimer->start(300);
 
-	this->gifLoader->loadGif(searchTerm);//TODO via settings
+	this->gifLoader->loadGif(searchTerm);
 	this->reposition();
 }
 

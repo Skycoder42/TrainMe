@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QSystemTrayIcon>
+#include "skipmanager.h"
 
 class Notifier : public QWidget
 {
@@ -12,7 +13,7 @@ class Notifier : public QWidget
 	Q_PROPERTY(QString gifTerm READ gifTerm WRITE setGifTerm NOTIFY gifTermChanged)
 
 public:
-	explicit Notifier();
+	explicit Notifier(SkipManager *skipManager);
 
 	bool showPermanent() const;
 	QString gifTerm() const;
@@ -31,6 +32,8 @@ private slots:
 	void openTrainMe();
 
 private:
+	SkipManager *skipManager;
+
 	QSystemTrayIcon *trayIcon;
 	bool permaShow;
 	QString gifTag;
