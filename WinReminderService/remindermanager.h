@@ -18,7 +18,7 @@ public:
 	void addReminder(const QTime &time, bool intense);
 	void removeReminder(const QTime &time);
 
-	QHash<QTime, bool> listReminders();
+	static QByteArray exportReminders();
 
 signals:
 	void reminderTriggered(bool intense);

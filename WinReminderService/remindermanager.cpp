@@ -1,6 +1,8 @@
 #include "remindermanager.h"
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QTemporaryFile>
+#include <QJsonDocument>
 
 #define TIME_KEY QStringLiteral("time")
 #define INTENSE_KEY QStringLiteral("intense")
@@ -44,9 +46,11 @@ void ReminderManager::removeReminder(const QTime &time)
 	this->doStore();
 }
 
-QHash<QTime, bool> ReminderManager::listReminders()
+QByteArray ReminderManager::exportReminders()
 {
-	return this->reminders;
+	JsonStore store(QStringLiteral("remindcache"));
+	QJsonDocument doc(store.load().toArray());
+	return doc.toJson(QJsonDocument::Compact);
 }
 
 void ReminderManager::timerTriggered()

@@ -1,6 +1,7 @@
 #include "app.h"
 #include <QCommandLineParser>
 #include <QDebug>
+#include <iostream>
 
 #define QSTR(x) QString(QChar(x))
 
@@ -74,6 +75,11 @@ int App::exec()
 						 "motivation"
 					 });
 	parser.addOption({
+						 {"l", "list"},
+						 "Writes all active reminders to the console in JSON-Format. "
+						 "Can be used to get the current reminder state."
+					 });
+	parser.addOption({
 						 {"q", "quit"},
 						 "Quits the service."
 					 });
@@ -96,6 +102,9 @@ int App::exec()
 	} else if(parser.isSet("giftag")) {
 		commandArgs.append(QSTR(Giftag));
 		commandArgs.append(parser.value("giftag"));
+	} else if(parser.isSet("list")) {
+		this->printState();
+		return EXIT_SUCCESS;
 	} else if(parser.isSet("quit"))
 		commandArgs.append(QSTR(Quit));
 
@@ -164,6 +173,13 @@ int App::startup()
 //						});
 
 	return EXIT_SUCCESS;
+}
+
+void App::printState()
+{
+	auto state = ReminderManager::exportReminders();
+	std::cout.write(state.data(), state.size())
+			 .flush();
 }
 
 int main(int argc, char *argv[])

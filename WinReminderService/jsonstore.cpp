@@ -25,16 +25,16 @@ QJsonValue JsonStore::load() const
 	QFile loadFile(this->fileName);
 	if(loadFile.exists()) {
 		loadFile.open(QIODevice::ReadOnly);
+		auto data = loadFile.readAll();
+		loadFile.close();
 
-		auto doc = QJsonDocument::fromBinaryData(loadFile.readAll());
+		auto doc = QJsonDocument::fromBinaryData(data);
 		if(doc.isNull())
 			qWarning() << "Failed to load data from" << this->fileName;
 		else {
 			auto obj = doc.object();
 			resValue = obj.value(SPEC_VAL_KEY);
 		}
-
-		loadFile.close();
 	}
 
 	return resValue;
@@ -51,5 +51,6 @@ void JsonStore::save(const QJsonValue &value)
 	QJsonDocument doc(obj);
 	auto data = doc.toBinaryData();
 	saveFile.write(data);
-	saveFile.commit();
+	if(!saveFile.commit())
+		qCritical() << "Failed to save data!!!";
 }

@@ -41,6 +41,7 @@ private:
 	Notifier *notifier;
 
 	int startup();
+	void printState();
 };
 
 #endif // APP_H
