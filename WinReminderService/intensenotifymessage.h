@@ -3,6 +3,7 @@
 
 #include <QFrame>
 #include <QTimer>
+#include <QSound>
 #include "gifloader.h"
 
 namespace Ui {
@@ -29,10 +30,13 @@ private slots:
 
 	void on_closeButton_clicked();
 
+	void on_muteButton_toggled(bool checked);
+
 private:
 	Ui::IntenseNotifyMessage *ui;
 	GifLoader *gifLoader;
 	QTimer *redTimer;
+	QSound *alarmSound;
 	bool isRed;
 
 	void updateBlink();

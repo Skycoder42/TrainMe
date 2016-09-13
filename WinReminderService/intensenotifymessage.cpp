@@ -14,10 +14,13 @@ IntenseNotifyMessage::IntenseNotifyMessage(QWidget *parent, const QString &searc
 	ui(new Ui::IntenseNotifyMessage),
 	gifLoader(new GifLoader(this)),
 	redTimer(new QTimer(this)),
+	alarmSound(new QSound(QStringLiteral("C:/Windows/Media/Alarm10.wav"), this)),
 	isRed(false)
 {
 	this->ui->setupUi(this);
 	this->setAttribute(Qt::WA_DeleteOnClose);
+
+	this->alarmSound->setLoops(QSound::Infinite);
 
 	this->gifLoader->setLoadAsMovie(true);
 	connect(this->gifLoader, &GifLoader::gifMovieLoaded,
@@ -56,6 +59,7 @@ void IntenseNotifyMessage::gifLoaded(QMovie *movie)
 	movie->start();
 	this->ui->motivateLabel->setMovie(movie);
 	this->show();
+	this->alarmSound->play();
 }
 
 void IntenseNotifyMessage::gifLoadFailed(const QString &error)
@@ -104,4 +108,15 @@ void IntenseNotifyMessage::on_closeButton_clicked()
 							  QMessageBox::Cancel)
 		== QMessageBox::No)
 		this->close();
+}
+
+void IntenseNotifyMessage::on_muteButton_toggled(bool checked)
+{
+	if(checked) {
+		this->alarmSound->stop();
+		this->ui->muteButton->setIcon(QIcon(QStringLiteral(":/icons/mute.ico")));
+	} else {
+		this->alarmSound->play();
+		this->ui->muteButton->setIcon(QIcon(QStringLiteral(":/icons/sound.ico")));
+	}
 }

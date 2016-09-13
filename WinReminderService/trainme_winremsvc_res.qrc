@@ -2,5 +2,7 @@
     <qresource prefix="/icons">
         <file alias="main.ico">Resources/main.ico</file>
         <file alias="close.ico">Resources/cross.ico</file>
+        <file alias="sound.ico">Resources/sound.ico</file>
+        <file alias="mute.ico">Resources/sound_mute.ico</file>
     </qresource>
 </RCC>

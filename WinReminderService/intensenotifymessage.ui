@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>368</width>
+    <width>414</width>
     <height>155</height>
    </rect>
   </property>
@@ -45,7 +45,7 @@ QCommandLinkButton {
     <number>0</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0">
      <item>
       <widget class="QLabel" name="label">
        <property name="font">
@@ -60,6 +60,26 @@ QCommandLinkButton {
        </property>
        <property name="margin">
         <number>9</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="muteButton">
+       <property name="icon">
+        <iconset resource="trainme_winremsvc_res.qrc">
+         <normaloff>:/icons/sound.ico</normaloff>:/icons/sound.ico</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
