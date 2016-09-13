@@ -51,3 +51,6 @@ else:unix: LIBS += -L$$OUT_PWD/../GifLoader/ -lGifLoader
 
 INCLUDEPATH += $$PWD/../GifLoader
 DEPENDPATH += $$PWD/../GifLoader
+
+DISTFILES += \
+    deploy.bat

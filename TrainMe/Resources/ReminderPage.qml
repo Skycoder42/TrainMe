@@ -11,6 +11,7 @@ ControlPage {
 		anchors.fill: parent
 
 		contentHeight: mainContent.height
+		enabled: reminderControl.supportsReminders
 
 		ScrollBar.vertical: ScrollBar {}
 
@@ -30,6 +31,13 @@ ControlPage {
 				label: Switch {
 					id: activeBox
 					text: qsTr("Reminders Active")
+					checked: reminderControl.remindersActive
+
+					Binding {
+						target: reminderControl
+						property: "remindersActive"
+						value: activeBox.checked
+					}
 				}
 
 				GridLayout {
@@ -49,13 +57,13 @@ ControlPage {
 						Layout.fillWidth: true
 
 						placeholderText: "motivation"
-//						text: reminderControl.gifTag
+						text: reminderControl.gifTag
 
-//						Binding {
-//							target: reminderControl
-//							property: "gifTag"
-//							value: searchTagField.text
-//						}
+						Binding {
+							target: reminderControl
+							property: "gifTag"
+							value: searchTagField.text
+						}
 					}
 
 					ListView {
@@ -92,13 +100,13 @@ ControlPage {
 						Layout.alignment: Qt.AlignLeft
 
 						text: qsTr("Always show status icon")
-//						checked: reminderControl.permanent
+						checked: reminderControl.permanent
 
-//						Binding {
-//							target: reminderControl
-//							property: "permanent"
-//							value: permanentBox.checked
-//						}
+						Binding {
+							target: reminderControl
+							property: "permanent"
+							value: permanentBox.checked
+						}
 					}
 				}
 			}

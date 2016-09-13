@@ -110,6 +110,12 @@ void WinReminderService::setGifTag(QString gifTag)
 
 QString WinReminderService::remPath() const
 {
+#ifdef QT_NO_DEBUG
 	QDir appDir(QCoreApplication::applicationDirPath());
 	return appDir.absoluteFilePath(REMINDER_EXE_NAME + QStringLiteral(".exe"));
+#else
+	QDir appDir(QCoreApplication::applicationDirPath());
+	appDir.cd(QStringLiteral("../../DEBUG_SERVICE_LOCATION"));
+	return appDir.absoluteFilePath(REMINDER_EXE_NAME + QStringLiteral(".exe"));
+#endif
 }

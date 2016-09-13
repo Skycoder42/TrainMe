@@ -12,6 +12,8 @@ class ReminderService : public QObject
 public:
 	ReminderService(QObject *parent = nullptr);
 
+	static ReminderService* createInstance(QObject *parent = nullptr);
+
 public slots:
 	virtual void loadState() = 0;
 
