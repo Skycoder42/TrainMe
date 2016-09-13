@@ -10,6 +10,7 @@
 #include "controls/resultcontrol.h"
 #include "controls/configweekcontrol.h"
 #include "controls/createtaskcontrol.h"
+#include "controls/remindercontrol.h"
 
 class App : public QGuiApplication
 {
@@ -39,6 +40,7 @@ private:
 	ResultControl *resultControl;
 	ConfigWeekControl *configWeekControl;
 	CreateTaskControl *createTaskControl;
+	ReminderControl *reminderControl;
 
 	bool isValid;
 

@@ -19,6 +19,7 @@ App::App(int argc, char *argv[]) :
 	resultControl(nullptr),
 	configWeekControl(nullptr),
 	createTaskControl(nullptr),
+	reminderControl(nullptr),
 	isValid(false)
 {
 	QGuiApplication::setApplicationName(QStringLiteral(TARGET));
@@ -112,6 +113,7 @@ void App::createControls()
 	this->resultControl = new ResultControl(this);
 	this->configWeekControl = new ConfigWeekControl(this);
 	this->createTaskControl = new CreateTaskControl(this);
+	this->reminderControl = new ReminderControl(this);
 }
 
 bool App::loadEngine()
@@ -125,6 +127,7 @@ bool App::loadEngine()
 	context->setContextProperty("resultControl", this->resultControl);
 	context->setContextProperty("configWeekControl", this->configWeekControl);
 	context->setContextProperty("createTaskControl", this->createTaskControl);
+	context->setContextProperty("reminderControl", this->reminderControl);
 
 	//load main qml
 	this->engine->load(QUrl(QStringLiteral("qrc:/qml/main.qml")));

@@ -65,7 +65,7 @@ void TrainDataManager::initManager()
 				initIndex = 2;
 
 			qDebug() << initIndex;
-			emit managerReady(initIndex);
+			emit managerReady(4);//DEBUG
 		} else {
 			emit managerMessage(tr("Fatal Error!"),
 								tr("Unable to load database from \"%1\"").arg(dbName),
