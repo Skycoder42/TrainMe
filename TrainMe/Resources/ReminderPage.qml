@@ -58,12 +58,9 @@ ControlPage {
 
 						placeholderText: "motivation"
 						text: reminderControl.gifTag
+						selectByMouse: true
 
-						Binding {
-							target: reminderControl
-							property: "gifTag"
-							value: searchTagField.text
-						}
+						onEditingFinished: reminderControl.gifTag = searchTagField.text
 					}
 
 					ListView {
