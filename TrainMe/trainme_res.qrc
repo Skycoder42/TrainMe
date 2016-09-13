@@ -39,6 +39,12 @@
         <file alias="+material/+xhdpi/today.png">Resources/Material/icons/drawable-xhdpi/ic_today_black_24dp.png</file>
         <file alias="+material/+xxhdpi/today.png">Resources/Material/icons/drawable-xxhdpi/ic_today_black_24dp.png</file>
         <file alias="+material/+xxxhdpi/today.png">Resources/Material/icons/drawable-xxxhdpi/ic_today_black_24dp.png</file>
+		<file alias="+universal/delete.png">Resources/Universal/icons/ic_delete_forever_black_24dp.png</file>
+		<file alias="+material/+hdpi/delete.png">Resources/Material/icons/drawable-hdpi/ic_delete_forever_black_24dp.png</file>
+		<file alias="+material/+mdpi/delete.png">Resources/Material/icons/drawable-mdpi/ic_delete_forever_black_24dp.png</file>
+		<file alias="+material/+xhdpi/delete.png">Resources/Material/icons/drawable-xhdpi/ic_delete_forever_black_24dp.png</file>
+		<file alias="+material/+xxhdpi/delete.png">Resources/Material/icons/drawable-xxhdpi/ic_delete_forever_black_24dp.png</file>
+		<file alias="+material/+xxxhdpi/delete.png">Resources/Material/icons/drawable-xxxhdpi/ic_delete_forever_black_24dp.png</file>
     </qresource>
     <qresource prefix="/qml/pages">
         <file alias="ControlPage.qml">Resources/ControlPage.qml</file>
@@ -58,5 +64,6 @@
         <file alias="AppBarMenuButton.qml">Resources/AppBarMenuButton.qml</file>
         <file alias="DoubleSpinBox.qml">Resources/DoubleSpinBox.qml</file>
         <file alias="Calendar.qml">Resources/Calendar.qml</file>
+        <file alias="ReminderDelegate.qml">Resources/ReminderDelegate.qml</file>
     </qresource>
 </RCC>

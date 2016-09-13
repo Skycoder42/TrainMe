@@ -88,6 +88,71 @@ Qt::ItemFlags QElementModel::flags(const QModelIndex &index) const
 	return flags;
 }
 
+void QElementModel::append(QObject *object, bool takeOwn)
+{
+	auto index = this->elements.size();
+	this->beginInsertRows(QModelIndex(), index, index);
+	this->elements.append(object);
+	if(takeOwn)
+		object->setParent(this);
+	this->endInsertRows();
+}
+
+QObject *QElementModel::append(QHash<QString, QVariant> fieldMap)
+{
+	auto obj = new QObject(this);
+	for(auto it = fieldMap.constBegin(), end = fieldMap.constEnd(); it != end; ++it)
+		obj->setProperty(it.key().toLatin1(), it.value());
+	this->append(obj, false);
+	return obj;
+}
+
+void QElementModel::insert(int index, QObject *object, bool takeOwn)
+{
+	this->beginInsertRows(QModelIndex(), index, index);
+	this->elements.append(object);
+	if(takeOwn)
+		object->setParent(this);
+	this->endInsertRows();
+}
+
+QObject *QElementModel::insert(int index, QHash<QString, QVariant> fieldMap)
+{
+	auto obj = new QObject(this);
+	for(auto it = fieldMap.constBegin(), end = fieldMap.constEnd(); it != end; ++it)
+		obj->setProperty(it.key().toLatin1(), it.value());
+	this->insert(index, obj, false);
+	return obj;
+}
+
+void QElementModel::remove(int index)
+{
+	this->beginRemoveRows(QModelIndex(), index, index);
+	auto obj = this->elements.takeAt(index);
+	if(obj->parent() == this)
+		obj->deleteLater();
+	this->endRemoveRows();
+}
+
+void QElementModel::move(int fromIndex, int toIndex)
+{
+	if(this->beginMoveRows(QModelIndex(), fromIndex, fromIndex, QModelIndex(), toIndex)) {
+		this->elements.move(fromIndex, toIndex);
+		this->endMoveRows();
+	}
+}
+
+void QElementModel::reset(bool resetRoles)
+{
+	this->beginResetModel();
+	this->elements.clear();
+	if(resetRoles) {
+		this->itemRoles.clear();
+		emit rolesChanged({});
+	}
+	this->endResetModel();
+}
+
 QString QElementModel::header() const
 {
 	return this->headerTitle;
@@ -101,6 +166,11 @@ bool QElementModel::isReadonly() const
 QStringList QElementModel::roles() const
 {
 	return this->itemRoles.keys();
+}
+
+int QElementModel::roleId(QString role) const
+{
+	return this->itemRoles.value(role, -1);
 }
 
 void QElementModel::setHeader(QString header)

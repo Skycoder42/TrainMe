@@ -2,12 +2,13 @@
     <qresource prefix="/">
         <file alias="qtquickcontrols2.conf">Resources/_fallbacks/qtquickcontrols2.conf</file>
     </qresource>
-	<qresource prefix="/icons">
-	<file alias="menu.png">Resources/_fallbacks/menu.png</file>
-	<file alias="more.png">Resources/_fallbacks/more.png</file>
-	<file alias="navigateLeft.png">Resources/_fallbacks/navigateLeft.png</file>
-	<file alias="navigateRight.png">Resources/_fallbacks/navigateRight.png</file>
-	<file alias="today.png">Resources/_fallbacks/today.png</file>
+    <qresource prefix="/icons">
+        <file alias="menu.png">Resources/_fallbacks/menu.png</file>
+        <file alias="more.png">Resources/_fallbacks/more.png</file>
+        <file alias="navigateLeft.png">Resources/_fallbacks/navigateLeft.png</file>
+        <file alias="navigateRight.png">Resources/_fallbacks/navigateRight.png</file>
+        <file alias="today.png">Resources/_fallbacks/today.png</file>
+        <file alias="delete.png">Resources/_fallbacks/delete.png</file>
     </qresource>
     <qresource prefix="/qml/controls">
         <file alias="AppBarButton.qml">Resources/_fallbacks/AppBarButton.qml</file>

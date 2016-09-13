@@ -7,8 +7,13 @@ ReminderControl::ReminderControl(QObject *parent) :
 	active(false),
 	permanent(false),
 	searchTag(),
-	reminderModel(new QElementModel({"time", "intense"}, this))
+	reminderModel(new QElementModel({QStringLiteral("time"), QStringLiteral("intense")}, this)),
+	sortProxy(new QSortFilterProxyModel(this))
 {
+	this->sortProxy->setSourceModel(this->reminderModel);
+	this->sortProxy->setSortRole(this->reminderModel->roleId(QStringLiteral("time")));
+	this->sortProxy->sort(0);
+
 	connect(this->reminderService, &ReminderService::stateLoaded,
 			this, &ReminderControl::stateLoaded);
 }
@@ -82,12 +87,12 @@ void ReminderControl::stateLoaded(bool active, bool permanent, const QString &gi
 	this->permanent = permanent;
 	this->searchTag = gifTag;
 
+	this->reminderModel->reset();
 	for(auto it = reminders.constBegin(), end = reminders.constEnd(); it != end; ++it) {
-		auto reminder = new QObject(this);
-		reminder->setObjectName("reminder");
-		reminder->setProperty("time", it.key());
-		reminder->setProperty("intense", it.value());
-		this->reminderModel->add(reminder);
+		this->reminderModel->append({
+										{QStringLiteral("time"), it.key()},
+										{QStringLiteral("intense"), it.value()}
+									});
 	}
 
 	emit remindersActiveChanged(active);

@@ -1,6 +1,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
+import "../controls"
 
 ControlPage {
 	id: reminderPage
@@ -15,99 +16,109 @@ ControlPage {
 
 		ScrollBar.vertical: ScrollBar {}
 
-		Pane {
+		ColumnLayout {
 			id: mainContent
 			anchors.left: parent.left
 			anchors.right: parent.right
 			anchors.top: parent.top
-			height: contentGroup.height
+			spacing: 0
 
-			GroupBox {
-				id: contentGroup
-				anchors.left: parent.left
-				anchors.right: parent.right
-				anchors.top: parent.top
+			Switch {
+				id: activeBox
+				Layout.margins: 14
 
-				label: Switch {
-					id: activeBox
-					text: qsTr("Reminders Active")
-					checked: reminderControl.remindersActive
+				text: qsTr("Reminders Active")
+				checked: reminderControl.remindersActive
+
+				Binding {
+					target: reminderControl
+					property: "remindersActive"
+					value: activeBox.checked
+				}
+			}
+
+			Rectangle {
+				id: seperator
+				Layout.fillWidth: true
+				height: 1
+				color: globalStyleAccess.primaryColor
+			}
+
+			GridLayout {
+				enabled: activeBox.checked
+				columns: 2
+				rows: 3
+				rowSpacing: 14
+				columnSpacing: 14
+				Layout.margins: 14
+
+				CheckBox {
+					id: permanentBox
+					Layout.columnSpan: 2
+					Layout.alignment: Qt.AlignLeft
+
+					text: qsTr("Always show status icon")
+					checked: reminderControl.permanent
 
 					Binding {
 						target: reminderControl
-						property: "remindersActive"
-						value: activeBox.checked
+						property: "permanent"
+						value: permanentBox.checked
 					}
 				}
 
-				GridLayout {
-					anchors.fill: parent
-					enabled: activeBox.checked
-					columns: 2
-					rows: 3
-					rowSpacing: 14
-					columnSpacing: 14
+				Label {
+					text: qsTr("Gif search tag:")
+				}
 
-					Label {
-						text: qsTr("Gif search tag:")
-					}
+				TextField {
+					id: searchTagField
+					Layout.fillWidth: true
 
-					TextField {
-						id: searchTagField
-						Layout.fillWidth: true
+					placeholderText: "motivation"
+					text: reminderControl.gifTag
+					selectByMouse: true
 
-						placeholderText: "motivation"
-						text: reminderControl.gifTag
-						selectByMouse: true
+					onEditingFinished: reminderControl.gifTag = searchTagField.text
+				}
 
-						onEditingFinished: reminderControl.gifTag = searchTagField.text
-					}
+				GroupBox {
+					title: qsTr("Active Reminders")
 
-					ListView {
-						id: reminderList
-						implicitHeight: heightHelper.height * reminderList.count;
-						Layout.minimumHeight: implicitHeight
-						Layout.maximumHeight: implicitHeight
-						Layout.fillWidth: true
-						Layout.columnSpan: 2
+					Layout.minimumHeight: implicitHeight
+					Layout.maximumHeight: implicitHeight
+					Layout.fillWidth: true
+					Layout.columnSpan: 2
 
-						model: reminderControl.reminders
+					ColumnLayout {
+						anchors.fill: parent
 
-						delegate: ItemDelegate {
-							text: qsTr("Remind%1 at: %2")
-								  .arg(modelData.intense ? qsTr(" (intense)") : "")
-								  .arg(modelData.time/*.toLocaleTimeString()*/)
+						ListView {
+							id: reminderList
+							implicitHeight: heightHelper.height * reminderList.count;
+							Layout.fillWidth: true
 
-							highlighted: modelData.intense
-							down: false
-							width: parent.width
+							model: reminderControl.reminderModel
 
-							Component.onCompleted: {
-								var data = modelData;
-								console.log(modelData, modelData.property("time"), modelData.intense);
+							delegate: ReminderDelegate {
+								id: delegate
+								time: model.time
+								intense: model.intense
+								width: parent.width
+							}
+
+							//private
+							ReminderDelegate {
+								id: heightHelper
+								visible: false
+								enabled: false
 							}
 						}
 
-						//private
-						ItemDelegate {
-							id: heightHelper
-							visible: false
-							enabled: false
-						}
-					}
-
-					CheckBox {
-						id: permanentBox
-						Layout.columnSpan: 2
-						Layout.alignment: Qt.AlignLeft
-
-						text: qsTr("Always show status icon")
-						checked: reminderControl.permanent
-
-						Binding {
-							target: reminderControl
-							property: "permanent"
-							value: permanentBox.checked
+						Button {
+							text: qsTr("Add Reminder")
+							Layout.alignment: Qt.AlignRight
+							highlighted: true
 						}
 					}
 				}

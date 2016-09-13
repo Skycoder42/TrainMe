@@ -26,9 +26,18 @@ public:
 	bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
 	Qt::ItemFlags flags(const QModelIndex& index) const override;
 
+	void append(QObject *object, bool takeOwn = true);
+	QObject *append(QHash<QString, QVariant> fieldMap);
+	void insert(int index, QObject *object, bool takeOwn = true);
+	QObject *insert(int index, QHash<QString, QVariant> fieldMap);
+	void remove(int index);
+	void move(int fromIndex, int toIndex);
+	void reset(bool resetRoles = false);
+
 	QString header() const;
 	bool isReadonly() const;
 	QStringList roles() const;
+	int roleId(QString role) const;
 
 public slots:
 	void setHeader(QString header);

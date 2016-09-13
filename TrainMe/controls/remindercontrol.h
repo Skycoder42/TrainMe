@@ -2,6 +2,7 @@
 #define REMINDERCONTROL_H
 
 #include <QObject>
+#include <QSortFilterProxyModel>
 #include "qelementmodel.h"
 #include "viewcontrol.h"
 #include "reminderservice.h"
@@ -14,7 +15,7 @@ class ReminderControl : public ViewControl
 	Q_PROPERTY(bool remindersActive READ areRemindersActive WRITE setRemindersActive NOTIFY remindersActiveChanged)
 	Q_PROPERTY(bool permanent READ isPermanent WRITE setPermanent NOTIFY permanentChanged)
 	Q_PROPERTY(QString gifTag READ gifTag WRITE setGifTag NOTIFY gifTagChanged)
-	Q_PROPERTY(QObject* reminderModel MEMBER reminderModel CONSTANT)
+	Q_PROPERTY(QObject* reminderModel MEMBER sortProxy CONSTANT)
 
 public:
 	explicit ReminderControl(QObject *parent = nullptr);
@@ -53,6 +54,7 @@ private:
 	bool permanent;
 	QString searchTag;
 	QElementModel *reminderModel;
+	QSortFilterProxyModel *sortProxy;
 };
 
 #endif // REMINDERCONTROL_H
