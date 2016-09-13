@@ -6,7 +6,8 @@ ReminderControl::ReminderControl(QObject *parent) :
 	reminderService(ReminderService::createInstance(this)),
 	active(false),
 	permanent(false),
-	searchTag()
+	searchTag(),
+	reminderModel(new QElementModel({"time", "intense"}, this))
 {
 	connect(this->reminderService, &ReminderService::stateLoaded,
 			this, &ReminderControl::stateLoaded);
@@ -80,6 +81,14 @@ void ReminderControl::stateLoaded(bool active, bool permanent, const QString &gi
 	this->active = active;
 	this->permanent = permanent;
 	this->searchTag = gifTag;
+
+	for(auto it = reminders.constBegin(), end = reminders.constEnd(); it != end; ++it) {
+		auto reminder = new QObject(this);
+		reminder->setObjectName("reminder");
+		reminder->setProperty("time", it.key());
+		reminder->setProperty("intense", it.value());
+		this->reminderModel->add(reminder);
+	}
 
 	emit remindersActiveChanged(active);
 	emit permanentChanged(permanent);

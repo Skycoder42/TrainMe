@@ -65,21 +65,27 @@ ControlPage {
 
 					ListView {
 						id: reminderList
-						//implicitHeight: heightHelper.height * model.rowCount;
-						implicitHeight: 42
+						implicitHeight: heightHelper.height * reminderList.count;
 						Layout.minimumHeight: implicitHeight
 						Layout.maximumHeight: implicitHeight
 						Layout.fillWidth: true
 						Layout.columnSpan: 2
 
-						delegate: ItemDelegate {
-//							text: qsTr("Remind%1 at: %2")
-//								  .arg(model.intense ? qsTr(" (intense)") : "")
-//								  .arg(model.time/*.toLocaleTimeString()*/)
+						model: reminderControl.reminders
 
-//							highlighted: model.intense
-//							down: false
-//							width: parent.width
+						delegate: ItemDelegate {
+							text: qsTr("Remind%1 at: %2")
+								  .arg(modelData.intense ? qsTr(" (intense)") : "")
+								  .arg(modelData.time/*.toLocaleTimeString()*/)
+
+							highlighted: modelData.intense
+							down: false
+							width: parent.width
+
+							Component.onCompleted: {
+								var data = modelData;
+								console.log(modelData, modelData.property("time"), modelData.intense);
+							}
 						}
 
 						//private
@@ -87,7 +93,6 @@ ControlPage {
 							id: heightHelper
 							visible: false
 							enabled: false
-							text: "test"
 						}
 					}
 

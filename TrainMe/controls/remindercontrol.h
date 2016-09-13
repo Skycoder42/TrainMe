@@ -2,6 +2,7 @@
 #define REMINDERCONTROL_H
 
 #include <QObject>
+#include "qelementmodel.h"
 #include "viewcontrol.h"
 #include "reminderservice.h"
 
@@ -13,6 +14,7 @@ class ReminderControl : public ViewControl
 	Q_PROPERTY(bool remindersActive READ areRemindersActive WRITE setRemindersActive NOTIFY remindersActiveChanged)
 	Q_PROPERTY(bool permanent READ isPermanent WRITE setPermanent NOTIFY permanentChanged)
 	Q_PROPERTY(QString gifTag READ gifTag WRITE setGifTag NOTIFY gifTagChanged)
+	Q_PROPERTY(QObject* reminderModel MEMBER reminderModel CONSTANT)
 
 public:
 	explicit ReminderControl(QObject *parent = nullptr);
@@ -21,6 +23,7 @@ public:
 	bool areRemindersActive() const;
 	bool isPermanent() const;
 	QString gifTag() const;
+	QObjectList reminders() const;
 
 public slots:
 	void setRemindersActive(bool remindersActive);
@@ -31,6 +34,8 @@ signals:
 	void remindersActiveChanged(bool remindersActive);
 	void permanentChanged(bool permanent);
 	void gifTagChanged(QString gifTag);
+
+	void remindersChanged(QObjectList reminders);
 
 protected:
 	void doInit() override;
@@ -47,6 +52,7 @@ private:
 	bool active;
 	bool permanent;
 	QString searchTag;
+	QElementModel *reminderModel;
 };
 
 #endif // REMINDERCONTROL_H

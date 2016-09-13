@@ -40,7 +40,8 @@ HEADERS += \
     viewcontrol.h \
     controls/createtaskcontrol.h \
 	reminderservice.h \
-    controls/remindercontrol.h
+    controls/remindercontrol.h \
+    qelementmodel.h
 
 SOURCES += \
 	trainmodel.cpp \
@@ -54,7 +55,8 @@ SOURCES += \
     viewcontrol.cpp \
     controls/createtaskcontrol.cpp \
 	reminderservice.cpp \
-    controls/remindercontrol.cpp
+    controls/remindercontrol.cpp \
+    qelementmodel.cpp
 
 win32 {
 	HEADERS += winreminderservice.h
