@@ -121,6 +121,8 @@ ApplicationWindow {
 						drawerListView.setPage(index, model);
 					drawer.close();
 				}
+
+				enabled: model.source ? true : false
 			}
 
 			model: ListModel {

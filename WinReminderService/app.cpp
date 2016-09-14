@@ -162,18 +162,6 @@ int App::startup()
 	connect(reminder, &ReminderManager::reminderTriggered,
 			this->notifier, &Notifier::doNotify);
 
-//	//DEBUG
-//	this->handleCommand({
-//							QSTR(Add),
-//							QTime::currentTime().addSecs(3).toString(Qt::ISODate),
-//							"false"
-//						});
-//	this->handleCommand({
-//							QSTR(Add),
-//							QTime::currentTime().addSecs(6).toString(Qt::ISODate),
-//							"true"
-//						});
-
 	return EXIT_SUCCESS;
 }
 
