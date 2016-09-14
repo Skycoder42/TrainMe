@@ -123,7 +123,7 @@ ControlPage {
 							Layout.alignment: Qt.AlignRight
 							highlighted: true
 
-							onClicked: createReminderBox.open()
+							onClicked: createReminderBox.show()
 						}
 					}
 				}
@@ -138,11 +138,20 @@ ControlPage {
 		positiveButtonText: qsTr("Create")
 		negativeButtonText: qsTr("Cancel")
 
+		function show() {
+			messageContentItem.init();
+			createReminderBox.open();
+		}
+
 		messageContent: ColumnLayout {
 			spacing: 14
 
 			readonly property date time: timeSpinner.numToDate(timeSpinner.value)
 			readonly property alias intense: intenseBox.checked
+
+			function init() {
+				timeSpinner.value = timeSpinner.dateToNum(new Date());
+			}
 
 			SpinBox {
 				id: timeSpinner
