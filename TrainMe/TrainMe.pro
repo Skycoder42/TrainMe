@@ -42,7 +42,8 @@ HEADERS += \
     viewcontrol.h \
     controls/createtaskcontrol.h \
 	reminderservice.h \
-	controls/remindercontrol.h
+	controls/remindercontrol.h \
+    controls/motivatecontrol.h
 
 SOURCES += \
 	trainmodel.cpp \
@@ -56,7 +57,8 @@ SOURCES += \
     viewcontrol.cpp \
     controls/createtaskcontrol.cpp \
 	reminderservice.cpp \
-	controls/remindercontrol.cpp
+	controls/remindercontrol.cpp \
+    controls/motivatecontrol.cpp
 
 win32 {
 	HEADERS += winreminderservice.h
@@ -91,4 +93,12 @@ DISTFILES += \
     android/res/drawable-xxxhdpi/splash.9.png
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../GifLoader/release/ -lGifLoader
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../GifLoader/debug/ -lGifLoader
+else:unix: LIBS += -L$$OUT_PWD/../GifLoader/ -lGifLoader
+
+INCLUDEPATH += $$PWD/../GifLoader
+DEPENDPATH += $$PWD/../GifLoader
+
 #ANDROID_EXTRA_LIBS +=

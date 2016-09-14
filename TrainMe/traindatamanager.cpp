@@ -64,8 +64,7 @@ void TrainDataManager::initManager()
 			else if (this->loadMissingTasks())
 				initIndex = 2;
 
-			qDebug() << initIndex;
-			emit managerReady(4);//DEBUG
+			emit managerReady(6);//DEBUG
 		} else {
 			emit managerMessage(tr("Fatal Error!"),
 								tr("Unable to load database from \"%1\"").arg(dbName),

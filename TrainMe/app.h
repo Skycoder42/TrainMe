@@ -11,6 +11,7 @@
 #include "controls/configweekcontrol.h"
 #include "controls/createtaskcontrol.h"
 #include "controls/remindercontrol.h"
+#include "controls/motivatecontrol.h"
 
 class App : public QGuiApplication
 {
@@ -41,6 +42,7 @@ private:
 	ConfigWeekControl *configWeekControl;
 	CreateTaskControl *createTaskControl;
 	ReminderControl *reminderControl;
+	MotivateControl *motivateControl;
 
 	bool isValid;
 
