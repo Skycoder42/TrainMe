@@ -22,6 +22,8 @@ win32 {
 	DEFINES += "DISPLAY_NAME=\"\\\"Train Me!\\\"\""
 }
 
+include(../QtUtils/QElementModel/qelementmodel.pri)
+
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
 
@@ -40,8 +42,7 @@ HEADERS += \
     viewcontrol.h \
     controls/createtaskcontrol.h \
 	reminderservice.h \
-    controls/remindercontrol.h \
-    qelementmodel.h
+	controls/remindercontrol.h
 
 SOURCES += \
 	trainmodel.cpp \
@@ -55,8 +56,7 @@ SOURCES += \
     viewcontrol.cpp \
     controls/createtaskcontrol.cpp \
 	reminderservice.cpp \
-    controls/remindercontrol.cpp \
-    qelementmodel.cpp
+	controls/remindercontrol.cpp
 
 win32 {
 	HEADERS += winreminderservice.h
