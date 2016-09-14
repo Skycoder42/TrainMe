@@ -101,4 +101,4 @@ else:unix: LIBS += -L$$OUT_PWD/../GifLoader/ -lGifLoader
 INCLUDEPATH += $$PWD/../GifLoader
 DEPENDPATH += $$PWD/../GifLoader
 
-#ANDROID_EXTRA_LIBS +=
+#ANDROID_EXTRA_LIBS += $$OUT_PWD/../GifLoader/libGifLoader.so
