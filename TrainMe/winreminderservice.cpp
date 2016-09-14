@@ -12,7 +12,19 @@
 
 WinReminderService::WinReminderService(QObject *parent) :
 	ReminderService(parent)
-{}
+{
+	//make shure the service is running if active
+	QSettings regEdit(QStringLiteral("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"), QSettings::NativeFormat);
+	auto isActive = regEdit.contains(REMINDER_EXE_NAME);
+	if(isActive)
+		QProcess::startDetached(this->remPath());
+
+#ifndef QT_NO_DEBUG
+	connect(qApp, &QCoreApplication::aboutToQuit, this, [this](){
+		QProcess::startDetached(this->remPath(), {QStringLiteral("--quit")});
+	});
+#endif
+}
 
 void WinReminderService::loadState()
 {

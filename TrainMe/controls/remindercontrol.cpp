@@ -1,17 +1,20 @@
 #include "remindercontrol.h"
 #include "app.h"
 
+static const QString timeKey = QStringLiteral("time");
+static const QString intenseKey = QStringLiteral("intense");
+
 ReminderControl::ReminderControl(QObject *parent) :
 	ViewControl(parent),
 	reminderService(ReminderService::createInstance(this)),
 	active(false),
 	permanent(false),
 	searchTag(),
-	reminderModel(new QElementModel({QStringLiteral("time"), QStringLiteral("intense")}, this)),
+	reminderModel(new QElementModel({timeKey, intenseKey}, this)),
 	sortProxy(new QSortFilterProxyModel(this))
 {
 	this->sortProxy->setSourceModel(this->reminderModel);
-	this->sortProxy->setSortRole(this->reminderModel->roleId(QStringLiteral("time")));
+	this->sortProxy->setSortRole(this->reminderModel->roleId(timeKey));
 	this->sortProxy->sort(0);
 
 	connect(this->reminderService, &ReminderService::stateLoaded,
@@ -36,6 +39,23 @@ bool ReminderControl::isPermanent() const
 QString ReminderControl::gifTag() const
 {
 	return this->searchTag;
+}
+
+void ReminderControl::createReminder(QTime time, bool intense)
+{
+	this->reminderService->addReminder(time, intense);
+	this->reminderModel->append({
+									{timeKey, time},
+									{intenseKey, intense}
+								});
+}
+
+void ReminderControl::removeReminder(int index)
+{
+	auto rIndex = this->sortProxy->mapToSource(this->sortProxy->index(index, 0));
+	auto obj = this->reminderModel->element(rIndex.row());
+	this->reminderService->removeReminder(obj->property(timeKey.toLatin1().constData()).toTime());
+	this->reminderModel->remove(rIndex.row());
 }
 
 void ReminderControl::setRemindersActive(bool remindersActive)
@@ -90,8 +110,8 @@ void ReminderControl::stateLoaded(bool active, bool permanent, const QString &gi
 	this->reminderModel->reset();
 	for(auto it = reminders.constBegin(), end = reminders.constEnd(); it != end; ++it) {
 		this->reminderModel->append({
-										{QStringLiteral("time"), it.key()},
-										{QStringLiteral("intense"), it.value()}
+										{timeKey, it.key()},
+										{intenseKey, it.value()}
 									});
 	}
 

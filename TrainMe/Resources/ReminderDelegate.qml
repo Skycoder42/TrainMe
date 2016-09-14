@@ -8,6 +8,8 @@ ItemDelegate {
 	property date time: new Date()
 	property bool intense: false
 
+	signal deleteClicked
+
 	text: qsTr("At <b>%1</b> %2")
 		  .arg(delegate.time.toLocaleTimeString(Locale.ShortFormat))
 		  .arg(delegate.intense ? qsTr("(intense)") : "")
@@ -39,6 +41,8 @@ ItemDelegate {
 					source: "qrc:/icons/delete.png"
 				}
 			}
+
+			onClicked: delegate.deleteClicked()
 		}
 	}
 }

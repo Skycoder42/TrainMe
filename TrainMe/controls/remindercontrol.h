@@ -27,6 +27,9 @@ public:
 	QObjectList reminders() const;
 
 public slots:
+	void createReminder(QTime time, bool intense);
+	void removeReminder(int index);
+
 	void setRemindersActive(bool remindersActive);
 	void setPermanent(bool permanent);
 	void setGifTag(QString gifTag);

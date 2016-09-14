@@ -2,6 +2,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 import "../controls"
+import "../MessageBox"
 
 ControlPage {
 	id: reminderPage
@@ -105,6 +106,8 @@ ControlPage {
 								time: model.time
 								intense: model.intense
 								width: parent.width
+
+								onDeleteClicked: reminderControl.removeReminder(index)
 							}
 
 							//private
@@ -119,10 +122,72 @@ ControlPage {
 							text: qsTr("Add Reminder")
 							Layout.alignment: Qt.AlignRight
 							highlighted: true
+
+							onClicked: createReminderBox.open()
 						}
 					}
 				}
 			}
+		}
+	}
+
+	MessageBox {
+		id: createReminderBox
+
+		title: qsTr("Create Reminder")
+		positiveButtonText: qsTr("Create")
+		negativeButtonText: qsTr("Cancel")
+
+		messageContent: ColumnLayout {
+			spacing: 14
+
+			readonly property date time: timeSpinner.numToDate(timeSpinner.value)
+			readonly property alias intense: intenseBox.checked
+
+			SpinBox {
+				id: timeSpinner
+				Layout.fillWidth: true
+
+				stepSize: 1
+				from: 0
+				to: 1439
+				value: 0
+				editable: true
+
+				textFromValue: function(value, locale) {
+					return numToDate(value).toLocaleTimeString(Locale.ShortFormat);
+				}
+
+				valueFromText: function(text, locale) {
+					var date = Date.fromLocaleTimeString(Qt.locale(), text, Locale.ShortFormat);
+					return dateToNum(date);
+				}
+
+				validator: RegExpValidator {
+					regExp: /\d{2}:\d{2}/
+				}
+
+				function numToDate(number) {
+					var date = new Date(2000, 1);
+					date.setHours(Math.floor(number / 60));
+					date.setMinutes(number % 60);
+					return date;
+				}
+
+				function dateToNum(date) {
+					return date.getHours() * 60 + date.getMinutes();
+				}
+			}
+
+			Switch {
+				id: intenseBox
+				text: qsTr("Intense Notification")
+			}
+		}
+
+		onPositiveAction: {
+			reminderControl.createReminder(messageContentItem.time,
+										   messageContentItem.intense);
 		}
 	}
 }
