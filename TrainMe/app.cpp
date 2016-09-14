@@ -77,7 +77,7 @@ void App::setupEngine()
 #ifdef Q_OS_WIN
 	QSettings regSettings("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\DWM", QSettings::NativeFormat);
 	QRgb rColor = regSettings.value("ColorizationColor").toUInt();
-	this->engine->rootContext()->setContextProperty("hasMainColor", QVariant(true));
+	this->engine->rootContext()->setContextProperty("hasMainColor", regSettings.contains("ColorizationColor"));
 	this->engine->rootContext()->setContextProperty("mainColor", QColor(rColor).name());
 #else
 	this->engine->rootContext()->setContextProperty("hasMainColor", QVariant(false));
