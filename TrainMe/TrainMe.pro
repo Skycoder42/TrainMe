@@ -1,4 +1,5 @@
 QT += qml quick quickcontrols2 sql concurrent
+android: QT += androidextras
 
 CONFIG += c++11
 

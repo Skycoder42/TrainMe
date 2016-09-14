@@ -8,6 +8,9 @@
 #include <QSettings>
 #include <QColor>
 #endif
+#ifdef Q_OS_ANDROID
+#include <QtAndroidExtras>
+#endif
 
 #include <QDebug>
 
@@ -90,11 +93,13 @@ void App::setupEngine()
 
 	//load dpi selector
 	QQmlFileSelector *selector = QQmlFileSelector::get(this->engine);
+	double dpi = 0.0;
 #ifdef Q_OS_ANDROID
-	auto dpi = 3.0;//TODO load from java
+	auto activity = QtAndroid::androidActivity();
+	dpi = activity.callMethod<jdouble>("getDpiFactor");
 #elif defined(Q_OS_WIN)
 	auto dpiBase = QGuiApplication::primaryScreen()->logicalDotsPerInch();
-	auto dpi = dpiBase / 96.0;
+	dpi = dpiBase / 96.0;
 #else
 #error "Other platforms are currently not supported"
 #endif
