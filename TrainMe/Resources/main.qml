@@ -23,7 +23,7 @@ ApplicationWindow {
 	Material.foreground: "#212121"
 
 	Universal.theme: Universal.Light
-	Universal.accent: hasMainColor ? mainColor : Universal.color(Universal.Red)//TODO via settings
+	Universal.accent: (hasMainColor && app.useMainColor) ? mainColor : Universal.color(Universal.Red)
 	Universal.foreground: "#212121"
 
 	header: ToolBar {

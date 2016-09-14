@@ -1,9 +1,9 @@
 #include "motivatecontrol.h"
 #include <QDebug>
 
-MotivateControl::MotivateControl(QObject *parent) :
+MotivateControl::MotivateControl(QPropertySettings *settings, QObject *parent) :
 	ViewControl(parent),
-	settings(new QPropertySettings(this)),
+	settings(settings),
 	loader(new GifLoader(this)),
 	gifTag()
 {

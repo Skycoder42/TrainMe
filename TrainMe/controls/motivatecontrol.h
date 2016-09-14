@@ -13,7 +13,7 @@ class MotivateControl : public ViewControl
 	Q_PROPERTY(QString gifTag MEMBER gifTag NOTIFY gifTagChanged)
 
 public:
-	explicit MotivateControl(QObject *parent = nullptr);
+	explicit MotivateControl(QPropertySettings *settings, QObject *parent = nullptr);
 
 public slots:
 	void reload();

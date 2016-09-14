@@ -25,6 +25,16 @@ Page {
                 var obj = menuComponent.createObject(moreMenu, {"text": menuItems[i], "index": i});
                 moreMenu.addItem(obj);
             }
+
+			//add global action to activate/deactive style color mode
+			if(hasMainColor && app.testStyle("Universal")) {
+				var styleOpt = menuComponent.createObject(moreMenu, {"text": qsTr("Use system color"), "index": -1, "checkable": true});
+				styleOpt.checked = app.useMainColor;
+				styleOpt.clicked.connect(function(){
+					app.useMainColor = styleOpt.checked;
+				});
+				moreMenu.addItem(styleOpt);
+			}
         }
     }
 

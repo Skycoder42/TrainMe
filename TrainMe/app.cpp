@@ -15,19 +15,24 @@ App::App(int argc, char *argv[]) :
 	QGuiApplication(argc, argv),
 	manager(new TrainDataManager(this)),
 	engine(new QQmlApplicationEngine(this)),
+	settings(nullptr),
 	trainControl(nullptr),
 	resultControl(nullptr),
 	configWeekControl(nullptr),
 	createTaskControl(nullptr),
 	reminderControl(nullptr),
 	motivateControl(nullptr),
-	isValid(false)
+	isValid(false),
+	useMainColor(true)
 {
 	QGuiApplication::setApplicationName(QStringLiteral(TARGET));
 	QGuiApplication::setApplicationVersion(QStringLiteral(VERSION));
 	QGuiApplication::setOrganizationName(QStringLiteral(COMPANY));
 	QGuiApplication::setOrganizationDomain(QStringLiteral("com.Skycoder42"));
 	QGuiApplication::setApplicationDisplayName(tr("Train Me!"));
+
+	this->settings = new QPropertySettings(this);
+	this->settings->addProperty(this, "useMainColor");
 
 	this->registerTypes();
 	this->setupEngine();
@@ -115,7 +120,7 @@ void App::createControls()
 	this->configWeekControl = new ConfigWeekControl(this);
 	this->createTaskControl = new CreateTaskControl(this);
 	this->reminderControl = new ReminderControl(this);
-	this->motivateControl = new MotivateControl(this);
+	this->motivateControl = new MotivateControl(this->settings, this);
 }
 
 bool App::loadEngine()

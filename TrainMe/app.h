@@ -3,6 +3,7 @@
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <qpropertysettings.h>
 #include "traindatamanager.h"
 #include "trainmodel.h"
 
@@ -18,6 +19,7 @@ class App : public QGuiApplication
 	Q_OBJECT
 
 	Q_PROPERTY(TrainDataManager *trainManager READ trainManager CONSTANT)
+	Q_PROPERTY(bool useMainColor MEMBER useMainColor NOTIFY useMainColorChanged)
 
 public:
 	explicit App(int argc, char *argv[]);
@@ -33,9 +35,12 @@ signals:
 	void startupCompleted(int startIndex);
 	void errorMessage(const QString &title, const QString &message, bool isFatal);
 
+	void useMainColorChanged(bool useMainColor);
+
 private:
 	TrainDataManager *manager;
 	QQmlApplicationEngine *engine;
+	QPropertySettings *settings;
 
 	TrainControl *trainControl;
 	ResultControl *resultControl;
@@ -45,6 +50,7 @@ private:
 	MotivateControl *motivateControl;
 
 	bool isValid;
+	bool useMainColor;
 
 	void registerTypes();
 	void setupEngine();
