@@ -14,8 +14,7 @@ ApplicationWindow {
 	title: qsTr("Train Me!")
 
 	readonly property bool isSmall: root.height > root.width
-
-	//TODO android back button behavior
+	property Popup currentPopup: null
 
 	Material.theme: Material.Light
 	Material.primary: Material.color(Material.Red, Material.Shade500)
@@ -151,6 +150,15 @@ ApplicationWindow {
 		}
 	}
 
+	onClosing: {
+		if(currentPopup == null)
+			close.accepted = true;
+		else {
+			close.accepted = false;
+			currentPopup.close();
+		}
+	}
+
 	Connections {
 		target: app
 		onStartupCompleted: {
@@ -158,6 +166,7 @@ ApplicationWindow {
 			drawerButton.enabled = true;
 		}
 	}
+
 	Component.onCompleted: app.trainManager.initManager()
 
 	StyleAccess {

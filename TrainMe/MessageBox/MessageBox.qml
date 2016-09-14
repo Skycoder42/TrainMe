@@ -57,10 +57,15 @@ Popup {
 	focus: true
 	closePolicy: Popup.CloseOnEscape
 
-	onOpened: p.closedByAction = false;
+	onOpened: {
+		p.closedByAction = false;
+		root.currentPopup = messageBox;
+	}
 	onClosed: {
 		if(!p.closedByAction)
 			negativeAction(true);
+		if(root.currentPopup == messageBox)
+			root.currentPopup = null;
 	}
 
 	QtObject {
