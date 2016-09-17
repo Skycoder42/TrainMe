@@ -33,6 +33,8 @@ private:
 
 	GifLoader *loader;
 	QString gifTag;
+
+	QUrl lastUrl;
 };
 
 #endif // MOTIVATECONTROL_H

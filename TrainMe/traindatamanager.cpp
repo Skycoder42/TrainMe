@@ -347,8 +347,9 @@ void TrainDataManager::completeTasks(const QDate &date, TrainDataManager::TaskRe
 		if(!query.exec()) {
 			auto code = query.lastError().nativeErrorCode().toInt();
 			if(code == 19) {
-				emit managerMessage(tr("Already set!"), tr("The day you tried to add already has a training result! "
-														   "You cannot override results once they have been added."),
+				emit managerMessage(tr("Already set!"),
+									tr("The day you tried to add already has a training result! "
+									   "You cannot override results once they have been added."),
 									false);
 
 			} else
