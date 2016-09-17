@@ -6,6 +6,9 @@
 #include <qpropertysettings.h>
 #include "traindatamanager.h"
 #include "trainmodel.h"
+#ifdef Q_OS_WIN
+#include <qsingleinstance.h>
+#endif
 
 #include "controls/traincontrol.h"
 #include "controls/resultcontrol.h"
@@ -31,6 +34,10 @@ public:
 
 	Q_INVOKABLE bool testStyle(const QString &styleName) const;
 
+#ifdef Q_OS_WIN
+	int exec();
+#endif
+
 signals:
 	void startupCompleted(int startIndex);
 	void errorMessage(const QString &title, const QString &message, bool isFatal);
@@ -38,6 +45,10 @@ signals:
 	void useMainColorChanged(bool useMainColor);
 
 private:
+#ifdef Q_OS_WIN
+	QSingleInstance *singleInstance;
+#endif
+
 	TrainDataManager *manager;
 	QQmlApplicationEngine *engine;
 	QPropertySettings *settings;

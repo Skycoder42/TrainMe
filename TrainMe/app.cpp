@@ -16,8 +16,11 @@
 
 App::App(int argc, char *argv[]) :
 	QGuiApplication(argc, argv),
-	manager(new TrainDataManager(this)),
-	engine(new QQmlApplicationEngine(this)),
+#ifdef Q_OS_WIN
+	singleInstance(new QSingleInstance(this)),
+#endif
+	manager(nullptr),
+	engine(nullptr),
 	settings(nullptr),
 	trainControl(nullptr),
 	resultControl(nullptr),
@@ -25,7 +28,7 @@ App::App(int argc, char *argv[]) :
 	createTaskControl(nullptr),
 	reminderControl(nullptr),
 	motivateControl(nullptr),
-	isValid(false),
+	isValid(true),
 	useMainColor(true)
 {
 	QGuiApplication::setApplicationName(QStringLiteral(TARGET));
@@ -34,24 +37,34 @@ App::App(int argc, char *argv[]) :
 	QGuiApplication::setOrganizationDomain(QStringLiteral("com.Skycoder42"));
 	QGuiApplication::setApplicationDisplayName(tr("Train Me!"));
 
-	this->settings = new QPropertySettings(this);
-	this->settings->addProperty(this, "useMainColor");
+#ifdef Q_OS_WIN
+	this->singleInstance->setAutoRecovery(true);
+	this->singleInstance->setStartupFunction([this](){
+#endif
+		this->manager = new TrainDataManager(this);
+		this->engine = new QQmlApplicationEngine(this);
 
-	this->registerTypes();
-	this->setupEngine();
+		this->settings = new QPropertySettings(this);
+		this->settings->addProperty(this, "useMainColor");
 
-	connect(this->manager, &TrainDataManager::managerReady,
-			this, &App::startupCompleted,
-			Qt::QueuedConnection);
-	connect(this->manager, &TrainDataManager::managerMessage,
-			this, &App::errorMessage,
-			Qt::QueuedConnection);
+		this->registerTypes();
+		this->setupEngine();
 
-	this->createControls();
-	if(!this->loadEngine())
-		return;
+		connect(this->manager, &TrainDataManager::managerReady,
+				this, &App::startupCompleted,
+				Qt::QueuedConnection);
+		connect(this->manager, &TrainDataManager::managerMessage,
+				this, &App::errorMessage,
+				Qt::QueuedConnection);
 
-	this->isValid = true;
+		this->createControls();
+		this->isValid = this->loadEngine();
+
+#ifdef Q_OS_WIN
+		this->singleInstance->setNotifyWindow(this->allWindows().first());
+		return this->isValid ? EXIT_SUCCESS : EXIT_FAILURE;
+	});
+#endif
 }
 
 App *App::instance()
@@ -73,6 +86,12 @@ bool App::testStyle(const QString &styleName) const
 {
 	return QQuickStyle::name() == styleName;
 }
+#ifdef Q_OS_WIN
+int App::exec()
+{
+	return this->singleInstance->singleExec();
+}
+#endif
 
 void App::registerTypes()
 {
