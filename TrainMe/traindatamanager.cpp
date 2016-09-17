@@ -3,6 +3,7 @@
 #include <QStandardPaths>
 #include <QDir>
 #include <QtConcurrent>
+#include "reminderservice.h"
 
 #include <QDebug>
 
@@ -343,9 +344,16 @@ void TrainDataManager::completeTasks(const QDate &date, TrainDataManager::TaskRe
 		query.bindValue(0, date);
 		query.bindValue(1, (int)result);
 
-		if(!query.exec())
-			throw query.lastError();
-		else {
+		if(!query.exec()) {
+			auto code = query.lastError().nativeErrorCode().toInt();
+			if(code == 19) {
+				emit managerMessage(tr("Already set!"), tr("The day you tried to add already has a training result! "
+														   "You cannot override results once they have been added."),
+									false);
+
+			} else
+				throw query.lastError();
+		} else {
 			switch(result) {
 			case Done:
 				this->recalcScores(date);
@@ -381,6 +389,10 @@ void TrainDataManager::completeTasks(const QDate &date, TrainDataManager::TaskRe
 			}
 		}
 	});
+
+	auto remSvc = ReminderService::instance();
+	if(remSvc)
+		remSvc->skipReminder(date);
 }
 
 void TrainDataManager::executeAsync(const std::function<void ()> &fn)

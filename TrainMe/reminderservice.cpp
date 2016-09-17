@@ -1,17 +1,21 @@
 #include "reminderservice.h"
+#include <QCoreApplication>
 #ifdef Q_OS_WIN
 #include "winreminderservice.h"
 #endif
+
+ReminderService* ReminderService::_instance(nullptr);
 
 ReminderService::ReminderService(QObject *parent) :
 	QObject(parent)
 {}
 
-ReminderService *ReminderService::createInstance(QObject *parent)
+ReminderService *ReminderService::instance()
 {
+	if(!_instance) {
 #ifdef Q_OS_WIN
-	return new WinReminderService(parent);
-#else
-	return nullptr;
+		_instance = new WinReminderService(qApp);
 #endif
+	}
+	return _instance;
 }

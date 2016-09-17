@@ -12,7 +12,7 @@ class ReminderService : public QObject
 public:
 	ReminderService(QObject *parent = nullptr);
 
-	static ReminderService* createInstance(QObject *parent = nullptr);
+	static ReminderService* instance();
 
 public slots:
 	virtual void loadState() = 0;
@@ -31,6 +31,9 @@ signals:
 					 bool permanent,
 					 const QString &gifTag,
 					 const QHash<QTime, bool> &reminders);
+
+private:
+	static ReminderService* _instance;
 };
 
 #endif // REMINDERSERVICE_H

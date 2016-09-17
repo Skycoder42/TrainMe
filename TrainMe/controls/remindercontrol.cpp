@@ -6,7 +6,7 @@ static const QString intenseKey = QStringLiteral("intense");
 
 ReminderControl::ReminderControl(QObject *parent) :
 	ViewControl(parent),
-	reminderService(ReminderService::createInstance(this)),
+	reminderService(ReminderService::instance()),
 	active(false),
 	permanent(false),
 	searchTag(),
