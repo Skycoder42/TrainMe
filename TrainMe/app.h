@@ -38,6 +38,9 @@ public:
 	int exec();
 #endif
 
+public slots:
+	void showToast(QString message, bool isLong);
+
 signals:
 	void startupCompleted(int startIndex);
 	void errorMessage(const QString &title, const QString &message, bool isFatal);

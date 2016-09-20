@@ -1,7 +1,7 @@
 #include "motivatecontrol.h"
 #include <QClipboard>
 #include <QDebug>
-#include <QGuiApplication>
+#include "app.h"
 
 MotivateControl::MotivateControl(QPropertySettings *settings, QObject *parent) :
 	ViewControl(parent),
@@ -39,6 +39,7 @@ void MotivateControl::actionTriggered(int id)
 		break;
 	case 1:
 		QGuiApplication::clipboard()->setText(this->lastUrl.toString());
+		App::instance()->showToast(tr("Copied: %1").arg(this->lastUrl.toString()), true);
 		break;
 	}
 }

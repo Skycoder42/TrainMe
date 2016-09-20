@@ -7,6 +7,7 @@ import android.view.WindowManager;
 import android.view.Window;
 import android.graphics.Color;
 import android.util.DisplayMetrics;
+import android.widget.Toast;
 
 public class MainActivity extends QtActivity {
 
@@ -28,5 +29,9 @@ public class MainActivity extends QtActivity {
 			.getMetrics(metrics);
 
 		return metrics.density;
+	}
+
+	public void showToast(String message, boolean isLong) {
+		Toast.makeText(this, message, isLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
 	}
 }

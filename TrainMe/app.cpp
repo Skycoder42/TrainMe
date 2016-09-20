@@ -86,12 +86,29 @@ bool App::testStyle(const QString &styleName) const
 {
 	return QQuickStyle::name() == styleName;
 }
+
 #ifdef Q_OS_WIN
 int App::exec()
 {
 	return this->singleInstance->singleExec();
 }
 #endif
+
+void App::showToast(QString message, bool isLong)
+{
+#ifdef Q_OS_ANDROID
+	QtAndroid::runOnAndroidThread([=](){
+		auto activity = QtAndroid::androidActivity();
+		activity.callMethod<void>("showToast",
+								  "(Ljava/lang/String;Z)V",
+								  QAndroidJniObject::fromString(message).object<jstring>(),
+								  (jboolean)isLong);
+	});
+#else
+	Q_UNUSED(isLong);
+	qInfo(qPrintable(message));
+#endif
+}
 
 void App::registerTypes()
 {
