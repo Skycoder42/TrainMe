@@ -48,7 +48,7 @@ private slots:
 	void stateLoaded(bool active,
 					 bool permanent,
 					 const QString &gifTag,
-					 const QHash<QTime, bool> &reminders);
+					 const ReminderService::ReminderHash &reminders);
 
 private:
 	ReminderService *reminderService;

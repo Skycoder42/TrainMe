@@ -10,6 +10,8 @@ class ReminderService : public QObject
 	Q_OBJECT
 
 public:
+	typedef QHash<QTime, bool> ReminderHash;
+
 	ReminderService(QObject *parent = nullptr);
 
 	static ReminderService* instance();
@@ -30,10 +32,12 @@ signals:
 	void stateLoaded(bool active,
 					 bool permanent,
 					 const QString &gifTag,
-					 const QHash<QTime, bool> &reminders);
+					 const ReminderService::ReminderHash &reminders);
 
 private:
 	static ReminderService* _instance;
 };
+
+Q_DECLARE_METATYPE(ReminderService::ReminderHash)
 
 #endif // REMINDERSERVICE_H

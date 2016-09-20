@@ -46,7 +46,7 @@ HEADERS += \
     controls/createtaskcontrol.h \
 	reminderservice.h \
 	controls/remindercontrol.h \
-    controls/motivatecontrol.h
+	controls/motivatecontrol.h
 
 SOURCES += \
 	trainmodel.cpp \
@@ -61,11 +61,16 @@ SOURCES += \
     controls/createtaskcontrol.cpp \
 	reminderservice.cpp \
 	controls/remindercontrol.cpp \
-    controls/motivatecontrol.cpp
+	controls/motivatecontrol.cpp
 
 win32 {
 	HEADERS += winreminderservice.h
 	SOURCES += winreminderservice.cpp
+}
+
+android {
+	HEADERS += droidreminderservice.h
+	SOURCES += droidreminderservice.cpp
 }
 
 RESOURCES += trainme_res.qrc \
@@ -93,7 +98,8 @@ DISTFILES += \
     android/res/drawable-xxhdpi/icon.png \
     android/res/drawable-xxhdpi/splash.9.png \
     android/res/drawable-xxxhdpi/icon.png \
-    android/res/drawable-xxxhdpi/splash.9.png
+    android/res/drawable-xxxhdpi/splash.9.png \
+    android/src/com/Skycoder42/TrainMe/ReminderController.java
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 

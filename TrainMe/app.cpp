@@ -113,6 +113,7 @@ void App::showToast(QString message, bool isLong)
 void App::registerTypes()
 {
 	qRegisterMetaType<QList<TrainDataManager::ResultInfo>>();
+	qRegisterMetaType<ReminderService::ReminderHash>();
 }
 
 void App::setupEngine()

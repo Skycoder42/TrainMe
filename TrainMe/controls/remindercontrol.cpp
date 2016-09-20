@@ -101,7 +101,7 @@ void ReminderControl::doInit()
 	}
 }
 
-void ReminderControl::stateLoaded(bool active, bool permanent, const QString &gifTag, const QHash<QTime, bool> &reminders)
+void ReminderControl::stateLoaded(bool active, bool permanent, const QString &gifTag, const ReminderService::ReminderHash &reminders)
 {
 	this->active = active;
 	this->permanent = permanent;

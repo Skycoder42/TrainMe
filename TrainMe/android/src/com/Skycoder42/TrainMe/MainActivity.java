@@ -34,4 +34,8 @@ public class MainActivity extends QtActivity {
 	public void showToast(String message, boolean isLong) {
 		Toast.makeText(this, message, isLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
 	}
+
+	public ReminderController createController() {
+		return new ReminderController(this);
+	}
 }

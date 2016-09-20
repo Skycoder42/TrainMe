@@ -45,7 +45,7 @@ void WinReminderService::loadState()
 			if(error.error == QJsonParseError::NoError) {
 				auto root = doc.object();
 
-				QHash<QTime, bool> reminders;
+				ReminderHash reminders;
 				auto array = root[QStringLiteral("reminders")].toArray();
 				foreach(auto value, array) {
 					auto remObj = value.toObject();
