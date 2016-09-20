@@ -16,6 +16,17 @@ public class ReminderController {
 	private static final String ACTIVE_KEY = "Reminder.Active";
 	private static final String VISIBLE_KEY = "Reminder.Visible";
 	private static final String GIFTAG_KEY = "Reminder.Giftag";
+	private static final String REM_COUNT_KEY = "Reminder.Reminders.Count";
+	private static final String REM_BASE_KEY = "Reminder.Reminders.Rem_";
+	private static final String REM_SUB_HOURS_KEY = ".Hours";
+	private static final String REM_SUB_MIN_KEY = ".Mins";
+	private static final String REM_SUB_INTENSE_KEY = ".Intense";
+
+	public static class ReminderInfo {
+		public int hours;
+		public int minutes;
+		public boolean intense;
+	}
 
 	private Context context;
 	private SharedPreferences prefs;
@@ -38,6 +49,27 @@ public class ReminderController {
 
 	public String gifTag() {
 		return this.prefs.getString(GIFTAG_KEY, "");
+	}
+
+	public ReminderInfo[] getReminders() {
+		int count = this.prefs.getInt(REM_COUNT_KEY, 0);
+		ReminderInfo[] infoArray = new ReminderInfo[count];
+		for(int i = 0; i < count; i++) {
+			infoArray[i] = new ReminderInfo();
+			infoArray[i].hours = this.prefs.getInt(REM_BASE_KEY + i + REM_SUB_HOURS_KEY, 0);
+			infoArray[i].minutes = this.prefs.getInt(REM_BASE_KEY + i + REM_SUB_MIN_KEY, 0);
+			infoArray[i].intense = this.prefs.getBoolean(REM_BASE_KEY + i + REM_SUB_INTENSE_KEY, false);
+		}
+//		ReminderInfo[] infoArray = new ReminderInfo[2];
+//		infoArray[0] = new ReminderInfo();
+//		infoArray[0].hours = 11;
+//		infoArray[0].minutes = 11;
+//		infoArray[0].intense = false;
+//		infoArray[1] = new ReminderInfo();
+//		infoArray[1].hours = 22;
+//		infoArray[1].minutes = 22;
+//		infoArray[1].intense = true;
+		return infoArray;
 	}
 
 	public void setActive(boolean activate) {

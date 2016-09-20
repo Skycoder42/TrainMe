@@ -14,11 +14,26 @@ DroidReminderService::DroidReminderService(QObject *parent) :
 void DroidReminderService::loadState()
 {
 	QtAndroid::runOnAndroidThread([this](){
+		ReminderHash reminderHash;
+
+		QAndroidJniEnvironment jniEnv;
+		QAndroidJniObject reminders = this->reminderController.callObjectMethod("getReminders",
+																				"()[Lcom/Skycoder42/TrainMe/ReminderController$ReminderInfo;");
+		auto length = jniEnv->GetArrayLength(reminders.object<jarray>());
+		for(auto i = 0; i < length; i++) {
+			QAndroidJniObject info(jniEnv->GetObjectArrayElement(reminders.object<jobjectArray>(), i));
+			auto hours = info.getField<jint>("hours");
+			auto minutes = info.getField<jint>("minutes");
+			reminderHash.insert(QTime(hours, minutes),
+								info.getField<jboolean>("intense"));
+		}
+
+
 		QMetaObject::invokeMethod(this, "stateLoaded", Qt::QueuedConnection,
 								  Q_ARG(bool, this->reminderController.callMethod<jboolean>("isActive")),
 								  Q_ARG(bool, this->reminderController.callMethod<jboolean>("isAlwaysVisible")),
 								  Q_ARG(QString, this->reminderController.callObjectMethod<jstring>("gifTag").toString()),
-								  Q_ARG(ReminderService::ReminderHash, ReminderHash()));
+								  Q_ARG(ReminderService::ReminderHash, reminderHash));
 	});
 }
 
