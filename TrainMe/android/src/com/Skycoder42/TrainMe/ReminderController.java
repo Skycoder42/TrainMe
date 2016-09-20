@@ -89,6 +89,40 @@ public class ReminderController {
 		}
 	}
 
+	public void addReminder(int hours, int minutes, boolean intense) {
+		int count = this.prefs.getInt(REM_COUNT_KEY, 0);
+		this.prefs
+			.edit()
+			.putInt(REM_COUNT_KEY, count + 1)
+			.putInt(REM_BASE_KEY + count + REM_SUB_HOURS_KEY, hours)
+			.putInt(REM_BASE_KEY + count + REM_SUB_MIN_KEY, minutes)
+			.putBoolean(REM_BASE_KEY + count + REM_SUB_INTENSE_KEY, intense)
+			.apply();
+
+		//TODO reload reminders
+	}
+
+	public void removeReminder(int hours, int minutes) {
+		int count = this.prefs.getInt(REM_COUNT_KEY, 0);
+		for(int i = 0; i < count; i++) {
+			int iHours = this.prefs.getInt(REM_BASE_KEY + i + REM_SUB_HOURS_KEY, 0);
+			int iMinutes = this.prefs.getInt(REM_BASE_KEY + i + REM_SUB_MIN_KEY, 0);
+			if(hours == iHours && minutes == iMinutes) {
+
+			}
+		}
+
+		this.prefs
+			.edit()
+			.putInt(REM_COUNT_KEY, count + 1)
+			.putInt(REM_BASE_KEY + count + REM_SUB_HOURS_KEY, hours)
+			.putInt(REM_BASE_KEY + count + REM_SUB_MIN_KEY, minutes)
+			.putBoolean(REM_BASE_KEY + count + REM_SUB_INTENSE_KEY, intense)
+			.apply();
+
+		//TODO reload reminders
+	}
+
 	public void setAlwaysVisible(boolean always) {
 		this.prefs
 			.edit()

@@ -48,6 +48,13 @@ void DroidReminderService::setRemindersActive(bool active)
 
 void DroidReminderService::addReminder(const QTime &time, bool intense)
 {
+	QtAndroid::runOnAndroidThread([=](){
+		this->reminderController.callMethod<void>("addReminder",
+												  "(IIZ)V",
+												  (jint)time.hour(),
+												  (jint)time.minute(),
+												  (jboolean)intense);
+	});
 }
 
 void DroidReminderService::removeReminder(const QTime &time)
