@@ -59,6 +59,12 @@
 			<!-- extract android style -->
 	</activity>
 
+	<receiver android:name="com.Skycoder42.TrainMe.BootReceiver">
+		<intent-filter>
+			<action android:name="android.intent.action.BOOT_COMPLETED" />
+		</intent-filter>
+	</receiver>
+
 	<!-- For adding service(s) please check: https://wiki.qt.io/AndroidServices -->
 
 	</application>
@@ -74,4 +80,5 @@
 		 Remove the comment if you do not require these default features. -->
 	<!-- %%INSERT_FEATURES -->
 
+<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 </manifest>

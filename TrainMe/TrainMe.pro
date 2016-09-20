@@ -99,7 +99,8 @@ DISTFILES += \
     android/res/drawable-xxhdpi/splash.9.png \
     android/res/drawable-xxxhdpi/icon.png \
     android/res/drawable-xxxhdpi/splash.9.png \
-    android/src/com/Skycoder42/TrainMe/ReminderController.java
+    android/src/com/Skycoder42/TrainMe/ReminderController.java \
+    android/src/com/Skycoder42/TrainMe/BootReceiver.java
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 

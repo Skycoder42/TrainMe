@@ -25,7 +25,7 @@ void DroidReminderService::loadState()
 void DroidReminderService::setRemindersActive(bool active)
 {
 	QtAndroid::runOnAndroidThread([=](){
-		this->reminderController.callMethod<void>("activateReminders",
+		this->reminderController.callMethod<void>("setActive",
 												  "(Z)V",
 												  (jboolean)active);
 	});
@@ -46,7 +46,7 @@ void DroidReminderService::skipReminder(const QDate &skipDate)
 void DroidReminderService::setPermanent(bool permanent)
 {
 	QtAndroid::runOnAndroidThread([=](){
-		this->reminderController.callMethod<void>("showAlways",
+		this->reminderController.callMethod<void>("setAlwaysVisible",
 												  "(Z)V",
 												  (jboolean)permanent);
 	});
@@ -54,4 +54,9 @@ void DroidReminderService::setPermanent(bool permanent)
 
 void DroidReminderService::setGifTag(QString gifTag)
 {
+	QtAndroid::runOnAndroidThread([=](){
+		this->reminderController.callMethod<void>("setGifTag",
+												  "(Ljava/lang/String;)V",
+												  QAndroidJniObject::fromString(gifTag).object<jstring>());
+	});
 }

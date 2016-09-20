@@ -23,6 +23,9 @@ public class ReminderController {
 	public ReminderController(Context context) {
 		this.context = context;
 		this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+		if(this.isActive())
+			this.activate();
 	}
 
 	public boolean isActive() {
@@ -37,7 +40,7 @@ public class ReminderController {
 		return this.prefs.getString(GIFTAG_KEY, "");
 	}
 
-	public void activateReminders(boolean activate) {
+	public void setActive(boolean activate) {
 		if(activate == this.isActive())
 			return;
 
@@ -47,14 +50,14 @@ public class ReminderController {
 			.apply();
 
 		if(activate) {
-			this.showAlways(this.isAlwaysVisible());
+			this.activate();
 		} else {
 			NotificationManager manager = (NotificationManager) this.context.getSystemService(Context.NOTIFICATION_SERVICE);
 			manager.cancelAll();
 		}
 	}
 
-	public void showAlways(boolean always) {
+	public void setAlwaysVisible(boolean always) {
 		this.prefs
 			.edit()
 			.putBoolean(VISIBLE_KEY, always)
@@ -80,5 +83,16 @@ public class ReminderController {
 			manager.notify(STATUS_NOT_KEY, notification);
 		} else
 			manager.cancel(STATUS_NOT_KEY);
+	}
+
+	public void setGifTag(String gifTag) {
+		this.prefs
+			.edit()
+			.putString(GIFTAG_KEY, gifTag)
+			.apply();
+	}
+
+	private void activate() {
+		this.setAlwaysVisible(this.isAlwaysVisible());
 	}
 }
