@@ -9,6 +9,13 @@ import android.app.NotificationManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
+import java.text.MessageFormat;
+import java.text.NumberFormat;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Arrays;
+import java.lang.String;
 
 public class ReminderController {
 	private static final int STATUS_NOT_KEY = 42;
@@ -16,11 +23,12 @@ public class ReminderController {
 	private static final String ACTIVE_KEY = "Reminder.Active";
 	private static final String VISIBLE_KEY = "Reminder.Visible";
 	private static final String GIFTAG_KEY = "Reminder.Giftag";
-	private static final String REM_COUNT_KEY = "Reminder.Reminders.Count";
-	private static final String REM_BASE_KEY = "Reminder.Reminders.Rem_";
-	private static final String REM_SUB_HOURS_KEY = ".Hours";
-	private static final String REM_SUB_MIN_KEY = ".Mins";
-	private static final String REM_SUB_INTENSE_KEY = ".Intense";
+	private static final String REM_KEY_BASE = "Reminder.Reminders.";
+	private static final String REM_KEYS_KEY = REM_KEY_BASE + "Keys";
+	private static final String REM_ENTRY_FORMAT = "Rem_{0}_{1}";
+
+	private static final String KEY_LIST_SPLITTER = ";";
+	private static final String KEY_ENTRY_SPLITTER = "_";
 
 	public static class ReminderInfo {
 		public int hours;
@@ -52,24 +60,21 @@ public class ReminderController {
 	}
 
 	public ReminderInfo[] getReminders() {
-		int count = this.prefs.getInt(REM_COUNT_KEY, 0);
-		ReminderInfo[] infoArray = new ReminderInfo[count];
-		for(int i = 0; i < count; i++) {
-			infoArray[i] = new ReminderInfo();
-			infoArray[i].hours = this.prefs.getInt(REM_BASE_KEY + i + REM_SUB_HOURS_KEY, 0);
-			infoArray[i].minutes = this.prefs.getInt(REM_BASE_KEY + i + REM_SUB_MIN_KEY, 0);
-			infoArray[i].intense = this.prefs.getBoolean(REM_BASE_KEY + i + REM_SUB_INTENSE_KEY, false);
+		String data = this.prefs.getString(REM_KEYS_KEY, "");
+		if(data.isEmpty())
+			return new ReminderInfo[0];
+		else {
+			String[] keys = data.split(KEY_LIST_SPLITTER);
+			ReminderInfo[] infoArray = new ReminderInfo[keys.length];
+			for(int i = 0; i < keys.length; i++) {
+				String[] entry = keys[i].split(KEY_ENTRY_SPLITTER);
+				infoArray[i] = new ReminderInfo();
+				infoArray[i].hours = Integer.parseInt(entry[1]);
+				infoArray[i].minutes = Integer.parseInt(entry[2]);
+				infoArray[i].intense = this.prefs.getBoolean(REM_KEYS_KEY + keys[i], false);
+			}
+			return infoArray;
 		}
-//		ReminderInfo[] infoArray = new ReminderInfo[2];
-//		infoArray[0] = new ReminderInfo();
-//		infoArray[0].hours = 11;
-//		infoArray[0].minutes = 11;
-//		infoArray[0].intense = false;
-//		infoArray[1] = new ReminderInfo();
-//		infoArray[1].hours = 22;
-//		infoArray[1].minutes = 22;
-//		infoArray[1].intense = true;
-		return infoArray;
 	}
 
 	public void setActive(boolean activate) {
@@ -90,34 +95,28 @@ public class ReminderController {
 	}
 
 	public void addReminder(int hours, int minutes, boolean intense) {
-		int count = this.prefs.getInt(REM_COUNT_KEY, 0);
+		Set<String> keys = new HashSet<String>(Arrays.asList(this.prefs.getString(REM_KEYS_KEY, "").split(KEY_LIST_SPLITTER)));
+		String newKey = MessageFormat.format(REM_ENTRY_FORMAT, hours, minutes);
+		keys.add(newKey);
+
 		this.prefs
 			.edit()
-			.putInt(REM_COUNT_KEY, count + 1)
-			.putInt(REM_BASE_KEY + count + REM_SUB_HOURS_KEY, hours)
-			.putInt(REM_BASE_KEY + count + REM_SUB_MIN_KEY, minutes)
-			.putBoolean(REM_BASE_KEY + count + REM_SUB_INTENSE_KEY, intense)
+			.putString(REM_KEYS_KEY, TextUtils.join(KEY_LIST_SPLITTER, keys))
+			.putBoolean(REM_KEY_BASE + newKey, intense)
 			.apply();
 
 		//TODO reload reminders
 	}
 
 	public void removeReminder(int hours, int minutes) {
-		int count = this.prefs.getInt(REM_COUNT_KEY, 0);
-		for(int i = 0; i < count; i++) {
-			int iHours = this.prefs.getInt(REM_BASE_KEY + i + REM_SUB_HOURS_KEY, 0);
-			int iMinutes = this.prefs.getInt(REM_BASE_KEY + i + REM_SUB_MIN_KEY, 0);
-			if(hours == iHours && minutes == iMinutes) {
-
-			}
-		}
+		Set<String> keys = new HashSet<String>(Arrays.asList(this.prefs.getString(REM_KEYS_KEY, "").split(KEY_LIST_SPLITTER)));
+		String newKey = MessageFormat.format(REM_ENTRY_FORMAT, hours, minutes);
+		keys.remove(newKey);
 
 		this.prefs
 			.edit()
-			.putInt(REM_COUNT_KEY, count + 1)
-			.putInt(REM_BASE_KEY + count + REM_SUB_HOURS_KEY, hours)
-			.putInt(REM_BASE_KEY + count + REM_SUB_MIN_KEY, minutes)
-			.putBoolean(REM_BASE_KEY + count + REM_SUB_INTENSE_KEY, intense)
+			.putString(REM_KEYS_KEY, TextUtils.join(KEY_LIST_SPLITTER, keys))
+			.remove(REM_KEY_BASE + newKey)
 			.apply();
 
 		//TODO reload reminders

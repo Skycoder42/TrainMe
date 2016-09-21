@@ -19,9 +19,11 @@ void DroidReminderService::loadState()
 		QAndroidJniEnvironment jniEnv;
 		QAndroidJniObject reminders = this->reminderController.callObjectMethod("getReminders",
 																				"()[Lcom/Skycoder42/TrainMe/ReminderController$ReminderInfo;");
+		qDebug() << reminders.isValid();
 		auto length = jniEnv->GetArrayLength(reminders.object<jarray>());
 		for(auto i = 0; i < length; i++) {
 			QAndroidJniObject info(jniEnv->GetObjectArrayElement(reminders.object<jobjectArray>(), i));
+			qDebug() << info.isValid();
 			auto hours = info.getField<jint>("hours");
 			auto minutes = info.getField<jint>("minutes");
 			reminderHash.insert(QTime(hours, minutes),
