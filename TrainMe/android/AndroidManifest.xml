@@ -61,9 +61,11 @@
 
 	<receiver android:name="com.Skycoder42.TrainMe.BootReceiver">
 		<intent-filter>
-			<action android:name="android.intent.action.BOOT_COMPLETED" />
+			<action android:name="android.intent.action.BOOT_COMPLETED"/>
 		</intent-filter>
 	</receiver>
+
+	<receiver android:name="com.Skycoder42.TrainMe.AlarmReceiver" />
 
 	<!-- For adding service(s) please check: https://wiki.qt.io/AndroidServices -->
 

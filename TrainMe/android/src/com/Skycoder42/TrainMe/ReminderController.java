@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.app.NotificationManager;
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.app.AlarmManager;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import java.text.MessageFormat;
@@ -16,6 +17,9 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Calendar;
+
+import android.util.Log;
 
 public class ReminderController {
 	private static final int STATUS_NOT_KEY = 42;
@@ -29,6 +33,8 @@ public class ReminderController {
 
 	private static final String KEY_LIST_SPLITTER = ";";
 	private static final String KEY_ENTRY_SPLITTER = "_";
+
+	private static final int OPEN_INTENT_ID = 0;
 
 	public static class ReminderInfo {
 		public int hours;
@@ -60,21 +66,16 @@ public class ReminderController {
 	}
 
 	public ReminderInfo[] getReminders() {
-		String data = this.prefs.getString(REM_KEYS_KEY, "");
-		if(data.isEmpty())
-			return new ReminderInfo[0];
-		else {
-			String[] keys = data.split(KEY_LIST_SPLITTER);
-			ReminderInfo[] infoArray = new ReminderInfo[keys.length];
-			for(int i = 0; i < keys.length; i++) {
-				String[] entry = keys[i].split(KEY_ENTRY_SPLITTER);
-				infoArray[i] = new ReminderInfo();
-				infoArray[i].hours = Integer.parseInt(entry[1]);
-				infoArray[i].minutes = Integer.parseInt(entry[2]);
-				infoArray[i].intense = this.prefs.getBoolean(REM_KEY_BASE + keys[i], false);
-			}
-			return infoArray;
+		String[] keys = this.loadReminders().toArray(new String[0]);
+		ReminderInfo[] infoArray = new ReminderInfo[keys.length];
+		for(int i = 0; i < keys.length; i++) {
+			String[] entry = keys[i].split(KEY_ENTRY_SPLITTER);
+			infoArray[i] = new ReminderInfo();
+			infoArray[i].hours = Integer.parseInt(entry[1]);
+			infoArray[i].minutes = Integer.parseInt(entry[2]);
+			infoArray[i].intense = this.prefs.getBoolean(REM_KEY_BASE + keys[i], false);
 		}
+		return infoArray;
 	}
 
 	public void setActive(boolean activate) {
@@ -95,7 +96,7 @@ public class ReminderController {
 	}
 
 	public void addReminder(int hours, int minutes, boolean intense) {
-		Set<String> keys = new HashSet<String>(Arrays.asList(this.prefs.getString(REM_KEYS_KEY, "").split(KEY_LIST_SPLITTER)));
+		Set<String> keys = this.loadReminders();
 		String newKey = MessageFormat.format(REM_ENTRY_FORMAT, hours, minutes);
 		keys.add(newKey);
 
@@ -105,11 +106,31 @@ public class ReminderController {
 			.putBoolean(REM_KEY_BASE + newKey, intense)
 			.apply();
 
-		//TODO reload reminders
+		Intent intent = new Intent(this.context, AlarmReceiver.class);
+		intent.putExtra(AlarmReceiver.INTENSE_EXTRA, intense);
+		PendingIntent pending = PendingIntent.getBroadcast(this.context,
+			this.calcId(hours, minutes),
+			intent,
+			PendingIntent.FLAG_UPDATE_CURRENT);
+
+		Calendar cal = Calendar.getInstance();//TODO completly wrong!
+		if(hours < cal.get(Calendar.HOUR) ||
+		   (hours == cal.get(Calendar.HOUR) && minutes <= cal.get(Calendar.MINUTE))) {
+		   cal.add(Calendar.DAY_OF_MONTH, 1);
+		}
+		cal.set(Calendar.HOUR, hours);
+		cal.set(Calendar.HOUR, minutes);
+
+		((MainActivity)this.context).showToast(cal.getTime().toString(), true);
+		AlarmManager alarm = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
+		alarm.setRepeating(intense ? AlarmManager.RTC_WAKEUP : AlarmManager.RTC,
+			cal.getTimeInMillis(),
+			86400000L,
+			pending);
 	}
 
 	public void removeReminder(int hours, int minutes) {
-		Set<String> keys = new HashSet<String>(Arrays.asList(this.prefs.getString(REM_KEYS_KEY, "").split(KEY_LIST_SPLITTER)));
+		Set<String> keys = this.loadReminders();
 		String newKey = MessageFormat.format(REM_ENTRY_FORMAT, hours, minutes);
 		keys.remove(newKey);
 
@@ -118,8 +139,6 @@ public class ReminderController {
 			.putString(REM_KEYS_KEY, TextUtils.join(KEY_LIST_SPLITTER, keys))
 			.remove(REM_KEY_BASE + newKey)
 			.apply();
-
-		//TODO reload reminders
 	}
 
 	public void skipDate(Date date) {
@@ -135,7 +154,7 @@ public class ReminderController {
 		NotificationManager manager = (NotificationManager) this.context.getSystemService(Context.NOTIFICATION_SERVICE);
 		if(always) {
 			Intent intent = new Intent(this.context, MainActivity.class);
-			PendingIntent pending = PendingIntent.getActivity(this.context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+			PendingIntent pending = PendingIntent.getActivity(this.context, OPEN_INTENT_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 			Notification notification = new NotificationCompat.Builder(this.context)
 				.setContentTitle("Train-Me! Reminders active")
@@ -161,7 +180,18 @@ public class ReminderController {
 			.apply();
 	}
 
+	private int calcId(int hours, int minutes) {
+		return (hours * 100) + minutes;
+	}
+
 	private void activate() {
 		this.setAlwaysVisible(this.isAlwaysVisible());
+	}
+
+	private Set<String> loadReminders() {
+		String data = this.prefs.getString(REM_KEYS_KEY, "");
+		if(data.isEmpty())
+			return new HashSet<String>();
+		return new HashSet<String>(Arrays.asList(data.split(KEY_LIST_SPLITTER)));
 	}
 }
