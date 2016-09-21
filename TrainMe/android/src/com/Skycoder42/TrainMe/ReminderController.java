@@ -15,7 +15,7 @@ import java.text.NumberFormat;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Arrays;
-import java.lang.String;
+import java.util.Date;
 
 public class ReminderController {
 	private static final int STATUS_NOT_KEY = 42;
@@ -71,7 +71,7 @@ public class ReminderController {
 				infoArray[i] = new ReminderInfo();
 				infoArray[i].hours = Integer.parseInt(entry[1]);
 				infoArray[i].minutes = Integer.parseInt(entry[2]);
-				infoArray[i].intense = this.prefs.getBoolean(REM_KEYS_KEY + keys[i], false);
+				infoArray[i].intense = this.prefs.getBoolean(REM_KEY_BASE + keys[i], false);
 			}
 			return infoArray;
 		}
@@ -120,6 +120,10 @@ public class ReminderController {
 			.apply();
 
 		//TODO reload reminders
+	}
+
+	public void skipDate(Date date) {
+		((MainActivity)this.context).showToast(date.toString(), false);
 	}
 
 	public void setAlwaysVisible(boolean always) {

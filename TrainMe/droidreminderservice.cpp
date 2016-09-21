@@ -61,10 +61,26 @@ void DroidReminderService::addReminder(const QTime &time, bool intense)
 
 void DroidReminderService::removeReminder(const QTime &time)
 {
+	QtAndroid::runOnAndroidThread([=](){
+		this->reminderController.callMethod<void>("removeReminder",
+												  "(II)V",
+												  (jint)time.hour(),
+												  (jint)time.minute());
+	});
 }
 
 void DroidReminderService::skipReminder(const QDate &skipDate)
 {
+	QtAndroid::runOnAndroidThread([=](){
+		QAndroidJniObject jDate("java/util/Date",
+								"(III)V",
+								skipDate.year() - 1900,
+								skipDate.month() - 1,
+								skipDate.day());
+		this->reminderController.callMethod<void>("skipDate",
+												  "(Ljava/util/Date;)V",
+												  jDate.object());
+	});
 }
 
 void DroidReminderService::setPermanent(bool permanent)
