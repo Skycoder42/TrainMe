@@ -13,11 +13,14 @@ import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Calendar;
+import java.text.SimpleDateFormat;
 
 import android.util.Log;
 
@@ -31,15 +34,34 @@ public class ReminderController {
 	private static final String REM_KEYS_KEY = REM_KEY_BASE + "Keys";
 	private static final String REM_ENTRY_FORMAT = "Rem_{0}_{1}";
 
-	private static final String KEY_LIST_SPLITTER = ";";
 	private static final String KEY_ENTRY_SPLITTER = "_";
+	private static final String DATE_FORMAT = "yyyy-MM-dd";
 
 	public static final int OPEN_INTENT_ID = 0;
+	public static final String SKIP_DAYS_KEY = "Reminder.SkipDays";
 
 	public static class ReminderInfo {
 		public int hours;
 		public int minutes;
-		public boolean intense;
+		public boolean intense;		
+
+		public int calcId() {
+			return (this.hours * 100) + this.minutes;
+		}
+	}
+
+	public static boolean testDateSkipped(Context context, Date date) {
+		SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+		Set<String> skipDays = prefs.getStringSet(SKIP_DAYS_KEY, new HashSet<String>());
+		String dateString = format.format(date);
+		for(String skipDay : skipDays) {
+			if(dateString.compareTo(skipDay) == 0)
+				return true;
+		}
+
+		return false;
 	}
 
 	private Context context;
@@ -66,7 +88,8 @@ public class ReminderController {
 	}
 
 	public ReminderInfo[] getReminders() {
-		String[] keys = this.loadReminders().toArray(new String[0]);
+		String[] keys = this.prefs.getStringSet(REM_KEYS_KEY, new HashSet<String>())
+							.toArray(new String[0]);
 		ReminderInfo[] infoArray = new ReminderInfo[keys.length];
 		for(int i = 0; i < keys.length; i++) {
 			String[] entry = keys[i].split(KEY_ENTRY_SPLITTER);
@@ -100,13 +123,13 @@ public class ReminderController {
 	}
 
 	public void addReminder(ReminderInfo info) {
-		Set<String> keys = this.loadReminders();
+		Set<String> keys = this.prefs.getStringSet(REM_KEYS_KEY, new HashSet<String>());
 		String newKey = MessageFormat.format(REM_ENTRY_FORMAT, info.hours, info.minutes);
 		keys.add(newKey);
 
 		this.prefs
 			.edit()
-			.putString(REM_KEYS_KEY, TextUtils.join(KEY_LIST_SPLITTER, keys))
+			.putStringSet(REM_KEYS_KEY, keys)
 			.putBoolean(REM_KEY_BASE + newKey, info.intense)
 			.apply();
 
@@ -114,13 +137,13 @@ public class ReminderController {
 	}
 
 	public void removeReminder(ReminderInfo info) {
-		Set<String> keys = this.loadReminders();
+		Set<String> keys = this.prefs.getStringSet(REM_KEYS_KEY, new HashSet<String>());
 		String newKey = MessageFormat.format(REM_ENTRY_FORMAT, info.hours, info.minutes);
 		keys.remove(newKey);
 
 		this.prefs
 			.edit()
-			.putString(REM_KEYS_KEY, TextUtils.join(KEY_LIST_SPLITTER, keys))
+			.putStringSet(REM_KEYS_KEY, keys)
 			.remove(REM_KEY_BASE + newKey)
 			.apply();
 
@@ -128,7 +151,23 @@ public class ReminderController {
 	}
 
 	public void skipDate(Date date) {
-		((MainActivity)this.context).showToast(date.toString(), false);
+		SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
+
+		Set<String> skipDays = this.prefs.getStringSet(SKIP_DAYS_KEY, new HashSet<String>());
+		skipDays.add(format.format(date));
+
+		String today = format.format(new Date());
+		List<String> rList = new ArrayList<String>();
+		for(String skipDay : skipDays) {
+			if(today.compareTo(skipDay) > 0)
+				rList.add(skipDay);
+		}
+		skipDays.removeAll(rList);
+
+		this.prefs
+			.edit()
+			.putStringSet(SKIP_DAYS_KEY, skipDays)
+			.apply();
 	}
 
 	public void setAlwaysVisible(boolean always) {
@@ -169,23 +208,12 @@ public class ReminderController {
 			.apply();
 	}
 
-	private int calcId(ReminderInfo info) {
-		return (info.hours * 100) + info.minutes;
-	}
-
-	private Set<String> loadReminders() {
-		String data = this.prefs.getString(REM_KEYS_KEY, "");
-		if(data.isEmpty())
-			return new HashSet<String>();
-		return new HashSet<String>(Arrays.asList(data.split(KEY_LIST_SPLITTER)));
-	}
-
 	private void scheduleNotification(ReminderInfo info) {
 		Intent intent = new Intent(this.context, AlarmReceiver.class);
-		intent.putExtra(AlarmReceiver.ID_EXTRA, this.calcId(info));
+		intent.putExtra(AlarmReceiver.ID_EXTRA, info.calcId());
 		intent.putExtra(AlarmReceiver.INTENSE_EXTRA, info.intense);
 		PendingIntent pending = PendingIntent.getBroadcast(this.context,
-			this.calcId(info),
+			info.calcId(),
 			intent,
 			PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -209,7 +237,7 @@ public class ReminderController {
 	private void cancelNotification(ReminderInfo info) {
 		Intent intent = new Intent(this.context, AlarmReceiver.class);
 		PendingIntent pending = PendingIntent.getBroadcast(this.context,
-			this.calcId(info),
+			info.calcId(),
 			intent,
 			PendingIntent.FLAG_UPDATE_CURRENT);
 

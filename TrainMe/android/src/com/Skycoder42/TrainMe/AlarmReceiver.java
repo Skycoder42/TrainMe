@@ -10,6 +10,7 @@ import android.app.PendingIntent;
 import android.app.AlarmManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.BigTextStyle;
+import java.util.Date;
 
 //DEBUG
 import android.widget.Toast;
@@ -22,6 +23,12 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
+		//test allowed
+		if(ReminderController.testDateSkipped(context, new Date())) {
+			Log.d("TrainMe.AlarmReceiver", "Notification skipped");
+			return;
+		}
+
 		int id = intent.getIntExtra(ID_EXTRA, -1);
 		if(id == -1) {
 			Log.e("TrainMe.AlarmReceiver", "Invalid notification ID!");
