@@ -49,21 +49,25 @@ void DroidReminderService::setRemindersActive(bool active)
 void DroidReminderService::addReminder(const QTime &time, bool intense)
 {
 	QtAndroid::runOnAndroidThread([=](){
+		QAndroidJniObject reminder("com/Skycoder42/TrainMe/ReminderController$ReminderInfo");
+		reminder.setField<jint>("hours", time.hour());
+		reminder.setField<jint>("minutes", time.minute());
+		reminder.setField<jboolean>("intense", intense);
 		this->reminderController.callMethod<void>("addReminder",
-												  "(IIZ)V",
-												  (jint)time.hour(),
-												  (jint)time.minute(),
-												  (jboolean)intense);
+												  "(Lcom/Skycoder42/TrainMe/ReminderController$ReminderInfo;)V",
+												  reminder.object());
 	});
 }
 
 void DroidReminderService::removeReminder(const QTime &time)
 {
 	QtAndroid::runOnAndroidThread([=](){
+		QAndroidJniObject reminder("com/Skycoder42/TrainMe/ReminderController$ReminderInfo");
+		reminder.setField<jint>("hours", time.hour());
+		reminder.setField<jint>("minutes", time.minute());
 		this->reminderController.callMethod<void>("removeReminder",
-												  "(II)V",
-												  (jint)time.hour(),
-												  (jint)time.minute());
+												  "(Lcom/Skycoder42/TrainMe/ReminderController$ReminderInfo;)V",
+												  reminder.object());
 	});
 }
 

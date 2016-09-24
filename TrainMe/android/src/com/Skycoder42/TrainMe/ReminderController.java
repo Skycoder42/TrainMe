@@ -34,7 +34,7 @@ public class ReminderController {
 	private static final String KEY_LIST_SPLITTER = ";";
 	private static final String KEY_ENTRY_SPLITTER = "_";
 
-	private static final int OPEN_INTENT_ID = 0;
+	public static final int OPEN_INTENT_ID = 0;
 
 	public static class ReminderInfo {
 		public int hours;
@@ -87,52 +87,35 @@ public class ReminderController {
 			.putBoolean(ACTIVE_KEY, activate)
 			.apply();
 
-		if(activate) {
+		if(activate)
 			this.activate();
-		} else {
+		else {
 			NotificationManager manager = (NotificationManager) this.context.getSystemService(Context.NOTIFICATION_SERVICE);
 			manager.cancelAll();
+
+			ReminderInfo[] infos = this.getReminders();
+			for(ReminderInfo info : infos)
+				this.cancelNotification(info);
 		}
 	}
 
-	public void addReminder(int hours, int minutes, boolean intense) {
+	public void addReminder(ReminderInfo info) {
 		Set<String> keys = this.loadReminders();
-		String newKey = MessageFormat.format(REM_ENTRY_FORMAT, hours, minutes);
+		String newKey = MessageFormat.format(REM_ENTRY_FORMAT, info.hours, info.minutes);
 		keys.add(newKey);
 
 		this.prefs
 			.edit()
 			.putString(REM_KEYS_KEY, TextUtils.join(KEY_LIST_SPLITTER, keys))
-			.putBoolean(REM_KEY_BASE + newKey, intense)
+			.putBoolean(REM_KEY_BASE + newKey, info.intense)
 			.apply();
 
-		Intent intent = new Intent(this.context, AlarmReceiver.class);
-		intent.putExtra(AlarmReceiver.INTENSE_EXTRA, intense);
-		PendingIntent pending = PendingIntent.getBroadcast(this.context,
-			this.calcId(hours, minutes),
-			intent,
-			PendingIntent.FLAG_UPDATE_CURRENT);
-
-		Calendar cal = Calendar.getInstance();
-		if(hours < cal.get(Calendar.HOUR_OF_DAY) ||
-		   (hours == cal.get(Calendar.HOUR_OF_DAY) && minutes <= cal.get(Calendar.MINUTE))) {
-		   cal.add(Calendar.DAY_OF_MONTH, 1);
-		}
-		cal.set(Calendar.HOUR_OF_DAY, hours);
-		cal.set(Calendar.MINUTE, minutes);
-		cal.set(Calendar.SECOND, 0);
-
-		Log.d("TrainMe.Controller", cal.getTime().toString());
-		AlarmManager alarm = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
-		alarm.setInexactRepeating(intense ? AlarmManager.RTC_WAKEUP : AlarmManager.RTC,
-			cal.getTimeInMillis(),
-			AlarmManager.INTERVAL_DAY,
-			pending);
+		this.scheduleNotification(info);
 	}
 
-	public void removeReminder(int hours, int minutes) {
+	public void removeReminder(ReminderInfo info) {
 		Set<String> keys = this.loadReminders();
-		String newKey = MessageFormat.format(REM_ENTRY_FORMAT, hours, minutes);
+		String newKey = MessageFormat.format(REM_ENTRY_FORMAT, info.hours, info.minutes);
 		keys.remove(newKey);
 
 		this.prefs
@@ -141,14 +124,7 @@ public class ReminderController {
 			.remove(REM_KEY_BASE + newKey)
 			.apply();
 
-		Intent intent = new Intent(this.context, AlarmReceiver.class);
-		PendingIntent pending = PendingIntent.getBroadcast(this.context,
-			this.calcId(hours, minutes),
-			intent,
-			PendingIntent.FLAG_UPDATE_CURRENT);
-
-		AlarmManager alarm = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
-		alarm.cancel(pending);
+		this.cancelNotification(info);
 	}
 
 	public void skipDate(Date date) {
@@ -164,7 +140,10 @@ public class ReminderController {
 		NotificationManager manager = (NotificationManager) this.context.getSystemService(Context.NOTIFICATION_SERVICE);
 		if(always) {
 			Intent intent = new Intent(this.context, MainActivity.class);
-			PendingIntent pending = PendingIntent.getActivity(this.context, OPEN_INTENT_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+			PendingIntent pending = PendingIntent.getActivity(this.context,
+				OPEN_INTENT_ID,
+				intent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
 
 			Notification notification = new NotificationCompat.Builder(this.context)
 				.setContentTitle("Train-Me! Reminders active")
@@ -190,12 +169,8 @@ public class ReminderController {
 			.apply();
 	}
 
-	private int calcId(int hours, int minutes) {
-		return (hours * 100) + minutes;
-	}
-
-	private void activate() {
-		this.setAlwaysVisible(this.isAlwaysVisible());
+	private int calcId(ReminderInfo info) {
+		return (info.hours * 100) + info.minutes;
 	}
 
 	private Set<String> loadReminders() {
@@ -203,5 +178,50 @@ public class ReminderController {
 		if(data.isEmpty())
 			return new HashSet<String>();
 		return new HashSet<String>(Arrays.asList(data.split(KEY_LIST_SPLITTER)));
+	}
+
+	private void scheduleNotification(ReminderInfo info) {
+		Intent intent = new Intent(this.context, AlarmReceiver.class);
+		intent.putExtra(AlarmReceiver.ID_EXTRA, this.calcId(info));
+		intent.putExtra(AlarmReceiver.INTENSE_EXTRA, info.intense);
+		PendingIntent pending = PendingIntent.getBroadcast(this.context,
+			this.calcId(info),
+			intent,
+			PendingIntent.FLAG_UPDATE_CURRENT);
+
+		Calendar cal = Calendar.getInstance();
+		if(info.hours < cal.get(Calendar.HOUR_OF_DAY) ||
+		   (info.hours == cal.get(Calendar.HOUR_OF_DAY) && info.minutes <= cal.get(Calendar.MINUTE))) {
+		   cal.add(Calendar.DAY_OF_MONTH, 1);
+		}
+		cal.set(Calendar.HOUR_OF_DAY, info.hours);
+		cal.set(Calendar.MINUTE, info.minutes);
+		cal.set(Calendar.SECOND, 0);
+
+		Log.d("TrainMe.Controller", "Scheduled alarm for " + cal.getTime());
+		AlarmManager alarm = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
+		alarm.setInexactRepeating(info.intense ? AlarmManager.RTC_WAKEUP : AlarmManager.RTC,
+			cal.getTimeInMillis(),
+			AlarmManager.INTERVAL_DAY,
+			pending);
+	}
+
+	private void cancelNotification(ReminderInfo info) {
+		Intent intent = new Intent(this.context, AlarmReceiver.class);
+		PendingIntent pending = PendingIntent.getBroadcast(this.context,
+			this.calcId(info),
+			intent,
+			PendingIntent.FLAG_UPDATE_CURRENT);
+
+		AlarmManager alarm = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
+		alarm.cancel(pending);
+	}
+
+	private void activate() {
+		this.setAlwaysVisible(this.isAlwaysVisible());
+
+		ReminderInfo[] infos = this.getReminders();
+		for(ReminderInfo info : infos)
+			this.scheduleNotification(info);
 	}
 }
