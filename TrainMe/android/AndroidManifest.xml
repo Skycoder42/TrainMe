@@ -65,7 +65,8 @@
 		</intent-filter>
 	</receiver>
 
-	<receiver android:name="com.Skycoder42.TrainMe.AlarmReceiver" />
+	<receiver android:name="com.Skycoder42.TrainMe.AlarmReceiver">
+	</receiver>
 
 	<!-- For adding service(s) please check: https://wiki.qt.io/AndroidServices -->
 

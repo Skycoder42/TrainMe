@@ -113,19 +113,20 @@ public class ReminderController {
 			intent,
 			PendingIntent.FLAG_UPDATE_CURRENT);
 
-		Calendar cal = Calendar.getInstance();//TODO completly wrong!
-		if(hours < cal.get(Calendar.HOUR) ||
-		   (hours == cal.get(Calendar.HOUR) && minutes <= cal.get(Calendar.MINUTE))) {
+		Calendar cal = Calendar.getInstance();
+		if(hours < cal.get(Calendar.HOUR_OF_DAY) ||
+		   (hours == cal.get(Calendar.HOUR_OF_DAY) && minutes <= cal.get(Calendar.MINUTE))) {
 		   cal.add(Calendar.DAY_OF_MONTH, 1);
 		}
-		cal.set(Calendar.HOUR, hours);
-		cal.set(Calendar.HOUR, minutes);
+		cal.set(Calendar.HOUR_OF_DAY, hours);
+		cal.set(Calendar.MINUTE, minutes);
+		cal.set(Calendar.SECOND, 0);
 
-		((MainActivity)this.context).showToast(cal.getTime().toString(), true);
+		Log.d("TrainMe.Controller", cal.getTime().toString());
 		AlarmManager alarm = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
-		alarm.setRepeating(intense ? AlarmManager.RTC_WAKEUP : AlarmManager.RTC,
+		alarm.setInexactRepeating(intense ? AlarmManager.RTC_WAKEUP : AlarmManager.RTC,
 			cal.getTimeInMillis(),
-			86400000L,
+			AlarmManager.INTERVAL_DAY,
 			pending);
 	}
 
@@ -139,6 +140,15 @@ public class ReminderController {
 			.putString(REM_KEYS_KEY, TextUtils.join(KEY_LIST_SPLITTER, keys))
 			.remove(REM_KEY_BASE + newKey)
 			.apply();
+
+		Intent intent = new Intent(this.context, AlarmReceiver.class);
+		PendingIntent pending = PendingIntent.getBroadcast(this.context,
+			this.calcId(hours, minutes),
+			intent,
+			PendingIntent.FLAG_UPDATE_CURRENT);
+
+		AlarmManager alarm = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
+		alarm.cancel(pending);
 	}
 
 	public void skipDate(Date date) {
