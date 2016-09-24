@@ -46,19 +46,24 @@ public class AlarmReceiver extends BroadcastReceiver {
 			.setDefaults(Notification.DEFAULT_ALL)
 			.setGroup(GROUP_KEY);
 
+		Notification notification;
 		if(intense) {
-			builder.setContentTitle("YOU NEED TO TRAIN!!!")
+			notification = builder.setContentTitle("YOU NEED TO TRAIN!!!")
 				   .setContentText("I want to train!")
 				   .setPriority(NotificationCompat.PRIORITY_HIGH)
 				   .setStyle(new NotificationCompat.BigTextStyle()
-					   .bigText("Please, just let me train already. My Body is ready!"));
+					   .bigText("Please, just let me train already. My Body is ready!"))
+				   .build();
+
+			//notification.flags |= Notification.FLAG_INSISTENT;
 		} else {
-			builder.setContentTitle("Do your Training!")
+			notification = builder.setContentTitle("Do your Training!")
 				   .setContentText("It's time for training!")
 				   .setStyle(new NotificationCompat.BigTextStyle()
-					   .bigText("It's time for your daily sports training! Open Train-Me! to start your Training!"));
+					   .bigText("It's time for your daily sports training! Open Train-Me! to start your Training!"))
+					.build();
 		}
 
-		manager.notify(id, builder.build());
+		manager.notify(id, notification);
 	}
 }
